@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status - Batyrbek Bolatbekuly</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap');
+
+        body {
+            font-family: 'League Spartan', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .content {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: transparent; /* Transparent background */
+            color: #818181; /* Light gray text */
+            border: none;
+            padding: 10px 15px;
+        }
+
+        .openbtn:hover {
+            background-color: #444444; /* Darker background on hover */
+            color: #ffffff;
+        }
+
+        .fixed-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="fixed-button">
+    <button class="openbtn" onclick="toggleNav()">☰</button>
+</div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="status.html">Status</a>
+    <a href="preferences.html">Preferences</a>
+    <a href="goals.html">Goals</a>
+    <a href="where-im-at.html">Where I'm at?</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="contact.html">Contact</a>
+</div>
+
+<div class="content">
+    <h1>Preferences</h1>
+    <p>This is the Preferences page.</p>
+</div>
+
+<script>
+    function toggleNav() {
+        var sidebar = document.getElementById("mySidebar");
+        if (sidebar.style.width === "250px") {
+            sidebar.style.width = "0";
+        } else {
+            sidebar.style.width = "250px";
+        }
+    }
+</script>
+
+</body>
+</html>
