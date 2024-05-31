@@ -20,20 +20,34 @@
             min-height: 100vh;
         }
 
+        .header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+        .header img {
+            max-width: 150px;
+            height: auto;
+        }
+
         h1, h2 {
             text-align: center;
+            margin: 10px 0;
+            margin-top: 80px; /* to compensate for fixed header */
         }
 
         .container {
             max-width: 800px;
             text-align: center;
             padding: 20px;
-        }
-
-        .photo {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
         }
 
         .social-links {
@@ -59,7 +73,27 @@
             margin-right: 12px;
         }
 
-        /* Styles for the sidebar */
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: transparent; /* Transparent background */
+            color: #818181; /* Light gray text */
+            border: none;
+            padding: 10px 15px;
+        }
+
+        .openbtn:hover {
+            background-color: #444444; /* Darker background on hover */
+            color: #ffffff;
+        }
+
+        .fixed-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+
         .sidebar {
             height: 100%;
             width: 0;
@@ -87,33 +121,13 @@
             color: #f1f1f1;
         }
 
-        .openbtn {
-            font-size: 20px;
-            cursor: pointer;
-            background-color: transparent; /* Transparent background */
-            color: #818181; /* Light gray text */
-            border: none;
-            padding: 10px 15px;
-        }
-
-        .openbtn:hover {
-            background-color: #444444; /* Darker background on hover */
-            color: #ffffff;
-        }
-
-        /* Styles to make the sidebar button fixed */
-        .fixed-button {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 2;
-        }
     </style>
 </head>
 <body>
 
-<div class="fixed-button">
+<div class="header">
     <button class="openbtn" onclick="toggleNav()">☰</button>
+    <img src="Logo-removed-bg.png" alt="Batyrbek Logo">
 </div>
 
 <div id="mySidebar" class="sidebar">
