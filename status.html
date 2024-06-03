@@ -21,10 +21,78 @@
             min-height: 100vh;
             font-weight: 400;
         }
+        .header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space between elements */
+            padding: 7px 14px; /* Уменьшено на 70% от оригинала */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            background-color: inherit; /* Match the current theme */
+        }
+
+        .toggle-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            margin-left: auto; /* Move to the right */
+            margin-right: 80px;
+        }
+
+        .toggle-btn img {
+            width: 35px; /* Adjust size as needed */
+            height: 35px; /* Adjust size as needed */
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add shadow for visibility */
+        }
+
+        .toggle-btn:hover img {
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); /* Enhance shadow on hover */
+        }
+
+        .header img {
+            max-width: 52.5px; /* Уменьшено на 70% от оригинала */
+            height: auto;
+            }
+
+        
+
+        .day-mode {
+            background-color: white;
+            color: black;
+        }
+
+        .day-mode .header {
+            background-color: white;
+            color: black;
+        }
+
+        .night-mode {
+            background-color: black;
+            color: white;
+        }
+
+        .night-mode .header {
+            background-color: black;
+            color: white;
+        }
+
+        .batyr-mode {
+            background-color: #FAD02C;
+            color: black;
+        }
+
+        .batyr-mode .header {
+            background-color: #FAD02C;
+            color: black;
+        }
 
         .content {
             max-width: 800px;
             text-align: center;
+            margin-top: 100px;
         }
 
         .openbtn {
@@ -98,11 +166,20 @@
         
     </style>
 </head>
+
 <body>
 
-<div class="fixed-button">
+<div class="header">
     <button class="openbtn" onclick="toggleNav()">☰</button>
+    <a href="index.html">
+        <img id="logo" src="black-b.png" alt="Batyrbek Logo">
+    </a>
+    <button id="mode-switcher" class="toggle-btn" onclick="toggleTheme()">
+        <img id="switcher-icon" src="night-mode-switcher.png" alt="Mode Switcher">
+    </button>
+    
 </div>
+
 
 <div id="mySidebar" class="sidebar">
     <a href="index.html">Home</a>
@@ -121,14 +198,49 @@
 </div>
 
 <script>
-    function toggleNav() {
-        var sidebar = document.getElementById("mySidebar");
-        if (sidebar.style.width === "250px") {
-            sidebar.style.width = "0";
-        } else {
-            sidebar.style.width = "250px";
-        }
+document.addEventListener('DOMContentLoaded', (event) => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.body.className = savedTheme;
+        setLogoAndSwitcher(savedTheme);
+        currentTheme = themes.indexOf(savedTheme);
     }
+});
+
+let currentTheme = 0;
+const themes = ['day-mode', 'night-mode', 'batyr-mode'];
+const logo = document.getElementById('logo');
+const switcherIcon = document.getElementById('switcher-icon');
+
+function toggleTheme() {
+    currentTheme = (currentTheme + 1) % themes.length;
+    const newTheme = themes[currentTheme];
+    document.body.className = newTheme;
+    setLogoAndSwitcher(newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
+function setLogoAndSwitcher(theme) {
+    if (theme === 'night-mode') {
+        logo.src = 'white-b.png';
+        switcherIcon.src = 'batyr-mode-switcher.png';
+    } else if (theme === 'batyr-mode') {
+        logo.src = 'black-b.png';
+        switcherIcon.src = 'white-mode-switcher.png';
+    } else {
+        logo.src = 'black-b.png';
+        switcherIcon.src = 'night-mode-switcher.png';
+    }
+}
+
+function toggleNav() {
+    var sidebar = document.getElementById("mySidebar");
+    if (sidebar.style.width === "250px") {
+        sidebar.style.width = "0";
+    } else {
+        sidebar.style.width = "250px";
+    }
+}
 </script>
 
 </body>
