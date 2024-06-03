@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batyrbek Bolatbekuly</title>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
+    <link id="theme-stylesheet" rel="stylesheet" href="day.css"> <!-- Default to day mode -->
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap');
 
@@ -33,7 +35,7 @@
         }
 
         .header img {
-            max-width: 150px;
+            max-width: 75px; /* Adjust this value to match the navigation button size */
             height: auto;
         }
 
@@ -42,12 +44,7 @@
             margin: 10px 0;
             margin-top: 80px; /* to compensate for fixed header */
         }
-
-        .container {
-            max-width: 800px;
-            text-align: center;
-            padding: 20px;
-        }
+        
 
         .social-links {
             margin-top: 20px;
@@ -129,6 +126,26 @@
         font-weight: 400;
         }
 
+
+        .content {
+            max-width: 800px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content img {
+            max-width: 100%; /* Ensure images do not exceed container width */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 15px; /* Add space between images */
+        }
+
+        @media (max-width: 768px) {
+            .content img {
+                width: 100%; /* Full width on small screens */
+            }
+        }
+        
+
     </style>
 </head>
 <body>
@@ -136,6 +153,7 @@
 <div class="header">
     <button class="openbtn" onclick="toggleNav()">☰</button>
     <img src="black-b.png" alt="Batyrbek Logo">
+    <button class="toggle-btn" onclick="toggleTheme()">Toggle Theme</button>
 </div>
 
 <div id="mySidebar" class="sidebar">
@@ -148,7 +166,7 @@
     <a href="contact.html">Contact</a>
 </div>
 
-<div class="container">
+<div class="content">
     <h1>Batyrbek Bolatbekuly</h1>
     <h2>Student at TUM</h2>
     <p>Hi, I'm Batyrbek Bolatbekuly, a 20-year-old student studying Business-Informatics at TUM.</p>
@@ -162,7 +180,36 @@
     </div>
 </div>
 
+<div class="content">
+    <h1>Willpower</h1>
+    <p>Willpower, often described as self-control or determination, is a crucial aspect of human behavior that allows individuals to pursue long-term goals despite short-term temptations. It's the mental energy required to resist urges, make difficult decisions, and stay focused on tasks that require effort and perseverance. </br> </br> 
+
+        Research in psychology suggests that willpower is akin to a muscle that can be strengthened with practice but also depleted with overuse. Engaging in activities that demand self-control can increase willpower over time, much like regular exercise builds physical strength. Conversely, repeatedly giving in to impulses can weaken it, making it harder to resist future temptations. </br> </br>
+        
+        Several factors influence willpower, including stress, fatigue, and environment. High levels of stress and lack of sleep can significantly reduce one's ability to exert self-control. Additionally, being in environments filled with distractions or temptations can erode willpower, making it challenging to stay focused on important tasks. </br> </br>
+        
+        To enhance willpower, strategies such as setting clear goals, breaking tasks into manageable steps, and maintaining a healthy lifestyle are recommended. Mindfulness practices and positive reinforcement also play essential roles in boosting self-discipline. Ultimately, willpower is a vital trait that, when nurtured, empowers individuals to achieve their aspirations and lead more disciplined, fulfilling lives. </br> </br>
+    </p>
+</div>
+
+
+<div class="content">
+    <img src="IMG_4234.PNG" alt="Image 1">
+    <img src="IMG_4235.PNG" alt="Image 2">
+    <img src="IMG_4236.PNG" alt="Image 3">
+    <img src="IMG_4237.PNG" alt="Image 4">
+</div>
+
+
 <script>
+    let currentTheme = 0;
+    const themes = ['day.css', 'night.css', 'batyr.css'];
+
+    function toggleTheme() {
+        currentTheme = (currentTheme + 1) % themes.length;
+        document.getElementById('theme-stylesheet').href = themes[currentTheme];
+    }
+
     function toggleNav() {
         var sidebar = document.getElementById("mySidebar");
         if (sidebar.style.width === "250px") {
