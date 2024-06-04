@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         currentTheme = themes.indexOf(savedTheme);
     }
     highlightElement(); // Run highlight function when the page loads
+    setActiveMenuItem(); // Set active menu item when the page loads
 });
 
 let currentTheme = 0;
@@ -58,3 +59,16 @@ function highlightElement() {
 
 // Run the highlight function when the hash changes
 window.onhashchange = highlightElement;
+
+// Set active menu item function
+function setActiveMenuItem() {
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+    const currentPath = window.location.pathname.split("/").pop();
+    sidebarLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}

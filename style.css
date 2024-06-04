@@ -193,3 +193,10 @@ p {
 .highlight {
     background-color: yellow; /* Adjust this to your highlight color */
 }
+
+.sidebar a.active {
+    background-color: #808080; /* или любой другой цвет, который вы хотите использовать */
+    color: white;
+    padding: 15px 25px; /* Увеличьте отступы для большего фона */
+    border-radius: 5px; /* Добавьте скругленные углы для лучшего вида */
+}
