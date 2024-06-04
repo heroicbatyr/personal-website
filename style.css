@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap');
+
+body {
+    font-family: 'League Spartan', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.day-mode {
+    background-color: white;
+    color: black;
+}
+
+.day-mode .header {
+    background-color: white;
+    color: black;
+}
+
+.night-mode {
+    background-color: black;
+    color: white;
+}
+
+.night-mode .header {
+    background-color: black;
+    color: white;
+}
+
+.batyr-mode {
+    background-color: #FAD02C;
+    color: black;
+}
+
+.batyr-mode .header {
+    background-color: #FAD02C;
+    color: black;
+}
+
+
+
+.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between elements */
+    padding: 7px 14px; /* Уменьшено на 70% от оригинала */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: inherit; /* Match the current theme */
+}
+
+.header img {
+    max-width: 52.5px; /* Уменьшено на 70% от оригинала */
+    height: auto;
+}
+
+h1, h2 {
+    text-align: center;
+    margin: 10px 0;
+    margin-top: 80px; /* to compensate for fixed header */
+}
+
+.container {
+    max-width: 800px;
+    text-align: center;
+    padding: 20px;
+}
+
+.content {
+    max-width: 800px;
+    text-align: center;
+    padding: 20px;
+    margin-top: 100px;
+}
+
+.content img {
+    max-width: 100%; /* Ensure images do not exceed container width */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 15px; /* Add space between images */
+}
+
+@media (max-width: 768px) {
+    .content img {
+        width: 100%; /* Full width on small screens */
+    }
+}
+
+.social-links {
+    margin-top: 20px;
+}
+
+.social-links a {
+    color: inherit;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 1.2em;
+    display: inline-flex;
+    align-items: center;
+}
+
+.social-links a:hover {
+    text-decoration: underline;
+}
+
+.social-links img {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: transparent; /* Transparent background */
+    color: #818181; /* Light gray text */
+    border: none;
+    padding: 10px 15px;
+}
+
+.openbtn:hover {
+    background-color: #444444; /* Darker background on hover */
+    color: #ffffff;
+}
+
+.fixed-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+}
+
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #000000; /* Black background */
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 80px; /* Add space at the top */
+}
+
+.sidebar a {
+    padding: 10px 25px; /* Increase padding-left to shift text left */
+    text-decoration: none;
+    font-size: 25px;
+    color: #ffffff; /* White text */
+    display: block;
+    transition: 0.3s;
+    margin-bottom: 15px; /* Add space between items */
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+
+h1 {
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 700; /* Assuming you want headings to be bold */
+}
+
+p {
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 400;
+}
+.toggle-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: auto; /* Move to the right */
+    margin-right: 50px;
+}
+
+.toggle-btn img {
+    width: 35px; /* Adjust size as needed */
+    height: 35px; /* Adjust size as needed */
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add shadow for visibility */
+}
+
+.toggle-btn:hover img {
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); /* Enhance shadow on hover */
+}
+
+.highlight {
+    background-color: yellow; /* Adjust this to your highlight color */
+}
