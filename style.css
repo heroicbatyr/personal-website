@@ -61,6 +61,16 @@ body {
     height: auto;
 }
 
+/* Initial styles for the header */
+.header {
+    transition: top 0.3s;
+}
+
+/* Hide the header */
+.header.hidden {
+    top: -100px; /* Adjust this value based on your header height */
+}
+
 h1, h2 {
     text-align: center;
     margin: 10px 0;
@@ -199,4 +209,16 @@ p {
     color: white;
     padding: 15px 25px; /* Увеличьте отступы для большего фона */
     border-radius: 5px; /* Добавьте скругленные углы для лучшего вида */
+}
+
+
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+    .quote {
+        font-size: 1em; /* Adjust font size for smaller screens */
+        top: auto; /* Remove fixed top position */
+        bottom: 20px; /* Place at the bottom */
+        right: 10px; /* Adjust right position */
+    }
 }
