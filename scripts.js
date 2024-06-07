@@ -86,3 +86,29 @@ window.addEventListener('scroll', () => {
     }
     lastScrollY = window.scrollY;
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const nextButton = document.querySelector(".next-button");
+    const prevButton = document.querySelector(".prev-button");
+    const photos = document.querySelectorAll(".photo");
+    let currentIndex = 0;
+
+    nextButton.addEventListener("click", function() {
+        photos[currentIndex].style.display = "none";
+        currentIndex = (currentIndex + 1) % photos.length;
+        photos[currentIndex].style.display = "block";
+    });
+
+    prevButton.addEventListener("click", function() {
+        photos[currentIndex].style.display = "none";
+        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+        photos[currentIndex].style.display = "block";
+    });
+
+    // Initially show only the first photo
+    photos.forEach((photo, index) => {
+        if (index !== 0) {
+            photo.style.display = "none";
+        }
+    });
+});

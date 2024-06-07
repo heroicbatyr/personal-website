@@ -41,8 +41,6 @@ body {
     color: black;
 }
 
-
-
 .header {
     width: 100%;
     display: flex;
@@ -182,6 +180,7 @@ p {
     font-family: 'League Spartan', sans-serif;
     font-weight: 400;
 }
+
 .toggle-btn {
     background-color: transparent;
     border: none;
@@ -211,8 +210,6 @@ p {
     border-radius: 5px; /* Добавьте скругленные углы для лучшего вида */
 }
 
-
-
 /* Media query for smaller screens */
 @media (max-width: 768px) {
     .quote {
@@ -221,4 +218,110 @@ p {
         bottom: 20px; /* Place at the bottom */
         right: 10px; /* Adjust right position */
     }
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'League Spartan', sans-serif;
+}
+
+.welcome-section {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.welcome-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.welcome-text {
+    position: absolute;
+    top: 30%; /* Adjust this value to move the text higher or lower */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5em; /* Adjust size as needed */
+    font-weight: bold;
+}
+
+.info-section {
+    background-color: #000; /* Black background */
+    color: #fff; /* White text */
+    padding: 50px 20px; /* Ensure background doesn't shrink */
+    text-align: center;
+}
+
+.info-section h2 {
+    font-size: 5em; /* Larger font size for the header */
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.info-section p {
+    font-size: 1.5em; /* Larger font size for the paragraph */
+    margin-bottom: 50px; /* Add space below paragraph */
+}
+
+/* Ensure the photo gallery and container cover the full width */
+.photo-gallery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    background-color: black; /* Ensure the background is black */
+}
+
+.photo {
+    max-width: 50%; /* Ensure photos do not exceed container width */
+    height: auto; /* Maintain aspect ratio */
+    transition: transform 0.15s ease;
+}
+
+.photo img {
+    width: 100%; /* Ensure images cover the full width of the photo element */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px;
+    display: block;
+    margin: auto; /* Center the image horizontally */
+}
+
+/* Additional styles for the container */
+.photos-container {
+    display: flex;
+    justify-content: center; /* Center the photos horizontally */
+    width: 100%;
+    overflow-x: hidden; /* Remove horizontal scroll */
+    background-color: black; /* Ensure the background is black */
+    padding: 20px; /* Optional: Add padding if needed */
+}
+
+.prev-button, .next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    color: rgb(87, 87, 87);
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 10px; /* Adjusted padding for circular shape */
+    width: 50px; /* Added width and height for circular shape */
+    height: 50px; /* Added width and height for circular shape */
+    border-radius: 50%; /* Changed border-radius to 50% for circular shape */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev-button {
+    left: 10px;
+}
+
+.next-button {
+    right: 10px;
 }
