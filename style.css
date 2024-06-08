@@ -51,11 +51,12 @@ body {
     top: 0;
     left: 0;
     z-index: 2;
+    transition: top 0.3s;
     background-color: inherit; /* Match the current theme */
 }
 
 .header img {
-    max-width: 75px;
+    max-width: 52.5px;
     height: auto;
 }
 
@@ -89,13 +90,14 @@ h1, h2 {
 }
 
 
+/* Media query for small screens */
 @media (max-width: 768px) {
     .welcome-text {
         font-size: 2em; /* Adjust font size for smaller screens */
     }
 
     .info-section h2 {
-        font-size: 3em; /* Adjust font size for smaller screens */
+        font-size: 2.5em; /* Adjust font size for smaller screens */
     }
 
     .info-section p {
@@ -108,6 +110,45 @@ h1, h2 {
 
     .header {
         padding: 5px 10px; /* Reduce padding in the header */
+    }
+
+    .photo {
+        max-width: 100%; /* Ensure photos take full width of the container */
+        height: auto;
+    }
+
+    .photo img {
+        width: 100%; /* Ensure images take full width of the photo container */
+        height: auto;
+    }
+}
+
+/* Media query for extra small screens */
+@media (max-width: 480px) {
+    .welcome-text {
+        font-size: 1.5em; /* Further adjust font size for very small screens */
+    }
+
+    .info-section h2 {
+        font-size: 2em; /* Further adjust font size for very small screens */
+    }
+
+    .info-section p {
+        font-size: 0.875em; /* Further adjust font size for very small screens */
+    }
+
+    .sidebar a {
+        font-size: 16px; /* Further adjust font size for sidebar links */
+    }
+
+    .photo {
+        max-width: 100%; /* Ensure photos take full width of the container */
+        height: auto;
+    }
+
+    .photo img {
+        width: 100%; /* Ensure images take full width of the photo container */
+        height: auto;
     }
 }
 
@@ -199,6 +240,10 @@ body, html {
     position: relative;
     text-align: center;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .welcome-image {
@@ -219,9 +264,14 @@ body, html {
 .info-section {
     background-color: #000;
     color: #fff;
-    padding: 50px 20px;
+    padding: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
 
 .info-section h2 {
     font-size: 5em;
@@ -240,7 +290,8 @@ body, html {
     justify-content: center;
     position: relative;
     width: 100%;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.8); /* Make background slightly transparent */
+    padding: 20px;
 }
 
 .photo {
