@@ -55,24 +55,18 @@ body {
 }
 
 .header img {
-    max-width: 52.5px; /* Уменьшено на 70% от оригинала */
+    max-width: 75px;
     height: auto;
 }
 
-/* Initial styles for the header */
-.header {
-    transition: top 0.3s;
-}
-
-/* Hide the header */
 .header.hidden {
-    top: -100px; /* Adjust this value based on your header height */
+    top: -100px;
 }
 
 h1, h2 {
     text-align: center;
     margin: 10px 0;
-    margin-top: 80px; /* to compensate for fixed header */
+    margin-top: 80px;
 }
 
 .container {
@@ -94,9 +88,26 @@ h1, h2 {
     margin-bottom: 15px; /* Add space between images */
 }
 
+
 @media (max-width: 768px) {
-    .content img {
-        width: 100%; /* Full width on small screens */
+    .welcome-text {
+        font-size: 2em; /* Adjust font size for smaller screens */
+    }
+
+    .info-section h2 {
+        font-size: 3em; /* Adjust font size for smaller screens */
+    }
+
+    .info-section p {
+        font-size: 1em; /* Adjust font size for smaller screens */
+    }
+
+    .sidebar a {
+        font-size: 18px; /* Adjust font size for sidebar links */
+    }
+
+    .header {
+        padding: 5px 10px; /* Reduce padding in the header */
     }
 }
 
@@ -133,7 +144,7 @@ h1, h2 {
 }
 
 .openbtn:hover {
-    background-color: #444444; /* Darker background on hover */
+    background-color: #444444;
     color: #ffffff;
 }
 
@@ -151,73 +162,31 @@ h1, h2 {
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #000000; /* Black background */
+    background-color: #000000;
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 80px; /* Add space at the top */
+    padding-top: 80px;
 }
 
 .sidebar a {
-    padding: 10px 25px; /* Increase padding-left to shift text left */
+    padding: 10px 25px;
     text-decoration: none;
     font-size: 25px;
-    color: #ffffff; /* White text */
+    color: #ffffff;
     display: block;
     transition: 0.3s;
-    margin-bottom: 15px; /* Add space between items */
+    margin-bottom: 15px;
 }
 
 .sidebar a:hover {
     color: #f1f1f1;
 }
 
-h1 {
-    font-family: 'League Spartan', sans-serif;
-    font-weight: 700; /* Assuming you want headings to be bold */
-}
-
-p {
-    font-family: 'League Spartan', sans-serif;
-    font-weight: 400;
-}
-
-.toggle-btn {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    margin-left: auto; /* Move to the right */
-    margin-right: 50px;
-}
-
-.toggle-btn img {
-    width: 35px; /* Adjust size as needed */
-    height: 35px; /* Adjust size as needed */
-    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add shadow for visibility */
-}
-
-.toggle-btn:hover img {
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); /* Enhance shadow on hover */
-}
-
-.highlight {
-    background-color: yellow; /* Adjust this to your highlight color */
-}
-
 .sidebar a.active {
-    background-color: #808080; /* или любой другой цвет, который вы хотите использовать */
+    background-color: #808080;
     color: white;
-    padding: 15px 25px; /* Увеличьте отступы для большего фона */
-    border-radius: 5px; /* Добавьте скругленные углы для лучшего вида */
-}
-
-/* Media query for smaller screens */
-@media (max-width: 768px) {
-    .quote {
-        font-size: 1em; /* Adjust font size for smaller screens */
-        top: auto; /* Remove fixed top position */
-        bottom: 20px; /* Place at the bottom */
-        right: 10px; /* Adjust right position */
-    }
+    padding: 15px 25px;
+    border-radius: 5px;
 }
 
 body, html {
@@ -240,63 +209,61 @@ body, html {
 
 .welcome-text {
     position: absolute;
-    top: 30%; /* Adjust this value to move the text higher or lower */
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 5em; /* Adjust size as needed */
+    font-size: 5em;
     font-weight: bold;
 }
 
 .info-section {
-    background-color: #000; /* Black background */
-    color: #fff; /* White text */
-    padding: 50px 20px; /* Ensure background doesn't shrink */
+    background-color: #000;
+    color: #fff;
+    padding: 50px 20px;
     text-align: center;
 }
 
 .info-section h2 {
-    font-size: 5em; /* Larger font size for the header */
+    font-size: 5em;
     margin-bottom: 20px;
     font-weight: bold;
 }
 
 .info-section p {
-    font-size: 1.5em; /* Larger font size for the paragraph */
-    margin-bottom: 50px; /* Add space below paragraph */
+    font-size: 1.5em;
+    margin-bottom: 50px;
 }
 
-/* Ensure the photo gallery and container cover the full width */
 .photo-gallery {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     width: 100%;
-    background-color: black; /* Ensure the background is black */
+    background-color: black;
 }
 
 .photo {
-    max-width: 50%; /* Ensure photos do not exceed container width */
-    height: auto; /* Maintain aspect ratio */
+    max-width: 50%;
+    height: auto;
     transition: transform 0.15s ease;
 }
 
 .photo img {
-    width: 100%; /* Ensure images cover the full width of the photo element */
-    height: auto; /* Maintain aspect ratio */
+    width: 100%;
+    height: auto;
     border-radius: 10px;
     display: block;
-    margin: auto; /* Center the image horizontally */
+    margin: auto;
 }
 
-/* Additional styles for the container */
 .photos-container {
     display: flex;
-    justify-content: center; /* Center the photos horizontally */
+    justify-content: center;
     width: 100%;
-    overflow-x: hidden; /* Remove horizontal scroll */
-    background-color: black; /* Ensure the background is black */
-    padding: 20px; /* Optional: Add padding if needed */
+    overflow-x: hidden;
+    background-color: black;
+    padding: 20px;
 }
 
 .prev-button, .next-button {
@@ -308,10 +275,10 @@ body, html {
     border: none;
     font-size: 2em;
     cursor: pointer;
-    padding: 10px; /* Adjusted padding for circular shape */
-    width: 50px; /* Added width and height for circular shape */
-    height: 50px; /* Added width and height for circular shape */
-    border-radius: 50%; /* Changed border-radius to 50% for circular shape */
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
@@ -324,4 +291,36 @@ body, html {
 
 .next-button {
     right: 10px;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: auto; /* Move to the right */
+    margin-right: 50px;
+}
+
+.toggle-btn img {
+    width: 35px; /* Adjust size as needed */
+    height: 35px; /* Adjust size as needed */
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add shadow for visibility */
+}
+
+.toggle-btn:hover img {
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); /* Enhance shadow on hover */
+}
+
+h1 {
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 700; /* Assuming you want headings to be bold */
+}
+
+p {
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 400;
 }
