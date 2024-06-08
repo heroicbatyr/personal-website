@@ -91,96 +91,90 @@ h1, h2 {
 }
 
 
-/* Adjustments for medium screens */
-@media (max-width: 1024px) {
-    h1 {
-        font-size: 2.5em;
-    }
-
-    h2 {
-        font-size: 2em;
-    }
-
-    p {
-        font-size: 1em;
-    }
-
-    .welcome-text {
-        font-size: 2.5em;
-    }
-
-    .info-section h2 {
-        font-size: 2em;
-    }
-
-    .info-section p {
-        font-size: 1em;
-    }
-
-    .sidebar a {
-        font-size: 18px;
-    }
+/* General styles */
+h1 {
+    font-size: 5vw; /* Scale with viewport width */
 }
 
-/* Adjustments for small screens */
+h2 {
+    font-size: 4vw; /* Scale with viewport width */
+}
+
+p {
+    font-size: 2vw; /* Scale with viewport width */
+}
+
+.welcome-text {
+    font-size: 5vw; /* Scale with viewport width */
+}
+
+.info-section h2 {
+    font-size: 4vw; /* Scale with viewport width */
+}
+
+.info-section p {
+    font-size: 2vw; /* Scale with viewport width */
+}
+
+/* Adjustments for smaller screens */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 2em;
+    h1, .welcome-text {
+        font-size: 8vw; /* Increase relative size for small screens */
     }
 
-    h2 {
-        font-size: 1.75em;
+    h2, .info-section h2 {
+        font-size: 6vw; /* Increase relative size for small screens */
     }
 
-    p {
-        font-size: 0.875em;
-    }
-
-    .welcome-text {
-        font-size: 2em;
-    }
-
-    .info-section h2 {
-        font-size: 1.75em;
-    }
-
-    .info-section p {
-        font-size: 0.875em;
+    p, .info-section p {
+        font-size: 3.5vw; /* Increase relative size for small screens */
     }
 
     .sidebar a {
-        font-size: 16px;
+        font-size: 4vw; /* Increase relative size for small screens */
+    }
+
+    .header {
+        padding: 5px 10px; /* Reduce padding in the header */
+    }
+
+    .photo {
+        max-width: 100%; /* Ensure photos take full width of the container */
+        height: auto;
+    }
+
+    .photo img {
+        width: 100%; /* Ensure images take full width of the photo container */
+        height: auto;
     }
 }
 
 /* Adjustments for extra small screens */
 @media (max-width: 480px) {
-    h1 {
-        font-size: 1.5em;
+    h1, .welcome-text {
+        font-size: 10vw; /* Further adjust font size for very small screens */
     }
 
-    h2 {
-        font-size: 1.25em;
+    h2, .info-section h2 {
+        font-size: 8vw; /* Further adjust font size for very small screens */
     }
 
-    p {
-        font-size: 0.75em;
-    }
-
-    .welcome-text {
-        font-size: 1.5em;
-    }
-
-    .info-section h2 {
-        font-size: 1.25em;
-    }
-
-    .info-section p {
-        font-size: 0.75em;
+    p, .info-section p {
+        font-size: 4vw; /* Further adjust font size for very small screens */
     }
 
     .sidebar a {
-        font-size: 14px;
+        font-size: 5vw; /* Further adjust font size for sidebar links */
+    }
+
+    .photo {
+        max-width: 100%; /* Ensure photos take full width of the container */
+        height: auto;
+    }
+
+    .photo img {
+        width: 100%; /* Ensure images take full width of the photo container */
+        height: auto;
     }
 }
 
@@ -289,7 +283,7 @@ body, html {
     top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 5em;
+    font-size: 5vw; /* Scale with viewport width */
     font-weight: bold;
 }
 
