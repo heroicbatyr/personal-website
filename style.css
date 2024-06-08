@@ -9,6 +9,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    font-size: 16px; /* Base font size */
 }
 
 .day-mode {
@@ -90,65 +91,96 @@ h1, h2 {
 }
 
 
-/* Media query for small screens */
-@media (max-width: 768px) {
+/* Adjustments for medium screens */
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 2.5em;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
     .welcome-text {
-        font-size: 2em; /* Adjust font size for smaller screens */
+        font-size: 2.5em;
     }
 
     .info-section h2 {
-        font-size: 2.5em; /* Adjust font size for smaller screens */
+        font-size: 2em;
     }
 
     .info-section p {
-        font-size: 1em; /* Adjust font size for smaller screens */
+        font-size: 1em;
     }
 
     .sidebar a {
-        font-size: 18px; /* Adjust font size for sidebar links */
-    }
-
-    .header {
-        padding: 5px 10px; /* Reduce padding in the header */
-    }
-
-    .photo {
-        max-width: 100%; /* Ensure photos take full width of the container */
-        height: auto;
-    }
-
-    .photo img {
-        width: 100%; /* Ensure images take full width of the photo container */
-        height: auto;
+        font-size: 18px;
     }
 }
 
-/* Media query for extra small screens */
-@media (max-width: 480px) {
+/* Adjustments for small screens */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.75em;
+    }
+
+    p {
+        font-size: 0.875em;
+    }
+
     .welcome-text {
-        font-size: 1.5em; /* Further adjust font size for very small screens */
+        font-size: 2em;
     }
 
     .info-section h2 {
-        font-size: 2em; /* Further adjust font size for very small screens */
+        font-size: 1.75em;
     }
 
     .info-section p {
-        font-size: 0.875em; /* Further adjust font size for very small screens */
+        font-size: 0.875em;
     }
 
     .sidebar a {
-        font-size: 16px; /* Further adjust font size for sidebar links */
+        font-size: 16px;
+    }
+}
+
+/* Adjustments for extra small screens */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
     }
 
-    .photo {
-        max-width: 100%; /* Ensure photos take full width of the container */
-        height: auto;
+    h2 {
+        font-size: 1.25em;
     }
 
-    .photo img {
-        width: 100%; /* Ensure images take full width of the photo container */
-        height: auto;
+    p {
+        font-size: 0.75em;
+    }
+
+    .welcome-text {
+        font-size: 1.5em;
+    }
+
+    .info-section h2 {
+        font-size: 1.25em;
+    }
+
+    .info-section p {
+        font-size: 0.75em;
+    }
+
+    .sidebar a {
+        font-size: 14px;
     }
 }
 
@@ -254,7 +286,7 @@ body, html {
 
 .welcome-text {
     position: absolute;
-    top: 30%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 5em;
@@ -295,13 +327,13 @@ body, html {
 }
 
 .photo {
-    max-width: 50%;
+    max-width: 65%;
     height: auto;
     transition: transform 0.15s ease;
 }
 
 .photo img {
-    width: 100%;
+    width: 65%;
     height: auto;
     border-radius: 10px;
     display: block;
