@@ -323,7 +323,6 @@ body, html {
     position: relative;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.8); /* Make background slightly transparent */
-    padding: 20px;
 }
 
 .photo {
@@ -346,7 +345,6 @@ body, html {
     width: 100%;
     overflow-x: hidden;
     background-color: black;
-    padding: 20px;
 }
 
 .prev-button, .next-button {
