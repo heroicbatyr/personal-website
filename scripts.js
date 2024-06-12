@@ -13,6 +13,7 @@ let currentTheme = 0;
 const themes = ['day-mode', 'night-mode', 'batyr-mode'];
 const logo = document.getElementById('logo');
 const switcherIcon = document.getElementById('switcher-icon');
+const instagramIcon = document.getElementById('instagramicon'); // Add Instagram icon element
 
 function toggleTheme() {
     currentTheme = (currentTheme + 1) % themes.length;
@@ -26,12 +27,15 @@ function setLogoAndSwitcher(theme) {
     if (theme === 'night-mode') {
         logo.src = 'white-b.png';
         switcherIcon.src = 'batyr-mode-switcher.png';
+        instagramIcon.src = 'instagram-logo-aq.png'; // Change to white Instagram icon
     } else if (theme === 'batyr-mode') {
         logo.src = 'black-b.png';
         switcherIcon.src = 'white-mode-switcher.png';
+        instagramIcon.src = 'instagram-logo.png'; // Change to black Instagram icon
     } else {
         logo.src = 'black-b.png';
         switcherIcon.src = 'night-mode-switcher.png';
+        instagramIcon.src = 'instagram-logo.png'; // Change to black Instagram icon
     }
 }
 
