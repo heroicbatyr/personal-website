@@ -124,3 +124,26 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 
 gtag('config', 'G-E7YB8ZFBBT');
+
+// Function to fetch and display visitor information
+function fetchVisitorInfo() {
+    fetch('/visitor-info')
+        .then(response => response.json())
+        .then(data => {
+            const visitorInfoDiv = document.getElementById('visitor-info');
+            if (data.location) {
+                visitorInfoDiv.innerHTML = `
+                    <p>IP: ${data.ip}</p>
+                    <p>Location: ${data.location.city}, ${data.location.country_name}</p>
+                `;
+            } else {
+                visitorInfoDiv.innerHTML = '<p>Could not retrieve location information.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching visitor info:', error);
+        });
+}
+
+// Call the function to fetch and display visitor information
+fetchVisitorInfo();
