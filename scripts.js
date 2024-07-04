@@ -1,4 +1,4 @@
-import { Analytics } from "@vercel/analytics/react";
+
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const savedTheme = localStorage.getItem('theme');

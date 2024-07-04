@@ -10,6 +10,11 @@
     <link rel="icon" href="black-b 512x512.png" sizes="512x512" type="image/png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
+
+    <script type="module">
+        import { inject } from 'https://unpkg.com/@vercel/analytics@latest?module';
+        inject();
+    </script>
 </head>
 <body>
     <div class="header">
@@ -79,6 +84,8 @@
         </div>
     </div>-->
 
+    <div id="root"></div>
     <script src="scripts.js"></script>
+    
 </body>
 </html>
