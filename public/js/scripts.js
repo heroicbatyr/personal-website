@@ -31,11 +31,11 @@ function setLogoAndSwitcher(theme) {
         switcherIcon.src = '../images/logos/batyr-mode-switcher.png';
         instagramIcon.src = '../images/logos/instagram-logo-aq.png'; // Change to white Instagram icon
     } else if (theme === 'batyr-mode') {
-        logo.src = 'black-b.png';
+        logo.src = '../images/logos/black-b.png';
         switcherIcon.src = '../images/logos/white-mode-switcher.png';
         instagramIcon.src = '../images/logos/instagram-logo.png'; // Change to black Instagram icon
     } else {
-        logo.src = 'black-b.png';
+        logo.src = '../images/logos/black-b.png';
         switcherIcon.src = '../images/logos/night-mode-switcher.png';
         instagramIcon.src = '../images/logos/instagram-logo.png'; // Change to black Instagram icon
     }
