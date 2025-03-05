@@ -1,0 +1,32 @@
+{
+  "rewrites": [
+    {
+      "source": "/contact",
+      "destination": "/html/contact.html"
+    },
+    {
+      "source": "/dictionary",
+      "destination": "/html/dictionary.html"
+    },
+    {
+      "source": "/blogs",
+      "destination": "/html/blogs.html"
+    },
+    {
+      "source": "/goals",
+      "destination": "/html/goals.html"
+    },
+    {
+      "source": "/preferences",
+      "destination": "/html/preferences.html"
+    },
+    {
+      "source": "/status",
+      "destination": "/html/status.html"
+    },
+    {
+      "source": "/where-im-at",
+      "destination": "/html/where-im-at.html"
+    }
+  ]
+}
