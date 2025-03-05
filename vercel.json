@@ -1,32 +1,39 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/contact",
-      "destination": "/html/contact.html"
+      "destination": "/html/contact.html",
+      "permanent": false
     },
     {
       "source": "/dictionary",
-      "destination": "/html/dictionary.html"
+      "destination": "/html/dictionary.html",
+      "permanent": false
     },
     {
       "source": "/blogs",
-      "destination": "/html/blogs.html"
+      "destination": "/html/blogs.html",
+      "permanent": false
     },
     {
       "source": "/goals",
-      "destination": "/html/goals.html"
+      "destination": "/html/goals.html",
+      "permanent": false
     },
     {
       "source": "/preferences",
-      "destination": "/html/preferences.html"
+      "destination": "/html/preferences.html",
+      "permanent": false
     },
     {
       "source": "/status",
-      "destination": "/html/status.html"
+      "destination": "/html/status.html",
+      "permanent": false
     },
     {
       "source": "/where-im-at",
-      "destination": "/html/where-im-at.html"
+      "destination": "/html/where-im-at.html",
+      "permanent": false
     }
   ]
 }
