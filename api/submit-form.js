@@ -1,4 +1,5 @@
-import connectToDb from '../../lib/db.js';  // ✅ Correct
+import connectToDb from '../../lib/db.js';  // ✅ Correct Path
+
 
 
 export default async function handler(req, res) {
