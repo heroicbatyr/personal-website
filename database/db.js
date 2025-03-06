@@ -13,7 +13,7 @@ export default async function connectToDb() {
         return cachedDb.collection('submissions');
     }
 
-    cachedClient = new MongoClient(uri);
+    cachedClient = new MongoClient(uri, { connectTimeoutMS: 5000, serverSelectionTimeoutMS: 5000 });
     await cachedClient.connect();
     cachedDb = cachedClient.db();
     return cachedDb.collection('submissions');
