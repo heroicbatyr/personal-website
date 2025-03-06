@@ -1,4 +1,5 @@
-import connectToDb from 'lib/db.js';  // ✅ Use this instead
+import connectToDb from '../../lib/db.js';  // ✅ Correct
+
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
