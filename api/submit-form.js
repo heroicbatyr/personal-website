@@ -1,4 +1,4 @@
-import connectToDb from '../../lib/db';  // Import database connection
+import connectToDb from '@/lib/db';  // Import database connection
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
