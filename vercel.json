@@ -7,6 +7,7 @@
     { "source": "/preferences", "destination": "/preferences.html" },
     { "source": "/status", "destination": "/status.html" },
     { "source": "/where-im-at", "destination": "/where-im-at.html" },
+    { "source": "/form", "destination": "/form.html" },
     { "source": "/success", "destination": "/success.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],

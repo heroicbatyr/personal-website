@@ -4,33 +4,13 @@ export default function handler(req, res) {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const {
-        fullName,
-        email,
-        phone,
-        businessType,
-        description,
-        challenges,
-        contactMethod,
-        bestTime,
-        termsOfUse
-    } = req.body;
+    const { fullName, email, phone } = req.body;
 
-    if (!fullName || !email || !businessType || !bestTime || !termsOfUse) {
-        return res.status(400).json({ message: 'All required fields are required' });
+    if (!fullName || !email) {
+        return res.status(400).json({ message: 'Name and email are required' });
     }
 
-    console.log('Form submission:', {
-        fullName,
-        email,
-        phone,
-        businessType,
-        description,
-        challenges,
-        contactMethod,
-        bestTime,
-        termsOfUse
-    });
+    console.log('Form submission:', { fullName, email, phone });
 
     res.status(200).json({ message: 'Form submitted successfully!' });
 }
