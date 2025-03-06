@@ -147,3 +147,5 @@ function fetchVisitorInfo() {
 
 // Call the function to fetch and display visitor information
 fetchVisitorInfo();
+
+// Form script

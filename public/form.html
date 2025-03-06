@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form - Batyrbek</title>
+    <title>Contact Form - Batyrbek</title>
     <link rel="icon" href="images/logos/black-b%2032x32.png" sizes="32x32" type="image/png">
     <link rel="icon" href="images/logos/black-b%2096x96.png" sizes="96x96" type="image/png">
     <link rel="icon" href="images/logos/black-b%20192x192.png" sizes="192x192" type="image/png">
     <link rel="icon" href="images/logos/black-b%20512x512.png" sizes="512x512" type="image/png">
-    <link rel="stylesheet" href="css/style.css"> <!-- CSS file brother -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/form.css"> <!-- Ensure this points to your form.css -->
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
 </head>
-
 <body>
 <div class="header">
     <button class="openbtn" onclick="toggleNav()">☰</button>
@@ -33,26 +33,89 @@
 </div>
 <div class="content">
     <h1>Contact Form</h1>
-    <form id="contactForm" action="/api/submit-form" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+    <form id="contactForm" action="/api/submit-form" method="POST" onsubmit="return validateForm(event)">
+        <section class="form-section">
+            <label for="fullName">Full Name <span class="required">*</span></label>
+            <input type="text" id="fullName" name="fullName" required placeholder="Your Full Name">
+            <span class="field-error"></span> <!-- Individual error message -->
+            <p class="instruction" style="display: block;">Mandatory answer.</p>
+        </section>
 
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" required>
+        <section class="form-section">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" required placeholder="your@email.com">
+            <span class="field-error"></span> <!-- Individual error message -->
+            <p class="instruction" style="display: block;">Mandatory answer.</p>
+        </section>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <section class="form-section">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890">
+            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <p class="instruction" style="display: none;">Optional: Provide if you prefer phone contact.</p>
+        </section>
 
-        <button type="submit">Submit</button>
-    </form>"
+        <section class="form-section">
+            <label for="businessType">Type of Business <span class="required">*</span></label>
+            <input type="text" id="businessType" name="businessType" required placeholder="e.g., Bakery, Consulting">
+            <span class="field-error"></span> <!-- Individual error message -->
+            <p class="instruction" style="display: block;">Mandatory answer.</p>
+        </section>
+
+        <section class="form-section">
+            <label for="description">Brief Description of Your Business</label>
+            <input type="text" id="description" name="description" maxlength="100" placeholder="Short description (optional)">
+            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <p class="instruction" style="display: none;">Keep it concise (max 100 characters).</p>
+        </section>
+
+        <section class="form-section">
+            <label for="challenges">Current Challenges</label>
+            <textarea id="challenges" name="challenges" rows="3" placeholder="What challenges are you facing? (optional)"></textarea>
+            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <p class="instruction" style="display: none;">Feel free to elaborate if needed.</p>
+        </section>
+
+        <section class="form-section">
+            <label for="contactMethod">Preferred Contact Method</label>
+            <select id="contactMethod" name="contactMethod">
+                <option value="" selected>No Preference</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+                <option value="other">Other</option>
+            </select>
+            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <p class="instruction" style="display: none;">Optional: Helps us reach you effectively.</p>
+        </section>
+
+        <section class="form-section">
+            <label for="bestTime">Best Time to Meet or Call <span class="required">*</span></label>
+            <input type="text" id="bestTime" name="bestTime" required placeholder="e.g., Weekdays 9-11 AM">
+            <span class="field-error"></span> <!-- Individual error message -->
+            <p class="instruction" style="display: block;">Mandatory answer.</p>
+        </section>
+
+
+        <!-- New Terms of Use Section -->
+        <section class="form-section">
+            <label class="checkbox-label">
+                <input type="checkbox" id="termsOfUse" name="termsOfUse" required>
+                I agree to the <a href="PPTU-Forms/Policy and Terms of Use-eng.pdf" target="_blank">Terms of Use</a> <span class="required">*</span>
+            </label>
+            <span class="field-error"></span>
+        </section>
+        <section class="form-section submit-section">
+            <button type="submit">Submit</button>
+        </section>
+    </form>
+    <!-- Removed the single errorMessage div since we're using per-field errors -->
 </div>
 
-
-<div id="visitor-info">
-
-</div>
+<div id="visitor-info"></div>
 <div id="root"></div>
+
 <script src="js/scripts.js"></script>
+<script src="js/form.js"></script> <!-- Add the new form.js file -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7YB8ZFBBT"></script>
 </body>
 </html>

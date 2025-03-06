@@ -1,0 +1,126 @@
+.content {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #ff0000;
+}
+
+input, select, textarea {
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 15px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.instruction {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    line-height: 1.4;
+    display: none; /* Hidden as per your request */
+}
+
+.submit-section {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+button[type="submit"] {
+    padding: 12px 30px;
+    background-color: #6a0dad;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    /* Ensure button is enabled */
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+button[type="submit"]:hover {
+    background-color: #540a8a;
+}
+
+.field-error {
+    display: none;
+    color: #ff0000;
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 5px;
+    background-color: #ffebee;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.error-highlight {
+    border-color: #ff0000 !important;
+    background-color: #ffebee;
+    transition: all 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .content {
+        padding: 15px;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    input, select, textarea {
+        max-width: 100%;
+    }
+}
+.checkbox-label {
+    display: flex;
+    align-items: center; /* Vertically center the checkbox and text */
+    gap: 8px; /* Space between checkbox and text */
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0; /* Remove default margin to prevent alignment issues */
+    width: 20px; /* Optional: Adjust checkbox size */
+    height: 20px;
+}
