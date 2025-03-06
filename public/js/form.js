@@ -56,29 +56,39 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Phone is valid or empty:', phoneValue);
         }
 
-        // If no errors, redirect to success.html
+        // If no errors, send to server
         if (!hasErrors) {
-            console.log('No errors, redirecting to success.html');
-            form.reset(); // Clear form
-            window.location.href = 'success.html'; // Direct redirect
+            console.log('No errors, submitting form to server');
+            const formData = new FormData(form);
+            const formObject = Object.fromEntries(formData);
+
+            console.log('Form Data (JSON):', formObject);
+
+            fetch('/api/submit-form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formObject)
+            })
+                .then(response => {
+                    console.log('Response Status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Server Response:', data);
+                    form.reset();
+                    window.location.href = 'success.html'; // Redirect after successful submission
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    alert('Failed to submit form: ' + error.message);
+                });
         } else {
             console.log('Errors found, submission halted');
         }
     });
 });
-
-// Commented out validation for other fields
-/*
-const termsInput = document.getElementById('termsOfUse');
-if (termsInput && !termsInput.checked) {
-    const termsError = document.querySelector('#termsOfUse + .field-error');
-    termsError.textContent = 'You must agree to the Terms of Use';
-    termsError.style.display = 'block';
-    termsInput.parentElement.classList.add('error-highlight');
-    hasErrors = true;
-} else if (termsInput) {
-    termsError.textContent = '';
-    termsError.style.display = 'none';
-    termsInput.parentElement.classList.remove('error-highlight');
-}
-*/

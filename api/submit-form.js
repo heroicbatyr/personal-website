@@ -10,6 +10,7 @@ export default function handler(req, res) {
         return res.status(400).json({ message: 'Name and email are required' });
     }
 
+    // Log the data to Vercel's console
     console.log('Form submission:', { fullName, email, phone });
 
     res.status(200).json({ message: 'Form submitted successfully!' });
