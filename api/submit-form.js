@@ -4,14 +4,35 @@ export default function handler(req, res) {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { fullName, email, phone } = req.body;
+    const {
+        fullName,
+        email,
+        phone,
+        businessType,
+        description,
+        challenges,
+        contactMethod,
+        bestTime,
+        termsOfUse
+    } = req.body;
 
-    if (!fullName || !email) {
-        return res.status(400).json({ message: 'Name and email are required' });
+    // Validate required fields
+    if (!fullName || !email || !businessType || !bestTime || !termsOfUse) {
+        return res.status(400).json({ message: 'All required fields (Full Name, Email, Business Type, Best Time, Terms of Use) are required' });
     }
 
-    // Log the data to Vercel's console
-    console.log('Form submission:', { fullName, email, phone });
+    // Log all data to Vercel console
+    console.log('Form submission:', {
+        fullName,
+        email,
+        phone,
+        businessType,
+        description,
+        challenges,
+        contactMethod,
+        bestTime,
+        termsOfUse
+    });
 
     res.status(200).json({ message: 'Form submitted successfully!' });
 }

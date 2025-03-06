@@ -16,10 +16,14 @@ document.addEventListener('DOMContentLoaded', function () {
         let hasErrors = false;
         const fields = {
             fullName: { input: document.getElementById('fullName'), error: document.querySelector('#fullName + .field-error') },
-            email: { input: document.getElementById('email'), error: document.querySelector('#email + .field-error') }
+            email: { input: document.getElementById('email'), error: document.querySelector('#email + .field-error') },
+            businessType: { input: document.getElementById('businessType'), error: document.querySelector('#businessType + .field-error') },
+            bestTime: { input: document.getElementById('bestTime'), error: document.querySelector('#bestTime + .field-error') }
         };
         const phone = document.getElementById('phone');
         const phoneError = document.querySelector('#phone + .field-error');
+        const termsInput = document.getElementById('termsOfUse');
+        const termsError = document.querySelector('#termsOfUse + .field-error');
 
         // Validate required fields
         for (const [fieldName, { input, error }] of Object.entries(fields)) {
@@ -56,11 +60,26 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Phone is valid or empty:', phoneValue);
         }
 
+        // Validate terms of use (required)
+        if (termsInput && !termsInput.checked) {
+            termsError.textContent = 'You must agree to the Terms of Use';
+            termsError.style.display = 'block';
+            termsInput.parentElement.classList.add('error-highlight');
+            hasErrors = true;
+            console.log('Terms of Use not checked');
+        } else if (termsError) {
+            termsError.textContent = '';
+            termsError.style.display = 'none';
+            termsInput.parentElement.classList.remove('error-highlight');
+            console.log('Terms of Use checked');
+        }
+
         // If no errors, send to server
         if (!hasErrors) {
             console.log('No errors, submitting form to server');
             const formData = new FormData(form);
             const formObject = Object.fromEntries(formData);
+            formObject.termsOfUse = formObject.termsOfUse === 'on'; // Convert checkbox to boolean
 
             console.log('Form Data (JSON):', formObject);
 
