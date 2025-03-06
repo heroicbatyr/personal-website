@@ -22,7 +22,11 @@ export default async function handler(req, res) {
     }
 
     try {
+        console.time('connectToDb');
         const collection = await connectToDb();
+        console.timeEnd('connectToDb');
+
+        console.time('insertOne');
         const result = await collection.insertOne({
             fullName,
             email,
@@ -35,6 +39,7 @@ export default async function handler(req, res) {
             termsOfUse,
             submittedAt: new Date()
         });
+        console.timeEnd('insertOne');
 
         console.log('Form submission saved:', result.insertedId);
         return res.status(200).json({ message: 'Form submitted successfully!', id: result.insertedId });

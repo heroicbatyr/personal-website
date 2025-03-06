@@ -5,14 +5,16 @@ if (!uri) {
     throw new Error('MONGODB_URI is not defined');
 }
 
-let client;
-let db;
+let cachedClient = null;
+let cachedDb = null;
 
 export default async function connectToDb() {
-    if (!client) {
-        client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-        await client.connect();
-        db = client.db(); // Selects the DB from the connection URI
+    if (cachedClient && cachedDb) {
+        return cachedDb.collection('submissions');
     }
-    return db.collection('submissions'); // Change 'submissions' to your collection name if needed
+
+    cachedClient = new MongoClient(uri);
+    await cachedClient.connect();
+    cachedDb = cachedClient.db();
+    return cachedDb.collection('submissions');
 }
