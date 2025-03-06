@@ -70,12 +70,11 @@ button[type="submit"] {
     color: #fff;
     border: none;
     border-radius: 10px;
-    cursor: pointer;
+    cursor: pointer; /* Should be clickable */
     font-size: 16px;
     transition: background-color 0.3s ease;
-    /* Ensure button is enabled */
-    opacity: 1 !important;
-    pointer-events: auto !important;
+    opacity: 1 !important; /* Ensure it’s visible */
+    pointer-events: auto !important; /* Ensure it’s clickable */
 }
 
 button[type="submit"]:hover {

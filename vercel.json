@@ -1,37 +1,14 @@
 {
   "rewrites": [
-    {
-      "source": "/contact",
-      "destination": "/contact.html"
-    },
-    {
-      "source": "/dictionary",
-      "destination": "/dictionary.html"
-    },
-    {
-      "source": "/blogs",
-      "destination": "/blogs.html"
-    },
-    {
-      "source": "/goals",
-      "destination": "/goals.html"
-    },
-    {
-      "source": "/preferences",
-      "destination": "/preferences.html"
-    },
-    {
-      "source": "/status",
-      "destination": "/status.html"
-    },
-    {
-      "source": "/where-im-at",
-      "destination": "/where-im-at.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/dictionary", "destination": "/dictionary.html" },
+    { "source": "/blogs", "destination": "/blogs.html" },
+    { "source": "/goals", "destination": "/goals.html" },
+    { "source": "/preferences", "destination": "/preferences.html" },
+    { "source": "/status", "destination": "/status.html" },
+    { "source": "/where-im-at", "destination": "/where-im-at.html" },
+    { "source": "/success", "destination": "/success.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "cleanUrls": true
 }

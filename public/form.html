@@ -1,81 +1,76 @@
+<!-- public/contact.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Form - Batyrbek</title>
-    <link rel="icon" href="images/logos/black-b%2032x32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="images/logos/black-b%2096x96.png" sizes="96x96" type="image/png">
-    <link rel="icon" href="images/logos/black-b%20192x192.png" sizes="192x192" type="image/png">
-    <link rel="icon" href="images/logos/black-b%20512x512.png" sizes="512x512" type="image/png">
+    <link rel="icon" href="/images/logos/black-b%2032x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/images/logos/black-b%2096x96.png" sizes="96x96" type="image/png">
+    <link rel="icon" href="/images/logos/black-b%20192x192.png" sizes="192x192" type="image/png">
+    <link rel="icon" href="/images/logos/black-b%20512x512.png" sizes="512x512" type="image/png">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/form.css"> <!-- Ensure this points to your form.css -->
+    <link rel="stylesheet" href="css/form.css">
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="header">
     <button class="openbtn" onclick="toggleNav()">☰</button>
-    <a href="index.html">
-        <img id="logo" src="images/logos/black-b.png" alt="Batyrbek Logo">
+    <a href="/index.html">
+        <img id="logo" src="/images/logos/black-b.png" alt="Batyrbek Logo">
     </a>
     <button id="mode-switcher" class="toggle-btn" onclick="toggleTheme()">
-        <img id="switcher-icon" src="images/logos/night-mode-switcher.png" alt="Mode Switcher">
+        <img id="switcher-icon" src="/images/logos/night-mode-switcher.png" alt="Mode Switcher">
     </button>
 </div>
 <div id="mySidebar" class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="status.html">Status</a>
-    <a href="preferences.html">Preferences</a>
-    <a href="goals.html">Goals</a>
-    <a href="where-im-at.html">Where I'm at?</a>
-    <a href="blogs.html">Blogs</a>
-    <a href="contact.html">Contact</a>
+    <a href="/index.html">Home</a>
+    <a href="/status.html">Status</a>
+    <a href="/preferences.html">Preferences</a>
+    <a href="/goals.html">Goals</a>
+    <a href="/where-im-at.html">Where I'm at?</a>
+    <a href="/blogs.html">Blogs</a>
+    <a href="/contact.html">Contact</a>
 </div>
 <div class="content">
     <h1>Contact Form</h1>
-    <form id="contactForm" action="/api/submit-form" method="POST" onsubmit="return validateForm(event)">
+    <form id="contactForm" method="POST">
         <section class="form-section">
             <label for="fullName">Full Name <span class="required">*</span></label>
             <input type="text" id="fullName" name="fullName" required placeholder="Your Full Name">
-            <span class="field-error"></span> <!-- Individual error message -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: block;">Mandatory answer.</p>
         </section>
-
         <section class="form-section">
             <label for="email">Email <span class="required">*</span></label>
             <input type="email" id="email" name="email" required placeholder="your@email.com">
-            <span class="field-error"></span> <!-- Individual error message -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: block;">Mandatory answer.</p>
         </section>
-
         <section class="form-section">
             <label for="phone">Phone Number</label>
             <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890">
-            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: none;">Optional: Provide if you prefer phone contact.</p>
         </section>
-
         <section class="form-section">
             <label for="businessType">Type of Business <span class="required">*</span></label>
             <input type="text" id="businessType" name="businessType" required placeholder="e.g., Bakery, Consulting">
-            <span class="field-error"></span> <!-- Individual error message -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: block;">Mandatory answer.</p>
         </section>
-
         <section class="form-section">
             <label for="description">Brief Description of Your Business</label>
             <input type="text" id="description" name="description" maxlength="100" placeholder="Short description (optional)">
-            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: none;">Keep it concise (max 100 characters).</p>
         </section>
-
         <section class="form-section">
             <label for="challenges">Current Challenges</label>
             <textarea id="challenges" name="challenges" rows="3" placeholder="What challenges are you facing? (optional)"></textarea>
-            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: none;">Feel free to elaborate if needed.</p>
         </section>
-
         <section class="form-section">
             <label for="contactMethod">Preferred Contact Method</label>
             <select id="contactMethod" name="contactMethod">
@@ -84,23 +79,19 @@
                 <option value="phone">Phone</option>
                 <option value="other">Other</option>
             </select>
-            <span class="field-error"></span> <!-- Individual error message (optional field) -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: none;">Optional: Helps us reach you effectively.</p>
         </section>
-
         <section class="form-section">
             <label for="bestTime">Best Time to Meet or Call <span class="required">*</span></label>
             <input type="text" id="bestTime" name="bestTime" required placeholder="e.g., Weekdays 9-11 AM">
-            <span class="field-error"></span> <!-- Individual error message -->
+            <span class="field-error"></span>
             <p class="instruction" style="display: block;">Mandatory answer.</p>
         </section>
-
-
-        <!-- New Terms of Use Section -->
         <section class="form-section">
             <label class="checkbox-label">
                 <input type="checkbox" id="termsOfUse" name="termsOfUse" required>
-                I agree to the <a href="PPTU-Forms/Policy and Terms of Use-eng.pdf" target="_blank">Terms of Use</a> <span class="required">*</span>
+                I agree to the <a href="/PPTU-Forms/Policy and Terms of Use-eng.pdf" target="_blank">Terms of Use</a> <span class="required">*</span>
             </label>
             <span class="field-error"></span>
         </section>
@@ -108,14 +99,12 @@
             <button type="submit">Submit</button>
         </section>
     </form>
-    <!-- Removed the single errorMessage div since we're using per-field errors -->
 </div>
-
 <div id="visitor-info"></div>
 <div id="root"></div>
-
-<script src="js/scripts.js"></script>
-<script src="js/form.js"></script> <!-- Add the new form.js file -->
+<script src="/js/scripts.js"></script>
+<script src="/js/form.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7YB8ZFBBT"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91c31221a88edd1c',t:'MTc0MTI3Njg3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

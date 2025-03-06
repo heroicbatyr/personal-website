@@ -16,12 +16,10 @@ export default function handler(req, res) {
         termsOfUse
     } = req.body;
 
-    // Basic validation
     if (!fullName || !email || !businessType || !bestTime || !termsOfUse) {
         return res.status(400).json({ message: 'All required fields are required' });
     }
 
-    // For now, log to console (you can add a database later)
     console.log('Form submission:', {
         fullName,
         email,
