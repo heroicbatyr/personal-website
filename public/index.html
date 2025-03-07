@@ -1,100 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main - Batyrbek</title>
-    <link rel="icon" href="images/logos/black-b%2032x32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="images/logos/black-b%2096x96.png" sizes="96x96" type="image/png">
-    <link rel="icon" href="images/logos/black-b%20192x192.png" sizes="192x192" type="image/png">
-    <link rel="icon" href="images/logos/black-b%20512x512.png" sizes="512x512" type="image/png">
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
+  <!-- meta -->
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <script type="module">
-        import { inject } from 'https://unpkg.com/@vercel/analytics@latest?module';
-        inject();
-    </script>
+  <title>Batyrbek - new website</title>
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i|Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="lib/magnific-popup/magnific-popup.css" rel="stylesheet">
+  <link href="lib/hover/hover.min.css" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- Responsive css -->
+  <link href="css/responsive.css" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="images/favicon.png">
+
+  <!-- =======================================================
+    Theme Name: Folio
+    Theme URL: https://bootstrapmade.com/folio-bootstrap-portfolio-template/
+    Author: BootstrapMade.com
+    Author URL: https://bootstrapmade.com
+  ======================================================= -->
 </head>
+
 <body>
-    <div class="header">
-        <button class="openbtn" onclick="toggleNav()">☰</button>
-        <a href="index.html">
-            <img id="logo" src="images/logos/black-b.png" alt="Batyrbek Logo">
-        </a>
-        <button id="mode-switcher" class="toggle-btn" onclick="toggleTheme()">
-            <img id="switcher-icon" src="images/logos/night-mode-switcher.png" alt="Mode Switcher">
-        </button>
+
+  <!-- start section navbar -->
+  <nav id="main-nav">
+    <div class="row">
+      <div class="container">
+
+        <div class="logo">
+          <a href="index.html"><img src="images/logo.svg" alt="logo"></a>
+        </div>
+
+        <div class="responsive"><i data-icon="m" class="ion-navicon-round"></i></div>
+
+        <ul class="nav-menu list-unstyled">
+          <li><a href="#header" class="smoothScroll">Home</a></li>
+          <li><a href="#about" class="smoothScroll">About</a></li>
+          <li><a href="#journal" class="smoothScroll">Blog</a></li>
+          <li><a href="#contact" class="smoothScroll">Contact</a></li>
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+  <!-- End section navbar -->
+
+
+  <!-- start section header -->
+  <div id="header" class="home">
+
+    <div class="container">
+      <div class="header-content">
+        <h1>I'm <span class="typed"></span></h1>
+        <p>Genius, Billionaire, Playboy</p>
+
+        <ul class="list-unstyled list-social">
+          <li><a href="#"><i class="ion-social-facebook"></i></a></li>
+          <li><a href="#"><i class="ion-social-twitter"></i></a></li>
+          <li><a href="#"><i class="ion-social-instagram"></i></a></li>
+          <li><a href="#"><i class="ion-social-googleplus"></i></a></li>
+          <li><a href="#"><i class="ion-social-tumblr"></i></a></li>
+          <li><a href="#"><i class="ion-social-dribbble"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End section header -->
+
+
+  <!-- start section about us-->
+  <div id="about" class="paddsection">
+    <div class="container">
+      <div class="row justify-content-between">
+
+        <div class="col-lg-4 ">
+          <div class="div-img-bg">
+            <div class="about-img">
+              <img src="images/me.jpg" class="img-responsive" alt="me">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="about-descr">
+
+            <p class="p-heading">I’m a business informatics student based in Munich, with a focus on entrepreneurship, finance, and development. Outside of my studies, I enjoy fitness and investing.</p>
+            <p class="separator">I focus on solving real-world problems by bridging the gap between technical expertise and business strategy. I enjoy collaborating with diverse teams to create innovative solutions that optimize processes and drive business growth.</p>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end section about us -->
+
+
+  <!-- start section services-->
+  <div id="services">
+    <div class="container">
+
+        <div class="services-carousel owl-theme">
+
+          <div class="services-block">
+
+            <i class="ion-ios-cog-outline"></i>
+            <span>BUSINESS SOLUTIONS</span>
+            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+
+          </div>
+
+          <div class="services-block">
+
+            <i class="ion-ios-calculator-outline"></i>
+            <span>FINANCIAL ACCOUNTING</span>
+            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+
+          </div>
+
+          <div class="services-block">
+
+            <i class="ion-android-desktop"></i>
+            <span>WEB DEVELOPMENT</span>
+            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+
+          </div>
+
+          <div class="services-block">
+
+            <i class="ion-ios-pie-outline"></i>
+            <span>COST ACCOUNTING</span>
+            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+
+          </div>
+
+          <div class="services-block">
+
+            <i class="ion-ios-analytics-outline"></i>
+            <span>DATA ANALYSING</span>
+            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+
+          </div>
+
+          <div class="services-block">
+
+            <i class="ion-cash"></i>
+            <span>CASH MANAGEMENT</span>
+            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+
+          </div>
+
+        </div>
+
     </div>
 
-    <div id="mySidebar" class="sidebar">
-        <a href="index.html">Home</a>
-        <a href="status.html">Status</a>
-        <a href="preferences.html">Preferences</a>
-        <a href="goals.html">Goals</a>
-        <a href="where-im-at.html">Where I'm at?</a>
-        <a href="blogs.html">Blogs</a>
-        <a href="contact.html">Contact</a>
+  </div>
+  <!-- end section services -->
+
+
+
+
+  <!-- start section journal -->
+  <div id="journal" class="text-left paddsection">
+
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>Expected Guests</h2>
+      </div>
     </div>
 
-    <div class="content">
-        <h2>Hey, I am Batyrbek.</h2>
+    <div class="container">
+      <div class="journal-block">
+        <div class="row">
 
-        <h3>Passionate about growth,</br> entrepreneurship, and building my future.</h3>
-        <p>Student at TUM | Fitness Enthusiast | Aspiring Entrepreneur</p>
+          <div class="col-lg-4 col-md-6">
+            <div class="journal-info">
 
-        <p>Fill out our contact form to get in touch!</p>
-        <a href="/form" class="btn">Contact Us</a>
+              <a href="blog-single.html"><img src="images/business-owner-post.jpg" class="img-responsive" alt="img"></a>
+
+              <div class="journal-txt">
+
+                <h4><a href="blog-single.html">BUSINESS OWNERS HERE PLEASE</a></h4>
+                <p class="separator">Press the image if you are a Business owner and fill out the form.
+                </p>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="journal-info">
+
+              <a href="blog-single.html"><img src="images/hr-post.jpg" class="img-responsive" alt="img"></a>
+
+              <div class="journal-txt">
+
+                <h4><a href="blog-single.html">HR MANAGERS HERE PLEASE</a></h4>
+                <p class="separator">Press the image if you are a HR manager and check out my CV.
+                </p>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
 
+  </div>
 
 
-    <div class="social-links">
-        <a href="https://www.instagram.com/heroicbatyr" target="_blank">
-            <img id="instagramicon" src="images/logos/instagram-logo.png" alt="Instagram" class="small-icon">
-        </a>
+  <!-- End section journal -->
+
+
+  <!-- start sectoion contact -->
+  <div id="contact" class="paddsection">
+    <div class="container">
+      <div class="contact-block1">
+        <div class="row">
+          <!-- Left Column: Contact Details -->
+          <div class="col-lg-6">
+            <div class="contact-contact">
+              <h2 class="mb-30">GET IN TOUCH</h2>
+              <ul class="contact-details">
+                <li><span>Munich, Germany</span></li>
+                <li><span>+49 15510605714</span></li>
+                <li><span>batyrbekwebsite@gmail.com</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right Column: Contact Form -->
+          <div class="col-lg-6">
+            <form id="contactForm" method="POST" role="form" class="contactForm">
+              <div class="row">
+                <!-- Success/Error Messages -->
+                <div id="sendmessage" style="display: none;">Your message has been sent. Thank you!</div>
+                <div id="errormessage" style="display: none;"></div>
+
+                <!-- Name -->
+                <div class="col-lg-6">
+                  <div class="form-group contact-block1">
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                    <div class="validation"></div>
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <input type="email" name="email" class="form-control" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+                    <div class="validation"></div>
+                  </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <input type="text" name="subject" class="form-control" id="subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
+                    <div class="validation"></div>
+                  </div>
+                </div>
+
+                <!-- Message -->
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <textarea class="form-control" name="message" id="message" rows="12" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
+                    <div class="validation"></div>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-lg-12">
+                  <input type="submit" class="btn btn-default btn-send" value="Send Message">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <!-- start sectoion contact -->
 
-    <div id="visitor-info">
-        
+
+  <!-- start section footer -->
+  <div id="footer" class="text-center">
+    <div class="container">
+      <div class="socials-media text-center">
+
+        <ul class="list-unstyled">
+          <li><a href="https://wa.me/491701234567?text=Hello%20I%20am%20interested%20in%20your%20services%!"><i class="ion-social-whatsapp"></i></a></li>
+          <li><a href="https://www.instagram.com/heroicbatyr/"><i class="ion-social-instagram"></i></a></li>
+          <li><a href="mailto:batyrbekwebsite@gmail.com?subject=Inquiry&body=Hello,%20I%20would%20like%20to%20ask%20about..."><i class="ion-ios-email"></i></a></li>
+        </ul>
+
+      </div>
+
+      <p>Copyright ©Batyrbek 2025</p>
     </div>
-    <div id="root"></div>
-    <script src="js/scripts.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7YB8ZFBBT"></script>
+  </div>
+  <!-- End section footer -->
+
+  <!-- JavaScript Libraries -->
+  <script src="lib/jquery/jquery.min.js"></script>
+  <script src="lib/jquery/jquery-migrate.min.js"></script>
+  <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="lib/typed/typed.js"></script>
+  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+  <script src="lib/magnific-popup/magnific-popup.min.js"></script>
+  <script src="lib/isotope/isotope.pkgd.min.js"></script>
+
+  <!-- Contact Form JavaScript File -->
+  <script src="contactform/contactform.js"></script>
+
+  <!-- Template Main Javascript File -->
+  <script src="js/main.js"></script>
+  <script src="js/scripts.js"></script>
 
 </body>
+
 </html>
-
-    <!--<div class="welcome-section">
-        <img src="IMG_4125.JPG" alt="Welcome Image" class="welcome-image">
-        <div class="welcome-text">
-            <h1>Welcome to my Home page!</h1>
-        </div>
-    </div>
-
-    <div class="info-section">
-        <h2>Stay hungry. <br>Stay foolish.</h2>
-        <p>I'm just a simple guy from a small town with <b>big dreams.</b></p>
-
-        <div class="photo-gallery">
-            <button class="prev-button">&lt;</button>
-            <div class="photos-container">
-                <div class="photo">
-                    <img src="../images/privat/Batyrbek-kid.jpg" alt="Profile 1">
-                    <h3>Me at ~10 years old.</h3>
-                    <p>Was living in the most ordinary village of 5,000 people</p>
-                </div>
-                <div class="photo">
-                    <img src="../images/privat/Batyrbek-school.jpg" alt="Profile 2">
-                    <h3>Me at Highschool.</h3>
-                    <p>Was studying in school, in the largest city of my country.</p>
-                </div>
-                <div class="photo">
-                    <img src="../images/privat/myfam.JPG" alt="Profile 3">
-                    <h3>The Pursuit of Happyness.</h3>
-                    <p>Went to Germany to study at the top university of Europe.</p>
-                </div>
-            </div>
-            <button class="next-button">&gt;</button>
-        </div>
-    </div>-->

@@ -5,15 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Form - Batyrbek</title>
+    <!-- Favicon -->
     <link rel="icon" href="images/logos/black-b%2032x32.png" sizes="32x32" type="image/png">
     <link rel="icon" href="images/logos/black-b%2096x96.png" sizes="96x96" type="image/png">
     <link rel="icon" href="images/logos/black-b%20192x192.png" sizes="192x192" type="image/png">
     <link rel="icon" href="images/logos/black-b%20512x512.png" sizes="512x512" type="image/png">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Your Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/form.css">
-    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- Header with Sidebar Toggle and Theme Switcher -->
 <div class="header">
     <button class="openbtn" onclick="toggleNav()">☰</button>
     <a href="index.html">
@@ -23,6 +29,8 @@
         <img id="switcher-icon" src="images/logos/night-mode-switcher.png" alt="Mode Switcher">
     </button>
 </div>
+
+<!-- Sidebar -->
 <div id="mySidebar" class="sidebar">
     <a href="index.html">Home</a>
     <a href="status.html">Status</a>
@@ -32,74 +40,136 @@
     <a href="blogs.html">Blogs</a>
     <a href="form.html">Contact</a>
 </div>
-<div class="content">
-    <h1>Contact Form</h1>
-    <form id="contactForm" method="POST">
-        <section class="form-section">
-            <label for="fullName">Full Name <span class="required">*</span></label>
-            <input type="text" id="fullName" name="fullName" required placeholder="Your Full Name">
-            <span class="field-error"></span>
-            <p class="instruction" style="display: block;">Mandatory answer.</p>
-        </section>
-        <section class="form-section">
-            <label for="email">Email <span class="required">*</span></label>
-            <input type="email" id="email" name="email" required placeholder="your@email.com">
-            <span class="field-error"></span>
-            <p class="instruction" style="display: block;">Mandatory answer.</p>
-        </section>
-        <section class="form-section">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890">
-            <span class="field-error"></span>
-            <p class="instruction" style="display: none;">Optional: Provide if you prefer phone contact.</p>
-        </section>
-        <section class="form-section">
-            <label for="businessType">Type of Business <span class="required">*</span></label>
-            <input type="text" id="businessType" name="businessType" required placeholder="e.g., Bakery, Consulting">
-            <span class="field-error"></span>
-            <p class="instruction" style="display: block;">Mandatory answer.</p>
-        </section>
-        <section class="form-section">
-            <label for="description">Brief Description of Your Business</label>
-            <input type="text" id="description" name="description" maxlength="100" placeholder="Short description (optional)">
-            <span class="field-error"></span>
-            <p class="instruction" style="display: none;">Keep it concise (max 100 characters).</p>
-        </section>
-        <section class="form-section">
-            <label for="challenges">Current Challenges</label>
-            <textarea id="challenges" name="challenges" rows="3" placeholder="What challenges are you facing? (optional)"></textarea>
-            <span class="field-error"></span>
-            <p class="instruction" style="display: none;">Feel free to elaborate if needed.</p>
-        </section>
-        <section class="form-section">
-            <label for="contactMethod">Preferred Contact Method</label>
-            <select id="contactMethod" name="contactMethod">
-                <option value="" selected>No Preference</option>
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
-                <option value="other">Other</option>
-            </select>
-            <span class="field-error"></span>
-            <p class="instruction" style="display: none;">Optional: Helps us reach you effectively.</p>
-        </section>
-        <section class="form-section">
-            <label for="bestTime">Best Time to Meet or Call <span class="required">*</span></label>
-            <input type="text" id="bestTime" name="bestTime" required placeholder="e.g., Weekdays 9-11 AM">
-            <span class="field-error"></span>
-            <p class="instruction" style="display: block;">Mandatory answer.</p>
-        </section>
-        <section class="form-section">
-            <label class="checkbox-label">
-                <input type="checkbox" id="termsOfUse" name="termsOfUse" required>
-                I agree to the <a href="PPTU-Forms/Policy and Terms of Use-eng.pdf" target="_blank">Terms of Use</a> <span class="required">*</span>
-            </label>
-            <span class="field-error"></span>
-        </section>
-        <section class="form-section submit-section">
-            <button type="submit">Submit</button>
-        </section>
-    </form>
+
+<!-- Contact Section -->
+<div id="contact" class="paddsection">
+    <div class="container">
+        <div class="contact-block1">
+            <div class="row">
+                <!-- Left Column: Contact Details -->
+                <div class="col-lg-6">
+                    <div class="contact-contact">
+                        <h2 class="mb-30">GET IN TOUCH</h2>
+                        <ul class="contact-details">
+                            <li><span>23 Main, Street</span></li>
+                            <li><span>New York, United States</span></li>
+                            <li><span>+88 01912704287</span></li>
+                            <li><span>example@example.com</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Column: Contact Form -->
+                <div class="col-lg-6">
+                    <form id="contactForm" method="POST" role="form" class="contactForm">
+                        <div class="row">
+                            <!-- Success/Error Messages -->
+                            <div id="sendmessage">Your message has been sent. Thank you!</div>
+                            <div id="errormessage"></div>
+
+                            <!-- Full Name -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name <span class="required">*</span></label>
+                                    <input type="text" name="fullName" class="form-control" id="fullName" placeholder="Your Full Name" required data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="your@email.com" required data-rule="email" data-msg="Please enter a valid email" />
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" name="phone" class="form-control" id="phone" placeholder="(123) 456-7890" />
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Type of Business -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="businessType">Type of Business <span class="required">*</span></label>
+                                    <input type="text" name="businessType" class="form-control" id="businessType" placeholder="e.g., Bakery, Consulting" required data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Brief Description -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="description">Brief Description of Your Business</label>
+                                    <input type="text" name="description" class="form-control" id="description" maxlength="100" placeholder="Short description (optional)" />
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Challenges -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="challenges">Current Challenges</label>
+                                    <textarea name="challenges" class="form-control" id="challenges" rows="3" placeholder="What challenges are you facing? (optional)"></textarea>
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Preferred Contact Method -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="contactMethod">Preferred Contact Method</label>
+                                    <select name="contactMethod" class="form-control" id="contactMethod">
+                                        <option value="" selected>No Preference</option>
+                                        <option value="email">Email</option>
+                                        <option value="phone">Phone</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Best Time to Meet -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="bestTime">Best Time to Meet or Call <span class="required">*</span></label>
+                                    <input type="text" name="bestTime" class="form-control" id="bestTime" placeholder="e.g., Weekdays 9-11 AM" required data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Terms of Use Checkbox -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="termsOfUse" id="termsOfUse" required />
+                                        I agree to the <a href="PPTU-Forms/Policy and Terms of Use-eng.pdf" target="_blank">Terms of Use</a> <span class="required">*</span>
+                                    </label>
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-lg-12">
+                                <input type="submit" class="btn btn-default btn-send" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- JavaScript Libraries -->
+<script src="lib/jquery/jquery.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="js/scripts.js"></script>
 <script src="js/form.js"></script>
 </body>
