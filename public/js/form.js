@@ -4,21 +4,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('contactForm');
     if (!form) {
         console.error('Form with ID "contactForm" not found');
+        alert('Form not found! Check HTML.');
         return;
     }
 
     console.log('Form found, attaching submit event listener');
 
-    const currentPage = window.location.pathname;
-    let apiEndpoint = '/api/submit-form';
-    let isContactForm = false;
-
-    if (currentPage.endsWith('index.html') || currentPage === '/' || currentPage === '') {
-        apiEndpoint = '/api/submit-contact';
-        isContactForm = true;
-    } else if (currentPage.endsWith('hr-guest.html')) {
-        apiEndpoint = '/api/submit-hr';
-    }
+    // Use data-endpoint attribute to determine the API endpoint
+    const apiEndpoint = form.getAttribute('data-endpoint') || '/api/submit-form';
+    const isContactForm = apiEndpoint === '/api/submit-contact';
 
     console.log('Using API endpoint:', apiEndpoint);
 
@@ -127,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
+                    alert('Failed to submit form: ' + error.message);
                 });
         } else {
             console.log('Errors found, submission halted');
