@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('contactForm');
     if (!form) {
         console.error('Form with ID "contactForm" not found');
-        alert('Form not found! Check HTML.');
         return;
     }
 
