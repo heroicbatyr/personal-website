@@ -1,4 +1,3 @@
-// api/submit-message.js
 import connectToDb from '../database/db.js';
 
 export default async function handler(req, res) {
@@ -14,7 +13,7 @@ export default async function handler(req, res) {
 
     try {
         console.time('connectToDb');
-        const collection = await connectToDb('messages'); // Target the 'messages' collection
+        const collection = await connectToDb('contact'); // Use 'contact' collection
         console.timeEnd('connectToDb');
 
         console.time('insertOne');
@@ -27,8 +26,8 @@ export default async function handler(req, res) {
         });
         console.timeEnd('insertOne');
 
-        console.log('Message submission saved:', result.insertedId);
-        return res.status(200).json({ message: 'Message submitted successfully!', id: result.insertedId });
+        console.log('Contact submission saved:', result.insertedId);
+        return res.status(200).json({ message: 'Contact submitted successfully!', id: result.insertedId });
     } catch (error) {
         console.error('Error saving to database:', error);
         return res.status(500).json({ message: 'Internal server error' });
