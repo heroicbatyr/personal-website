@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('contactForm');
     if (!form) {
         console.error('Form with ID "contactForm" not found');
-        alert('Form not found! Check HTML.');
         return;
     }
 
@@ -129,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
-                    alert('Failed to submit form: ' + error.message);
                 });
         } else {
             console.log('Errors found, submission halted');
