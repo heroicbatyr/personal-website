@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('contactForm');
     if (!form) {
         console.error('Form with ID "contactForm" not found');
-        alert('Form not found! Check HTML.');
         return;
     }
 
@@ -108,21 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         } else {
             console.log('Errors found, submission halted');
-            alert('Form has errors, check fields');
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        alert('Script loaded'); // Confirm script runs
-        console.log('DOM loaded, form element:', document.getElementById('contactForm'));
-        // ... rest of your code
-    });
 });
-
-if (!hasErrors) {
-    fetch('/api/submit-form', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName: 'Test', email: 'test@example.com', businessType: 'Test', bestTime: 'Now', termsOfUse: true })
-    }).then(response => console.log('Success:', response)).catch(err => console.error('Error:', err));
-}
