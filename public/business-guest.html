@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- meta -->
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Batyrbek - Business guest</title>
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i|Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="lib/magnific-popup/magnific-popup.css" rel="stylesheet">
+  <link href="lib/hover/hover.min.css" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- Responsive css -->
+  <link href="css/responsive.css" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="images/logos/black-b%2096x96.png">
+
+</head>
+
+<body>
+
+<!-- start section navbar -->
+<nav id="main-nav-subpage" class="subpage-nav">
+  <div class="row">
+    <div class="container">
+
+      <div class="logo">
+        <a href="index.html"><img src="images/logo.svg" alt="logo"></a>
+      </div>
+
+      <div class="responsive"><i data-icon="m" class="ion-navicon-round"></i></div>
+
+      <ul class="nav-menu list-unstyled">
+        <li><a href="index.html#header" class="smoothScroll">Home</a></li>
+        <li><a href="index.html#about" class="smoothScroll">About</a></li>
+        <li><a href="index.html#journal" class="smoothScroll">Guests</a></li>
+        <li><a href="index.html#contact" class="smoothScroll">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- End section navbar -->
+
+<div id="contact" class="paddsection">
+  <div class="container">
+    <div class="contact-block1">
+      <div class="row">
+        <!-- Left Column: Contact Details -->
+        <div class="col-lg-6">
+          <div class="contact-contact">
+            <h2 class="mb-30">DESCRIBE YOUR BUSINESS CHALLENGES BY FILLING OUT <br>THIS FORM.</h2>
+            <ul class="contact-details">
+              <li><span>Hi, I’m Batyrbek, and I’m actively working on improving my understanding of business strategies, solutions, and operations.<br></br>
+                I want to connect with small business owners like you to better understand your challenges and see how I can offer solutions that actually make a difference.
+                I know how to identify and solve common business problems—and I’m ready to apply that knowledge to help you.</span></li><br>
+              <li><span>By sharing some details about your business—like its name, type, and a brief description—
+                I’ll be able to tailor my approach to your specific needs. This isn’t just about me learning;
+                it’s about you getting real value and solutions to help your business move forward.</span></li><br>
+              <li><span>Together, we can figure out what works best for your business,
+                and I’m confident that we can make a positive impact. Let’s take this step forward—fill out the form below and let’s talk about how I can help.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right Column: Contact Form -->
+        <div class="col-lg-6">
+          <form id="contactForm" method="POST" role="form" class="contactForm">
+            <div class="row">
+              <!-- Success/Error Messages -->
+              <div id="sendmessage">Your message has been sent. Thank you!</div>
+              <div id="errormessage"></div>
+
+              <!-- Full Name -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="fullName">Full Name <span class="required">*</span></label>
+                  <input type="text" name="fullName" class="form-control" id="fullName" placeholder="Your Full Name" required data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="email">Email <span class="required">*</span></label>
+                  <input type="email" name="email" class="form-control" id="email" placeholder="your@email.com" required data-rule="email" data-msg="Please enter a valid email" />
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Phone Number -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="phone">Phone Number</label>
+                  <input type="tel" name="phone" class="form-control" id="phone" placeholder="(123) 456-7890" />
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Type of Business -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="businessType">Type of Business <span class="required">*</span></label>
+                  <input type="text" name="businessType" class="form-control" id="businessType" placeholder="e.g., Bakery, Consulting" required data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Brief Description -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="description">Brief Description of Your Business</label>
+                  <input type="text" name="description" class="form-control" id="description" maxlength="100" placeholder="Short description (optional)" />
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Challenges -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="challenges">Current Challenges</label>
+                  <textarea name="challenges" class="form-control" id="challenges" rows="3" placeholder="What challenges are you facing? (optional)"></textarea>
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Preferred Contact Method -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="contactMethod">Preferred Contact Method</label>
+                  <select name="contactMethod" class="form-control" id="contactMethod">
+                    <option value="" selected>No Preference</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Best Time to Meet -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="bestTime">Best Time to Meet or Call <span class="required">*</span></label>
+                  <input type="text" name="bestTime" class="form-control" id="bestTime" placeholder="e.g., Weekdays 9-11 AM" required data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Terms of Use Checkbox -->
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="termsOfUse" id="termsOfUse" required />
+                    I agree to the <a href="PPTU-Forms/Policy and Terms of Use-eng.pdf" target="_blank">Terms of Use</a> <span class="required">*</span>
+                  </label>
+                  <div class="validation"></div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="col-lg-12">
+                <input type="submit" class="btn btn-default btn-send" value="Submit">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  </div> -->
+<!-- start section main content -->
+
+<!-- start section footer -->
+<div id="footer" class="text-center">
+  <div class="container">
+    <div class="socials-media text-center">
+
+      <ul class="list-unstyled">
+        <li><a href="https://wa.me/4915510605714?text=Hello%20I%20am%20interested%20in%20your%20services!"><i class="ion-social-whatsapp"></i></a></li>
+        <li><a href="https://www.instagram.com/heroicbatyr/"><i class="ion-social-instagram"></i></a></li>
+        <li><a href="mailto:batyrbekwebsite@gmail.com?subject=Inquiry&body=Hello,%20I%20would%20like%20to%20ask%20about..."><i class="ion-ios-email"></i></a></li>
+      </ul>
+
+    </div>
+
+      <p>Copyright ©Batyrbek 2025</p>
+
+  </div>
+</div>
+<!-- End section footer -->
+
+<!-- JavaScript Libraries -->
+<script src="lib/jquery/jquery.min.js"></script>
+<script src="lib/jquery/jquery-migrate.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="lib/typed/typed.js"></script>
+<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="lib/magnific-popup/magnific-popup.min.js"></script>
+<script src="lib/isotope/isotope.pkgd.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="js/form.js"></script>
+
+<!-- Contact Form JavaScript File -->
+<script src="contactform/contactform.js"></script>
+
+<!-- Template Main Javascript File -->
+<script src="js/main.js"></script>
+
+</body>
+
+</html>

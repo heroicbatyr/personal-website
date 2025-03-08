@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Batyrbek - new website</title>
+  <title>Batyrbek - home page</title>
   <meta content="" name="keywords">
   <meta content="" name="description">
 
@@ -28,12 +28,28 @@
   <!-- Responsive css -->
   <link href="css/responsive.css" rel="stylesheet">
 
-  <!-- Favicon -->
-  <link rel="shortcut icon" href="images/favicon.png">
+  <!-- persistent button -->
+  <link href="css/persistent-button.css" rel="stylesheet">
+
+  <!-- Batyrbek -->
+  <link rel="shortcut icon" href="images/logos/black-b%2096x96.png">
+
 
 </head>
 
 <body>
+  <!-- start section persistent button -->
+
+  <div class="chatbot-container">
+    <!-- Hidden buttons for HR & Business Owner -->
+    <div class="contact-options" id="contact-options">
+      <button class="neon-button small-btn" id="businessOwnerBtn">I'm Business Owner</button>
+      <button class="neon-button small-btn" id="hrManagerBtn">I'm HR Manager</button>
+    </div>
+    <button class="neon-button" id="contact-btn">Click</button>
+  </div>
+
+  <!-- End section persistent button -->
 
   <!-- start section navbar -->
   <nav id="main-nav">
@@ -65,15 +81,12 @@
     <div class="container">
       <div class="header-content">
         <h1>I'm <span class="typed"></span></h1>
-        <p>Genius, Billionaire, Playboy</p>
+        <p>body, mind, personality, education, purpose, style.</p>
 
         <ul class="list-unstyled list-social">
-          <li><a href="#"><i class="ion-social-facebook"></i></a></li>
-          <li><a href="#"><i class="ion-social-twitter"></i></a></li>
-          <li><a href="#"><i class="ion-social-instagram"></i></a></li>
-          <li><a href="#"><i class="ion-social-googleplus"></i></a></li>
-          <li><a href="#"><i class="ion-social-tumblr"></i></a></li>
-          <li><a href="#"><i class="ion-social-dribbble"></i></a></li>
+          <li><a href="https://wa.me/4915510605714?text=Hello%20I%20am%20interested%20in%20your%20services!"><i class="ion-social-whatsapp"></i></a></li>
+          <li><a href="https://www.instagram.com/heroicbatyr/"><i class="ion-social-instagram"></i></a></li>
+          <li><a href="mailto:batyrbekwebsite@gmail.com?subject=Inquiry&body=Hello,%20I%20would%20like%20to%20ask%20about..."><i class="ion-ios-email"></i></a></li>
         </ul>
       </div>
     </div>
@@ -81,7 +94,7 @@
   <!-- End section header -->
 
 
-  <!-- start section about us-->
+  <!-- start section about -->
   <div id="about" class="paddsection">
     <div class="container">
       <div class="row justify-content-between">
@@ -106,7 +119,7 @@
       </div>
     </div>
   </div>
-  <!--end section about us -->
+  <!--end section about -->
 
 
   <!-- start section services-->
@@ -119,7 +132,7 @@
 
             <i class="ion-ios-cog-outline"></i>
             <span>BUSINESS SOLUTIONS</span>
-            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+            <p class="separator">Helping businesses improve processes and solve challenges efficiently and effectively.</p>
 
           </div>
 
@@ -127,7 +140,7 @@
 
             <i class="ion-ios-calculator-outline"></i>
             <span>FINANCIAL ACCOUNTING</span>
-            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+            <p class="separator">Managing financial records, ensuring compliance, and providing insightful financial reports.</p>
 
           </div>
 
@@ -135,7 +148,7 @@
 
             <i class="ion-android-desktop"></i>
             <span>WEB DEVELOPMENT</span>
-            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+            <p class="separator">Creating responsive, functional, and user-friendly websites using modern technologies.</p>
 
           </div>
 
@@ -143,7 +156,7 @@
 
             <i class="ion-ios-pie-outline"></i>
             <span>COST ACCOUNTING</span>
-            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+            <p class="separator">Analyzing costs, improving profitability, and ensuring resource allocation efficiency.</p>
 
           </div>
 
@@ -151,7 +164,7 @@
 
             <i class="ion-ios-analytics-outline"></i>
             <span>DATA ANALYSING</span>
-            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+            <p class="separator">Analyzing data to uncover insights that drive informed business decisions.</p>
 
           </div>
 
@@ -159,7 +172,7 @@
 
             <i class="ion-cash"></i>
             <span>CASH MANAGEMENT</span>
-            <p class="separator">To an English person, it will seem like simplified English,told me what </p>
+            <p class="separator">Overseeing cash flow, budgeting, and ensuring business financial stability.</p>
 
           </div>
 
@@ -189,11 +202,11 @@
           <div class="col-lg-4 col-md-6">
             <div class="journal-info">
 
-              <a href="nothing.html"><img src="images/business-owner-post.jpg" class="img-responsive" alt="img"></a>  <!-- "blog-single.html" -->
+              <a href="business-guest.html"><img src="images/business-owner-post.jpg" class="img-responsive" alt="img"></a>  <!-- "blog-single.html" -->
 
               <div class="journal-txt">
 
-                <h4><a href="nothing.html">BUSINESS OWNERS HERE PLEASE</a></h4>  <!-- "blog-single.html" -->
+                <h4><a href="business-guest.html">BUSINESS OWNERS HERE PLEASE</a></h4>  <!-- "blog-single.html" -->
                 <p class="separator">Press the image if you are a Business owner and fill out the form.
                 </p>
 
@@ -205,11 +218,11 @@
           <div class="col-lg-4 col-md-6">
             <div class="journal-info">
 
-              <a href="nothing.html"><img src="images/hr-post.jpg" class="img-responsive" alt="img"></a>  <!-- "blog-single.html" -->
+              <a href="hr-guest.html"><img src="images/hr-post.jpg" class="img-responsive" alt="img"></a>  <!-- "blog-single.html" -->
 
               <div class="journal-txt">
 
-                <h4><a href="nothing.html">HR MANAGERS HERE PLEASE</a></h4>  <!-- "blog-single.html" -->
+                <h4><a href="hr-guest.html">HR MANAGERS HERE PLEASE</a></h4>  <!-- "blog-single.html" -->
                 <p class="separator">Press the image if you are a HR manager and check out my CV.
                 </p>
 
@@ -332,6 +345,9 @@
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
   <script src="js/scripts.js"></script>
+
+  <!-- Persistent button Javascript File -->
+  <script src="js/persistent button.js"></script>
 
 </body>
 

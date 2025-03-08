@@ -232,7 +232,7 @@
  */
 
 @media (max-width: 480px) {
-  /* Navbar */
+  /* Existing styles */
   nav {
     padding: 20px 15px;
   }
@@ -257,7 +257,6 @@
     padding-top: 15px;
     display: block;
   }
-  /* About */
   .head-info .header-content h1 {
     font-size: 32px;
   }
@@ -275,25 +274,27 @@
     max-width: 100%;
     margin-bottom: 0;
   }
-  /* portfolio */
   #portfolio .portfolio-list .nav li {
     float: none;
     margin: 20px;
   }
-  /* journal */
   #journal .journal-block .journal-info {
     margin-bottom: 30px;
   }
-  /* Contact */
   .contact-contact {
     margin-bottom: 30px;
   }
-  /* Footer */
   #footer .socials-media ul li {
     margin-right: 0;
     margin-left: 0;
     float: none;
     display: inline-block;
+  }
+
+  /* Add this for your header background */
+  #header {
+    background: url("../images/home-bg.jpg") repeat scroll 70% center / cover;
+    /* Moves image right to better center your face */
   }
 }
 
@@ -370,4 +371,8 @@
     display: inline-block;
     margin-right: 0;
   }
+  #header {
+    background: url("../images/home-bg.jpg") repeat scroll 75% center / cover;
+  }
 }
+

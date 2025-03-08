@@ -1,0 +1,40 @@
+/* Chatbot button container (still fixed at bottom-right) */
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Hidden contact options (now appearing above) */
+.contact-options {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px; /* Changed from margin-top to margin-bottom */
+}
+
+/* Main neon button */
+.neon-button {
+    background-color: transparent;
+    color: #C0A080;
+    border: 2px solid #C0A080;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.4s, color 0.4s;
+    overflow: hidden;
+}
+
+/* Smaller buttons for HR & Business */
+.small-btn {
+    padding: 10px 30px;
+    font-size: 16px;
+}
