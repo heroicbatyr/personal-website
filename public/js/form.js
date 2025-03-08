@@ -10,17 +10,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Form found, attaching submit event listener');
 
-    // Determine the form type based on the page URL or form attributes
+    // Determine the form type based on the page URL
     const currentPage = window.location.pathname;
     let apiEndpoint = '/api/submit-form'; // Default for business-guest
     let isContactForm = false;
 
-    if (currentPage.includes('index.html') || currentPage === '/' || currentPage === '') {
-        apiEndpoint = '/api/submit-contact'; // For index.html
+    if (currentPage.endsWith('index.html') || currentPage === '/' || currentPage === '') {
+        apiEndpoint = '/api/submit-contact';
         isContactForm = true;
-    } else if (currentPage.includes('hr-guest.html')) {
-        apiEndpoint = '/api/submit-hr'; // For hr-guest.html
+    } else if (currentPage.endsWith('hr-guest.html')) {
+        apiEndpoint = '/api/submit-hr';
     }
+
+    console.log('Using API endpoint:', apiEndpoint);
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -29,22 +31,15 @@ document.addEventListener('DOMContentLoaded', function () {
         let hasErrors = false;
 
         if (isContactForm) {
-            // Validation for contact form (index.html)
             const fields = {
                 name: { input: document.getElementById('name'), error: document.querySelector('#name + .field-error') || { textContent: '', style: {} } },
                 email: { input: document.getElementById('email'), error: document.querySelector('#email + .field-error') || { textContent: '', style: {} } },
                 subject: { input: document.getElementById('subject'), error: document.querySelector('#subject + .field-error') || { textContent: '', style: {} } },
                 message: { input: document.getElementById('message'), error: document.querySelector('#message + .field-error') || { textContent: '', style: {} } }
             };
-
-            // Validate required fields
             for (const [fieldName, { input, error }] of Object.entries(fields)) {
-                if (!input) {
-                    console.error(`Input for ${fieldName} not found`);
-                    continue;
-                }
+                if (!input) continue;
                 const value = input.value.trim();
-                console.log(`${fieldName} value: '${value}'`);
                 if (!value) {
                     error.textContent = `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
                     error.style.display = 'block';
@@ -57,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         } else {
-            // Validation for business-guest.html and hr-guest.html
             const fields = {
                 fullName: { input: document.getElementById('fullName'), error: document.querySelector('#fullName + .field-error') || { textContent: '', style: {} } },
                 email: { input: document.getElementById('email'), error: document.querySelector('#email + .field-error') || { textContent: '', style: {} } },
@@ -69,14 +63,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const termsInput = document.getElementById('termsOfUse');
             const termsError = document.querySelector('#termsOfUse + .field-error') || { textContent: '', style: {} };
 
-            // Validate required fields
             for (const [fieldName, { input, error }] of Object.entries(fields)) {
-                if (!input) {
-                    console.error(`Input for ${fieldName} not found`);
-                    continue;
-                }
+                if (!input) continue;
                 const value = input.value.trim();
-                console.log(`${fieldName} value: '${value}'`);
                 if (!value) {
                     error.textContent = `${fieldName.replace(/([A-Z])/g, ' $1').trim()} is required`;
                     error.style.display = 'block';
@@ -89,43 +78,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Validate phone (optional, 11-12 digits)
             const phoneValue = phone ? phone.value.trim() : '';
             if (phoneValue && !/^\d{11,12}$/.test(phoneValue)) {
                 phoneError.textContent = 'Phone must be 11 or 12 digits';
                 phoneError.style.display = 'block';
                 phone.classList.add('error-highlight');
                 hasErrors = true;
-                console.log('Invalid phone format:', phoneValue);
-            } else if (phoneError) {
+            } else {
                 phoneError.textContent = '';
                 phoneError.style.display = 'none';
                 phone.classList.remove('error-highlight');
-                console.log('Phone is valid or empty:', phoneValue);
             }
 
-            // Validate terms of use (required)
             if (termsInput && !termsInput.checked) {
                 termsError.textContent = 'You must agree to the Terms of Use';
                 termsError.style.display = 'block';
                 termsInput.parentElement.classList.add('error-highlight');
                 hasErrors = true;
-                console.log('Terms of Use not checked');
-            } else if (termsError) {
+            } else {
                 termsError.textContent = '';
                 termsError.style.display = 'none';
                 termsInput.parentElement.classList.remove('error-highlight');
-                console.log('Terms of Use checked');
             }
         }
 
-        // If no errors, send to server
         if (!hasErrors) {
             console.log('No errors, submitting form to server');
             const formData = new FormData(form);
             const formObject = Object.fromEntries(formData);
             if (!isContactForm) {
-                formObject.termsOfUse = formObject.termsOfUse === 'on'; // Convert checkbox to boolean
+                formObject.termsOfUse = formObject.termsOfUse === 'on';
             }
 
             console.log('Form Data (JSON):', formObject);
@@ -137,15 +119,13 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => {
                     console.log('Response Status:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                     return response.json();
                 })
                 .then(data => {
                     console.log('Server Response:', data);
                     form.reset();
-                    window.location.href = 'success.html'; // Redirect after successful submission
+                    window.location.href = 'success.html';
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
