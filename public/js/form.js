@@ -9,9 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Form found, attaching submit event listener');
 
-    // Determine the form type based on the page URL
     const currentPage = window.location.pathname;
-    let apiEndpoint = '/api/submit-form'; // Default for business-guest
+    let apiEndpoint = '/api/submit-form';
     let isContactForm = false;
 
     if (currentPage.endsWith('index.html') || currentPage === '/' || currentPage === '') {

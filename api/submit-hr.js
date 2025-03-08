@@ -5,16 +5,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const {
-        fullName,
-        email,
-        phone,
-        businessType,
-        description,
-        contactMethod,
-        bestTime,
-        termsOfUse
-    } = req.body;
+    const { fullName, email, phone, businessType, description, contactMethod, bestTime, termsOfUse } = req.body;
 
     if (!fullName || !email || !businessType || !bestTime || !termsOfUse) {
         return res.status(400).json({ message: 'All required fields (Full Name, Email, Company Name, Best Time, Terms of Use) are required' });
@@ -22,7 +13,7 @@ export default async function handler(req, res) {
 
     try {
         console.time('connectToDb');
-        const collection = await connectToDb('hr'); // Use 'hr' collection
+        const collection = await connectToDb('hr'); // Targets test.hr
         console.timeEnd('connectToDb');
 
         console.time('insertOne');
