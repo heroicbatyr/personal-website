@@ -1,10 +1,10 @@
-// public/js/form.js
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM loaded, form element:', document.getElementById('contactForm'));
 
     const form = document.getElementById('contactForm');
     if (!form) {
         console.error('Form with ID "contactForm" not found');
+        alert('Form not found! Check HTML.');
         return;
     }
 
@@ -13,17 +13,17 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         console.log('Form submission triggered');
 
-        let hasErrors = false;
+        let hasErrors = false; // Declare hasErrors here
         const fields = {
-            fullName: { input: document.getElementById('fullName'), error: document.querySelector('#fullName + .field-error') },
-            email: { input: document.getElementById('email'), error: document.querySelector('#email + .field-error') },
-            businessType: { input: document.getElementById('businessType'), error: document.querySelector('#businessType + .field-error') },
-            bestTime: { input: document.getElementById('bestTime'), error: document.querySelector('#bestTime + .field-error') }
+            fullName: { input: document.getElementById('fullName'), error: document.querySelector('#fullName + .field-error') || { textContent: '', style: {} } },
+            email: { input: document.getElementById('email'), error: document.querySelector('#email + .field-error') || { textContent: '', style: {} } },
+            businessType: { input: document.getElementById('businessType'), error: document.querySelector('#businessType + .field-error') || { textContent: '', style: {} } },
+            bestTime: { input: document.getElementById('bestTime'), error: document.querySelector('#bestTime + .field-error') || { textContent: '', style: {} } }
         };
         const phone = document.getElementById('phone');
-        const phoneError = document.querySelector('#phone + .field-error');
+        const phoneError = document.querySelector('#phone + .field-error') || { textContent: '', style: {} };
         const termsInput = document.getElementById('termsOfUse');
-        const termsError = document.querySelector('#termsOfUse + .field-error');
+        const termsError = document.querySelector('#termsOfUse + .field-error') || { textContent: '', style: {} };
 
         // Validate required fields
         for (const [fieldName, { input, error }] of Object.entries(fields)) {
@@ -108,6 +108,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         } else {
             console.log('Errors found, submission halted');
+            alert('Form has errors, check fields');
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        alert('Script loaded'); // Confirm script runs
+        console.log('DOM loaded, form element:', document.getElementById('contactForm'));
+        // ... rest of your code
+    });
 });
+
+if (!hasErrors) {
+    fetch('/api/submit-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName: 'Test', email: 'test@example.com', businessType: 'Test', bestTime: 'Now', termsOfUse: true })
+    }).then(response => console.log('Success:', response)).catch(err => console.error('Error:', err));
+}
