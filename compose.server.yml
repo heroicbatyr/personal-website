@@ -1,0 +1,34 @@
+services:
+  personal-site:
+    build: .
+    container_name: personal-site
+    restart: unless-stopped
+    env_file:
+      - .env.server
+    expose:
+      - "3000"
+    networks:
+      - website-internal
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: batyrbek-tunnel
+    restart: unless-stopped
+    env_file:
+      - .env.cloudflared
+    command: tunnel --loglevel info run
+    depends_on:
+      personal-site:
+        condition: service_healthy
+    networks:
+      - website-internal
+
+networks:
+  website-internal:
+    name: website-internal

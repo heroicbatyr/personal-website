@@ -1,15 +1,14 @@
-// database/db.js
-import { MongoClient } from 'mongodb';
+const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URI;
-if (!uri) {
-    throw new Error('MONGODB_URI is not defined');
-}
-
 let cachedClient = null;
 let cachedDb = null;
 
-export default async function connectToDb(collectionName = 'submissions') {
+async function connectToDb(collectionName = 'submissions') {
+    if (!uri) {
+        throw new Error('MONGODB_URI is not defined');
+    }
+
     if (cachedClient && cachedDb) {
         return cachedDb.collection(collectionName);
     }
@@ -19,3 +18,5 @@ export default async function connectToDb(collectionName = 'submissions') {
     cachedDb = cachedClient.db('test'); // Explicitly specify the 'test' database
     return cachedDb.collection(collectionName);
 }
+
+module.exports = connectToDb;

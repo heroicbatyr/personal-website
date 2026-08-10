@@ -2,7 +2,11 @@ const express = require('express');
 const ipstack = require('ipstack');
 
 const app = express();
-const API_KEY = 'bb21f24501a6d58af082beae87f2d7a6'; // Replace with your actual IPStack API key
+const API_KEY = process.env.IPSTACK_API_KEY;
+
+if (!API_KEY) {
+    throw new Error('IPSTACK_API_KEY is not defined');
+}
 
 app.use(express.json());
 

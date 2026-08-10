@@ -1,6 +1,7 @@
-import connectToDb from '../database/db.js';
+const connectToDb = require('../database/db');
+const { sendContactNotification } = require('../services/contact-notification');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
@@ -25,6 +26,13 @@ export default async function handler(req, res) {
             submittedAt: new Date()
         });
         console.timeEnd('insertOne');
+
+        try {
+            await sendContactNotification({ name, email, subject, message });
+        } catch (notificationError) {
+            // Preserve a successful form submission even if the mail provider is unavailable.
+            console.error('Contact notification failed:', notificationError.message);
+        }
 
         console.log('Contact submission saved:', result.insertedId);
         return res.status(200).json({ message: 'Contact submitted successfully!', id: result.insertedId });

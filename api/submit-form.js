@@ -1,6 +1,6 @@
-import connectToDb from '../database/db.js';
+const connectToDb = require('../database/db');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     console.log('Request hit /api/submit-form:', req.method, req.body); // Log every request
 
     if (req.method !== 'POST') {

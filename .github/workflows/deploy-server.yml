@@ -1,0 +1,45 @@
+name: Deploy server website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: personal-website-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, x64, website-deployer]
+    steps:
+      - name: Update the deployment checkout
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd /home/batyr/personal-website
+          git pull --ff-only origin main
+
+      - name: Rebuild the website service
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd /home/batyr/personal-website
+          docker compose -f compose.server.yml up -d --build
+
+      - name: Verify service health
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for attempt in $(seq 1 12); do
+            if [ "$(docker inspect --format '{{.State.Health.Status}}' personal-site)" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 5
+          done
+          docker logs --tail 100 personal-site
+          exit 1

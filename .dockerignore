@@ -1,5 +1,6 @@
-.vercel
+.git
 .env
 .env.*
 !.env.server.example
 node_modules
+npm-debug.log
