@@ -62,6 +62,13 @@ Vercel needs matching production environment variables for any server-side
 form functionality it hosts.  Verify variable names and presence only; do not
 copy their values into documentation, commits, logs, or chat.
 
+The contact form uses Cloudflare Turnstile. The public widget site key lives in
+`public/index.html`; the private `TURNSTILE_SECRET_KEY` stays only in Vercel
+Production settings and the self-hosted `.env.server`. `api/submit-contact.js`
+must validate `cf-turnstile-response` with Cloudflare Siteverify before any
+database write or notification. The configured widget hostnames are
+`batyrbek.com`, `www.batyrbek.com`, and `server.batyrbek.com`.
+
 Contact submissions are stored in MongoDB Atlas database `test`, collection
 `contact`.  A failed notification email must not discard an otherwise valid
 form submission.
