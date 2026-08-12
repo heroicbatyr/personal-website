@@ -1,15 +1,46 @@
 const connectToDb = require('../database/db');
 const { sendContactNotification } = require('../services/contact-notification');
 
+async function verifyTurnstile(token, remoteip) {
+    const secret = process.env.TURNSTILE_SECRET_KEY;
+    if (!secret) {
+        console.error('TURNSTILE_SECRET_KEY is not configured');
+        return false;
+    }
+
+    const body = new URLSearchParams({ secret, response: token || '' });
+    if (remoteip) body.set('remoteip', remoteip);
+
+    try {
+        const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString()
+        });
+        const result = await response.json();
+        return response.ok && result.success === true;
+    } catch (error) {
+        console.error('Turnstile verification failed:', error.message);
+        return false;
+    }
+}
+
 module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, 'cf-turnstile-response': turnstileToken } = req.body;
 
     if (!name || !email || !subject || !message) {
         return res.status(400).json({ message: 'All fields (Name, Email, Subject, Message) are required' });
+    }
+
+    const forwardedFor = req.headers['x-forwarded-for'];
+    const remoteip = typeof forwardedFor === 'string' ? forwardedFor.split(',')[0].trim() : req.socket.remoteAddress;
+    const turnstileValid = await verifyTurnstile(turnstileToken, remoteip);
+    if (!turnstileValid) {
+        return res.status(403).json({ message: 'Security check failed. Please refresh the page and try again.' });
     }
 
     try {

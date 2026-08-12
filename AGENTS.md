@@ -55,7 +55,7 @@ Never commit or print credentials.  On the server they are kept in ignored,
 permission-restricted files:
 
 - `.env.server`: `MONGODB_URI`, `RESEND_API_KEY`, `NOTIFICATION_FROM`,
-  `NOTIFICATION_TO`
+  `NOTIFICATION_TO`, `TURNSTILE_SECRET_KEY`
 - `.env.cloudflared`: `TUNNEL_TOKEN`
 
 Vercel needs matching production environment variables for any server-side

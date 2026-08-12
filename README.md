@@ -57,6 +57,11 @@ On the server, secrets live only in ignored files:
 - `.env.server` — MongoDB and Resend variables
 - `.env.cloudflared` — Cloudflare tunnel token
 
+The contact form is protected by Cloudflare Turnstile. Add
+`TURNSTILE_SECRET_KEY` to `.env.server` on the self-hosted deployment and to
+Vercel's production environment variables. The public site key is embedded in
+the form; never commit or share the secret key.
+
 Do not put their values in GitHub, issues, screenshots, logs, or this README.
 Vercel's production environment needs the matching form-related variables.
 

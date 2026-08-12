@@ -30,25 +30,36 @@ document.addEventListener('DOMContentLoaded', function () {
         if (hasErrors) return;
 
         const formData = Object.fromEntries(new FormData(form));
+        const turnstileToken = formData['cf-turnstile-response'];
+
+        if (!turnstileToken) {
+            const err = document.getElementById('errormessage');
+            if (err) {
+                err.textContent = 'Please complete the security check before sending your message.';
+                err.style.display = 'block';
+            }
+            return;
+        }
 
         fetch(apiEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         })
-        .then(function (response) {
-            if (!response.ok) throw new Error('HTTP error ' + response.status);
-            return response.json();
+        .then(async function (response) {
+            const result = await response.json().catch(function () { return {}; });
+            if (!response.ok) throw new Error(result.message || ('HTTP error ' + response.status));
+            return result;
         })
         .then(function () {
             form.reset();
             const msg = document.getElementById('sendmessage');
             if (msg) msg.style.display = 'block';
         })
-        .catch(function () {
+        .catch(function (error) {
             const err = document.getElementById('errormessage');
             if (err) {
-                err.textContent = 'Failed to send message. Please try again.';
+                err.textContent = error.message || 'Failed to send message. Please try again.';
                 err.style.display = 'block';
             }
         });
