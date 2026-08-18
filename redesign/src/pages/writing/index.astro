@@ -9,7 +9,7 @@ import { posts } from '../../data/writing';
   <main class="page-shell writing-page">
     <header class="page-intro"><p class="eyebrow section-label">Writing</p><h1>Notes from the<br />work in progress.</h1><p>Project notes, thoughts about useful software, finance, and the occasional look behind the things I run and build.</p></header>
     <div class="post-list">
-      {posts.map((post, index) => <a class="post-row" href={`/writing/${post.slug}`}><span>0{index + 1}</span><div><p>{post.category} · {post.readTime}</p><h2>{post.title}</h2><p class="post-excerpt">{post.excerpt}</p></div></a>)}
+      {posts.map((post, index) => <a class="post-row" href={`/writing/${post.slug}`}><span>0{index + 1}</span><div><p>{post.category} · {post.readTime}</p><h2>{post.title}</h2><p class="post-excerpt">{post.excerpt}</p></div><span class="project-arrow" aria-hidden="true"></span></a>)}
     </div>
   </main>
   <Footer />

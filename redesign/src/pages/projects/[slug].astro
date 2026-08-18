@@ -12,7 +12,7 @@ const { project } = Astro.props;
 <BaseLayout title={`${project.title} — Batyrbek Bolatbekuly`} description={project.description}>
   <Header active="Projects" />
   <main class="page-shell case-study">
-    <a class="back-link" href="/projects">All projects</a>
+    <a class="back-link" href="/projects"><span class="arrow-icon arrow-back" aria-hidden="true"></span>All projects</a>
     <header class={`case-hero ${project.accent}`}><p class="eyebrow">{project.number} · {project.type}</p><h1>{project.title}</h1><p>{project.description}</p>{project.confidential && <p class="confidential">Confidential project — details shown are intentionally non-sensitive.</p>}</header>
     <div class="case-meta"><div><p class="eyebrow">Focus</p><div class="tag-list">{project.tags.map(tag => <span>{tag}</span>)}</div></div><div><p class="eyebrow">Status</p><p>{project.status || 'Delivered'}</p></div></div>
     <div class="case-content">

@@ -22,8 +22,8 @@ through Express. Do not edit either running deployment directly.
 - Light/dark mode is implemented. The EN/DE control is still a non-functional
   placeholder; multilingual content is future work.
 - Desktop has top navigation; mobile has fixed bottom navigation.
-- The interface intentionally contains no decorative emoji or text-arrow
-  glyphs. Keep future buttons, links, and cards free of them.
+- The interface uses CSS-drawn arrows for click cues, never emoji or Unicode
+  text-arrow glyphs. Keep future buttons, links, and cards consistent with it.
 
 ## Homepage decisions already made
 

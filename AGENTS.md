@@ -81,9 +81,9 @@ form submission.
 
 ## Interface conventions
 
-- Do not use emojis or decorative text-arrow glyphs in the Astro interface.
-- Keep buttons, links, and cards clear through typography, borders, and hover
-  or focus states instead of Unicode symbols.
+- Do not use emojis or Unicode text-arrow glyphs in the Astro interface.
+- Use the CSS-drawn arrow icon for click cues. Keep buttons, links, and cards
+  clear through typography, borders, and hover or focus states as well.
 
 ## Before handing work off
 

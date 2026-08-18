@@ -9,7 +9,7 @@ const { post } = Astro.props;
 <BaseLayout title={`${post.title} — Batyrbek Bolatbekuly`} description={post.excerpt}>
   <Header active="Writing" />
   <main class="page-shell article-page">
-    <a class="back-link" href="/writing">All writing</a>
+    <a class="back-link" href="/writing"><span class="arrow-icon arrow-back" aria-hidden="true"></span>All writing</a>
     <header><p class="eyebrow">{post.category} · {post.date} · {post.readTime}</p><h1>{post.title}</h1><p>{post.excerpt}</p></header>
     <article>{post.body.map(paragraph => <p>{paragraph}</p>)}</article>
   </main>
