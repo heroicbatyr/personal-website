@@ -23,15 +23,21 @@ service, or paid platform unless the owner has specifically chosen it.
 
 ## Architecture
 
-- `public/` — current site assets and HTML.
+- `redesign/` — production Astro source: routes, components, styles, content,
+  and public assets.
+- `public/` — legacy source material in Git; Docker replaces it with the Astro
+  build output during image creation.
 - `server.js` — Express server for the self-hosted deployment; it serves the
   public site and exposes the API endpoints.
 - `api/` and `database/` — contact / form handling and MongoDB persistence.
 - `services/contact-notification.js` — Resend email notification after a
   successful contact submission.
-- `Dockerfile` + `compose.server.yml` — self-hosted `personal-site` and its
-  `cloudflared` tunnel.  The web container deliberately has no host port;
-  Cloudflare Tunnel reaches it over the `website-internal` Docker network.
+- `vercel.json` — installs and builds the Astro application for Vercel while
+  retaining the root API functions.
+- `Dockerfile` + `compose.server.yml` — builds the Astro app, serves its output
+  through self-hosted `personal-site`, and runs the `cloudflared` tunnel. The
+  web container deliberately has no host port; Cloudflare Tunnel reaches it
+  over the `website-internal` Docker network.
 - `.github/workflows/deploy-server.yml` — GitHub Actions workflow executed by
   the server's self-hosted runner.  It pulls `main`, rebuilds the container,
   and waits for `/healthz` to be healthy.
@@ -63,7 +69,7 @@ form functionality it hosts.  Verify variable names and presence only; do not
 copy their values into documentation, commits, logs, or chat.
 
 The contact form uses Cloudflare Turnstile. The public widget site key lives in
-`public/index.html`; the private `TURNSTILE_SECRET_KEY` stays only in Vercel
+`redesign/src/pages/index.astro`; the private `TURNSTILE_SECRET_KEY` stays only in Vercel
 Production settings and the self-hosted `.env.server`. `api/submit-contact.js`
 must validate `cf-turnstile-response` with Cloudflare Siteverify before any
 database write or notification. The configured widget hostnames are
@@ -72,6 +78,12 @@ database write or notification. The configured widget hostnames are
 Contact submissions are stored in MongoDB Atlas database `test`, collection
 `contact`.  A failed notification email must not discard an otherwise valid
 form submission.
+
+## Interface conventions
+
+- Do not use emojis or decorative text-arrow glyphs in the Astro interface.
+- Keep buttons, links, and cards clear through typography, borders, and hover
+  or focus states instead of Unicode symbols.
 
 ## Before handing work off
 

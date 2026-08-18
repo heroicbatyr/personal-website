@@ -12,7 +12,6 @@ import { projects } from '../../data/projects';
       {projects.map((project) => (
         <a class={`project-row ${project.accent}`} href={`/projects/${project.slug}`}>
           <div><p class="project-type">{project.type}</p><h2>{project.title}</h2><p class="project-description">{project.description}</p><div class="tag-list">{project.tags.map(tag => <span>{tag}</span>)}</div></div>
-          <span class="project-arrow">↗</span>
         </a>
       ))}
     </div>

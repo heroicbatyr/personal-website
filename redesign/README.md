@@ -1,14 +1,18 @@
-# Batyrbek.com redesign
+# Batyrbek.com Astro site
 
-The new site is an intentionally small Astro implementation: semantic `.astro` pages, a custom CSS file, and one small browser script for theme preference. It does not use React, Tailwind, a CMS, or copied template components.
+This is the production Astro implementation of Batyrbek.com: semantic `.astro`
+pages, custom CSS, and small browser scripts for theme preference and the
+contact form. It does not use React, Tailwind, a CMS, or copied template
+components.
 
 ## Run locally
 
 Requires Node.js 20.3+ (Node 22 recommended).
 
 ```bash
-npm install
-npm run dev
+cd ~/VSCode/GitHub/personal-website/personal-website
+npm --prefix redesign install
+npm --prefix redesign run dev
 ```
 
 Open `http://localhost:4321`.
@@ -19,4 +23,9 @@ Open `http://localhost:4321`.
 - `public/images/home-bg.jpg` — current hero portrait (copied from the old site).
 - `src/pages/index.astro` — homepage biography and contact copy.
 
-The existing root site has not been touched. It remains separate while this redesign is reviewed.
+## Deployment
+
+GitHub `main` deploys this project to Vercel and the self-hosted Docker backup.
+Vercel builds `redesign/dist`; Docker builds the same output before serving it
+with the root Express API. See `HANDOFF.md` for current decisions and next
+steps.

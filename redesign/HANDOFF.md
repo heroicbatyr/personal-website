@@ -1,115 +1,81 @@
-# Batyrbek.com redesign — handoff
+# Batyrbek.com — handoff
 
 Last updated: 2026-08-19
 
-## What this is
+## Current state
 
-`redesign/` is a new, isolated Astro implementation of Batyrbek.com. It is **not yet the deployed site** and must not overwrite the existing root site until it has been reviewed and deliberately migrated.
+The Astro portfolio is live on both production targets:
 
-The existing site has pre-existing staged edits in:
+- `https://www.batyrbek.com` — Vercel primary site
+- `https://server.batyrbek.com` — Docker/Cloudflare Tunnel fallback
 
-- `public/index.html`
-- `public/css/style.css`
-- `public/js/main.js`
+Both are deployed from GitHub `main`. Vercel builds `redesign/` to
+`redesign/dist`; the Docker image builds the same Astro output and serves it
+through Express. Do not edit either running deployment directly.
 
-Those edits were intentionally left untouched.
+## Product direction
 
-## Product direction agreed so far
+- Recruiter-first but human: roughly 80% professional / 20% personal.
+- Warm cream, charcoal, and muted ochre. Avoid shiny gold.
+- Vanilla Astro, semantic pages, custom CSS, and minimal JavaScript. No React,
+  Tailwind, CMS, or template-builder look.
+- Light/dark mode is implemented. The EN/DE control is still a non-functional
+  placeholder; multilingual content is future work.
+- Desktop has top navigation; mobile has fixed bottom navigation.
+- The interface intentionally contains no decorative emoji or text-arrow
+  glyphs. Keep future buttons, links, and cards free of them.
 
-- Recruiter-first, but human and personal: roughly **80% professional / 20% personal**.
-- Visual tone: warm cream and charcoal with muted ochre—never shiny gold.
-- Vanilla Astro: semantic Astro pages, custom CSS, and minimal browser JavaScript. No React, Tailwind, CMS, copied template components, or site-builder feeling.
-- Light/dark mode. English/German architecture remains future work; UI currently displays an EN/DE placeholder control only.
-- Desktop: top navigation. Mobile: fixed bottom navigation.
-- Header should remain visible during scrolling (implemented).
-- Hero uses the existing `home-bg.jpg`: copy on the left and portrait on the right, preserving the photo composition.
-- Hero statement: “Ambition without execution is just imagination.”
-- Status: Working Student @ UniCredit, Payments & Cash Management; open to opportunities from 01.04.2027.
-- Main title: Business Informatics Student.
+## Homepage decisions already made
 
-## Implemented routes
+- Hero: “Hey, I’m Batyrbek.”
+- Quote: “Vision without execution is hallucination” (regular weight, no
+  closing period).
+- Current status: Working Student @ UniCredit, Payments & Cash Management.
+- Availability: Open to opportunities from 01.04.2027.
+- Project heading: “A selection of projects.”
+- Project numbering is removed.
+- The smiling-B uses the black GitHub logo asset in light mode and the white
+  one in dark mode.
+- The old “Built quietly with…” footer text is removed.
 
-- `/` — homepage with hero, expanded About, selected projects, experience, skills, writing preview, and contact form layout.
-- `/projects` — project index.
-- `/projects/[slug]` — four case-study pages.
-- `/writing` — writing index.
-- `/writing/[slug]` — three placeholder article pages.
+## Routes and content
 
-## Homepage review changes — 2026-08-19
+- `/` — home, About, selected projects, experience, tools, writing preview,
+  and contact form.
+- `/projects` and `/projects/[slug]` — four project/case-study pages.
+- `/writing` and `/writing/[slug]` — three placeholder articles.
+- `src/data/projects.ts` and `src/data/writing.ts` hold current project and
+  writing content.
 
-- Replaced the full-name hero heading with “Hey, I’m Batyrbek.”
-- Removed the “I take the work seriously…” About heading.
-- Reduced the visual weight of the ambition quote and rebalanced the availability block.
-- Replaced “Projects with a point of view” with the more neutral “A selection of projects.”
-- Removed project numbering from the homepage and project index.
-- Added clearer hover and keyboard-focus feedback to project and writing links.
-- Increased the Experience & Education / Tools & Interests labels and changed the tools list to compact tags.
-- Removed the footer build-technology sentence.
-- Restored the existing smiling-B logo at a restrained header size. A possible logo redesign remains a separate design decision.
+UniCredit case studies are confidential. Do not publish internal screenshots,
+source code, customer data, or implementation detail without explicit review.
 
-The requested professional About photo has not been added because the suitable image does not exist in the project yet. Do not substitute the older casual portrait.
+## Contact form
 
-Second review pass:
+- The Astro form posts to `/api/submit-contact`.
+- Cloudflare Turnstile is live. Its public widget is in
+  `src/pages/index.astro`; validation remains server-side in
+  `api/submit-contact.js`.
+- The API stores submissions in MongoDB and attempts an email notification.
+- The public email is `mail@batyrbek.com`.
 
-- Downloaded the smiling-B logo files from the GitHub repository and use the black asset in light mode / white asset in dark mode.
-- Reduced the oversized hero, section, project, writing, and page-intro titles.
-- Removed split italic/accent styling from display headings.
-- Increased the uppercase section labels, including About, Selected Work, Writing, Contact, Experience & Education, and Tools & Interests.
-- Removed the divider and “Availability” label; the row now only says when Batyrbek is open to opportunities.
-- Increased the ambition quote slightly.
-
-Follow-up adjustments:
-
-- Quote is now “Vision without execution is hallucination” with no ending period and regular weight.
-- Opportunity availability aligns with the Working Student line and has no trailing period.
-
-## Current project content
-
-Defined in `src/data/projects.ts`:
-
-1. Signature Proof Automation Support — UniCredit internal/confidential
-2. Task Manager & KPI Statistics — UniCredit internal/confidential
-3. Market Atlas — stock-analysis project, in progress
-4. Batyr AI — coming soon
-
-Confidential UniCredit case studies intentionally use only non-sensitive high-level descriptions. Do not add internal screenshots, source code, customer data, or details until Batyrbek decides what is safe to publish.
-
-## Contact form status
-
-- New UI form posts to `/api/submit-contact`, matching the existing root Vercel API endpoint.
-- The current Astro redesign is a static project in a subfolder, so its preview cannot serve that root API.
-- The UI shows a safe fallback message in local preview.
-- Cloudflare Turnstile is **not implemented yet**. The current UI is a labelled placeholder only. Before deployment, add the real Turnstile widget and server-side token verification; do not treat the placeholder as protection.
-- Public contact email: `mail@batyrbek.com`.
-- LinkedIn, GitHub, and Instagram are visual placeholders for now; do not make them misleading outbound links.
-
-## Key files
-
-- `src/pages/index.astro` — homepage structure/copy/contact layout.
-- `src/styles/global.css` — all custom styling and responsive work.
-- `src/components/Header.astro` — top/mobile navigation.
-- `src/layouts/BaseLayout.astro` — theme toggle and form submit behaviour.
-- `src/data/projects.ts` / `src/data/writing.ts` — content.
-- `public/images/home-bg.jpg` — hero portrait, copied from legacy site.
-
-## Build and preview
+## Local development
 
 ```bash
-cd ~/VSCode/GitHub/personal-website/personal-website/redesign
-npm run dev
+cd ~/VSCode/GitHub/personal-website/personal-website
+npm --prefix redesign install
+npm --prefix redesign run dev
 ```
 
-Open `http://localhost:4321`.
+Open `http://localhost:4321`. The local Astro server cannot serve the root API,
+so successful form delivery must be tested on a deployed preview or production.
 
-Build has passed on 2026-08-13 with `npm run build`: 0 errors, 0 warnings.
+## Next session
 
-## Good next steps
-
-1. Review the 2026-08-19 homepage changes in the local preview.
-2. Add the professional About photo once Batyrbek provides or selects the final image.
-3. Decide whether to refine or redesign the existing smiling-B logo.
-4. Replace placeholder project/writing copy with approved content and add project-specific images/diagrams.
-5. Implement actual multilingual content and browser-language selection. Prefer locale files with typed access and locale-aware routes over scattering copy through components; decide the final URL strategy before migrating the text.
-6. Obtain the actual social URLs and real CV PDF.
-7. Wire Cloudflare Turnstile securely while merging the Astro site into the actual deployment setup.
-8. Decide the migration plan for retaining old content in an unlinked legacy folder.
+1. Add a professional About photo once Batyrbek selects it.
+2. Decide whether to refine or redesign the smiling-B logo.
+3. Replace placeholder project and writing content with approved copy and
+   images/diagrams.
+4. Design the EN/DE implementation with typed locale files and locale-aware
+   routes before translating content.
+5. Add real social URLs and the final CV file.

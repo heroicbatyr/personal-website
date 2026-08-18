@@ -8,6 +8,17 @@ GitHub repository to two independent places:
 | `batyrbek.com` / `www.batyrbek.com` | Vercel | Primary public website |
 | `server.batyrbek.com` | Ubuntu Docker server via Cloudflare Tunnel | Independent live deployment and fallback |
 
+## Frontend architecture
+
+The public portfolio is the Astro app in `redesign/`. Its source pages,
+components, styles, and content data live there. Vercel builds it to
+`redesign/dist`; the Docker image builds the same output and serves it from
+Express alongside the root API functions.
+
+The former files in root `public/` are legacy source material, not the
+production portfolio output. See `redesign/HANDOFF.md` for the current visual
+and content decisions.
+
 ## How publishing works
 
 Push a commit to `main`.
@@ -77,7 +88,8 @@ Vercel's production environment needs the matching form-related variables.
 
 ## Development direction
 
-The current template is a starting point.  The next redesign should establish
-a reusable layout and page structure so projects, case studies, and optional
-blog posts can be added cleanly later.  See [AGENTS.md](AGENTS.md) for
-architecture and contributor guidance.
+The Astro portfolio already has reusable layouts, project case studies, and
+writing routes. Future work is content refinement, a professional About photo,
+the final logo direction, and planned EN/DE support. See
+[AGENTS.md](AGENTS.md) and [redesign/HANDOFF.md](redesign/HANDOFF.md) before
+making a change.
