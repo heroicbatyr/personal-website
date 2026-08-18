@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { posts } from '../../data/writing';
+export function getStaticPaths() { return posts.map(post => ({ params: { slug: post.slug }, props: { post } })); }
+const { post } = Astro.props;
+---
+<BaseLayout title={`${post.title} — Batyrbek Bolatbekuly`} description={post.excerpt}>
+  <Header active="Writing" />
+  <main class="page-shell article-page">
+    <a class="back-link" href="/writing">← All writing</a>
+    <header><p class="eyebrow">{post.category} · {post.date} · {post.readTime}</p><h1>{post.title}</h1><p>{post.excerpt}</p></header>
+    <article>{post.body.map(paragraph => <p>{paragraph}</p>)}</article>
+  </main>
+  <Footer />
+</BaseLayout>

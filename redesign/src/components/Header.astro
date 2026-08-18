@@ -1,0 +1,22 @@
+---
+const { active = '' } = Astro.props;
+const nav = [
+  ['Home', '/'], ['Projects', '/projects'], ['Experience', '/#experience'], ['Writing', '/writing'], ['Contact', '/#contact']
+];
+---
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="Batyrbek home">
+    <img class="logo-light" src="/images/logos/black-b.png" alt="" />
+    <img class="logo-dark" src="/images/logos/white-b.png" alt="" />
+  </a>
+  <nav aria-label="Primary navigation">
+    {nav.map(([label, href]) => <a class:list={[active === label && 'active']} href={href}>{label}</a>)}
+  </nav>
+  <div class="header-actions">
+    <button class="language" type="button" aria-label="Change language">EN <span>/</span> DE</button>
+    <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle colour theme"><span></span></button>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  {nav.map(([label, href]) => <a class:list={[active === label && 'active']} href={href}>{label}</a>)}
+</nav>

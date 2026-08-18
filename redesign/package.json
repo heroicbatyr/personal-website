@@ -1,0 +1,16 @@
+{
+  "name": "batyrbek-com",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "astro": "^5.7.1",
+    "typescript": "^5.7.3"
+  }
+}

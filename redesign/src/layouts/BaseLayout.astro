@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+interface Props { title?: string; description?: string; }
+const { title = 'Batyrbek Bolatbekuly — Business Informatics Student', description = 'Batyrbek Bolatbekuly, Business Informatics student in Munich.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f3efe6" />
+    <title>{title}</title>
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </head>
+  <body>
+    <slot />
+    <script is:inline>
+      const button = document.querySelector('[data-theme-toggle]');
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = theme;
+      button?.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('theme', next);
+      });
+      const form = document.querySelector('#contactForm');
+      form?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const status = form.querySelector('.form-status');
+        const submit = form.querySelector('[type="submit"]');
+        const values = Object.fromEntries(new FormData(form));
+        if (!values['cf-turnstile-response']) {
+          status.textContent = 'Please complete the security check before sending.';
+          return;
+        }
+        status.textContent = 'Sending…';
+        submit.disabled = true;
+        try {
+          const response = await fetch(form.dataset.endpoint, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values)
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.message || 'Request failed');
+          form.reset();
+          status.textContent = 'Message sent. Thank you.';
+          window.turnstile?.reset();
+        } catch {
+          status.textContent = 'Something went wrong. Please email mail@batyrbek.com.';
+        } finally { submit.disabled = false; }
+      });
+    </script>
+  </body>
+</html>

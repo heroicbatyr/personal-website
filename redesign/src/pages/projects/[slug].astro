@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { projects } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map(project => ({ params: { slug: project.slug }, props: { project } }));
+}
+const { project } = Astro.props;
+---
+<BaseLayout title={`${project.title} — Batyrbek Bolatbekuly`} description={project.description}>
+  <Header active="Projects" />
+  <main class="page-shell case-study">
+    <a class="back-link" href="/projects">← All projects</a>
+    <header class={`case-hero ${project.accent}`}><p class="eyebrow">{project.number} · {project.type}</p><h1>{project.title}</h1><p>{project.description}</p>{project.confidential && <p class="confidential">Confidential project — details shown are intentionally non-sensitive.</p>}</header>
+    <div class="case-meta"><div><p class="eyebrow">Focus</p><div class="tag-list">{project.tags.map(tag => <span>{tag}</span>)}</div></div><div><p class="eyebrow">Status</p><p>{project.status || 'Delivered'}</p></div></div>
+    <div class="case-content">
+      <article><p class="eyebrow">The challenge</p><h2>{project.challenge}</h2></article>
+      <article><p class="eyebrow">The approach</p><p>{project.approach}</p></article>
+      <article><p class="eyebrow">Outcome</p><p>{project.outcome}</p></article>
+    </div>
+    <section class="case-placeholder"><p class="eyebrow">Project material</p><div><span>Visual / diagram area</span><p>Project-specific diagrams, images, metrics, and selected technical detail will live here. This keeps the case study visual without exposing confidential material.</p></div></section>
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { projects } from '../data/projects';
+
+const selectedProjects = projects.slice(0, 3);
+---
+<BaseLayout>
+  <Header active="Home" />
+  <main>
+    <section class="hero page-shell" id="home">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Business Informatics Student · Munich</p>
+        <h1>Hey, I’m<br />Batyrbek.</h1>
+        <p class="hero-lede">Building thoughtful systems at the intersection of software, finance, and everyday work.</p>
+        <div class="hero-actions">
+          <a class="button button-dark" href="#contact">Let’s talk <span>↗</span></a>
+          <span class="text-link is-disabled" aria-label="CV will be available soon">CV — coming soon <span>↓</span></span>
+        </div>
+      </div>
+      <div class="hero-photo reveal">
+        <img src="/images/home-bg.jpg" alt="Batyrbek Bolatbekuly in Munich" />
+        <p class="photo-caption">Munich, Germany <span>·</span> 2026</p>
+      </div>
+      <aside class="hero-note reveal">
+        <p class="quote">“Vision without execution is hallucination”</p>
+        <div class="live-status"><span></span><p><b>Currently</b><br />Working Student @ UniCredit<br />Payments &amp; Cash Management</p></div>
+        <p class="availability">Open to opportunities from <span>01.04.2027</span></p>
+      </aside>
+    </section>
+
+    <section class="statement page-shell">
+      <p class="eyebrow section-label">A little about me</p>
+      <div class="about-copy">
+        <p>I’m a Business Informatics student at the Technical University of Munich, currently working in payments and cash management. I’m interested in the practical space where software meets people, processes, and decisions.</p>
+        <p>I enjoy turning repetitive work into something clearer, building small systems that remove friction, and learning the details behind the tools I use. Outside university and work, that usually means side projects, AI experiments, markets, and running my own infrastructure.</p>
+        <div class="about-facts"><span>Based in Munich</span><span>German &amp; English</span><span>Software + Finance</span></div>
+      </div>
+    </section>
+
+    <section class="projects-section page-shell" id="projects">
+      <div class="section-heading"><div><p class="eyebrow section-label">Selected work</p><h2>A selection of projects.</h2></div><a class="text-link" href="/projects">All projects <span>↗</span></a></div>
+      <div class="project-list">
+        {selectedProjects.map((project) => (
+          <a class={`project-row ${project.accent}`} href={`/projects/${project.slug}`}>
+            <div><p class="project-type">{project.type}</p><h3>{project.title}</h3><p class="project-description">{project.description}</p></div>
+            <span class="project-arrow">↗</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="experience page-shell" id="experience">
+      <p class="eyebrow section-label">Experience &amp; education</p>
+      <div class="timeline">
+        <article><p>03.2025 — 03.2027</p><div><h3>Working Student</h3><p class="timeline-place">UniCredit · Payments &amp; Cash Management</p><p>Supporting operational improvement through practical automation, reporting, and clearer workflows.</p></div></article>
+        <article><p>2023 — 2027/28</p><div><h3>B.Sc. Wirtschaftsinformatik</h3><p class="timeline-place">Technical University of Munich</p><p>Software, data, business processes, finance, and the space where they meet.</p></div></article>
+      </div>
+      <div class="skills"><p class="eyebrow section-label">Tools &amp; interests</p><ul><li>Java</li><li>Python</li><li>SQL</li><li>Docker</li><li>AWS</li><li>Git</li><li>AI agents</li><li>Finance</li></ul></div>
+    </section>
+
+    <section class="writing page-shell" id="writing">
+      <div class="section-heading"><div><p class="eyebrow section-label">Writing</p><h2>Notes from the work in progress.</h2></div><a class="text-link" href="/writing">All writing <span>↗</span></a></div>
+      <div class="writing-grid">
+        <a href="/writing/market-research-space"><article><p>Project notes</p><h3>Building a personal space for better market research</h3><span>Read note ↗</span></article></a>
+        <a href="/writing/useful-software"><article><p>Thoughts</p><h3>What operational work has taught me about useful software</h3><span>Read note ↗</span></article></a>
+        <a href="/writing/owning-infrastructure"><article><p>Home lab</p><h3>The quiet satisfaction of owning your own infrastructure</h3><span>Read note ↗</span></article></a>
+      </div>
+    </section>
+
+    <section class="contact page-shell" id="contact">
+      <p class="eyebrow section-label">Contact</p>
+      <div class="contact-intro"><div><h2>Get in touch.</h2><p>For an opportunity, a project, or simply a good conversation—send me a message.</p><a class="contact-email" href="mailto:mail@batyrbek.com">mail@batyrbek.com <span>↗</span></a><div class="social-links"><span title="LinkedIn coming soon">in</span><span title="GitHub coming soon">gh</span><span title="Instagram coming soon">ig</span></div></div>
+      <form class="contact-form" id="contactForm" data-endpoint="/api/submit-contact">
+        <label>Name<input name="name" required autocomplete="name" placeholder="Your name" /></label>
+        <label>Email<input name="email" required type="email" autocomplete="email" placeholder="you@example.com" /></label>
+        <label>Subject<input name="subject" required placeholder="What is this about?" /></label>
+        <label>Message<textarea name="message" required rows="4" placeholder="Write your message here..."></textarea></label>
+        <div class="turnstile"><div class="cf-turnstile" data-sitekey="0x4AAAAAAEN5Zu50uJb_kVm7"></div></div>
+        <button class="button button-dark" type="submit">Send message <span>↗</span></button><p class="form-status" aria-live="polite"></p>
+      </form></div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
