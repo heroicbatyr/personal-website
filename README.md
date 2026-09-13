@@ -86,6 +86,96 @@ loads the updated `.env.server` value.
 Do not put their values in GitHub, issues, screenshots, logs, or this README.
 Vercel's production environment needs the matching form-related variables.
 
+## Stock Research Dashboard
+
+`/finance` is a lightweight Astro and vanilla TypeScript interface backed by
+the Java 21 service in `finance-service/`. The public request path is:
+
+```text
+batyrbek.com/finance
+  -> https://server.batyrbek.com/api/stocks/...
+  -> Express path gateway
+  -> finance-service:8080
+  -> Alpha Vantage
+```
+
+The provider key exists only in the Spring container. Alpha Vantage was chosen
+because its documented company overview, global quote, and weekly time-series
+endpoints cover the MVP. Finnhub's stock candle endpoint currently requires
+premium access. The `StockDataProvider` interface keeps provider-specific JSON
+out of the controller, service, cache, and frontend layers.
+
+### Required finance environment
+
+Create the ignored runtime file from the committed placeholder template:
+
+```bash
+cp .env.finance.example .env.finance
+```
+
+Set `STOCK_API_KEY` to an Alpha Vantage API key. Do not commit `.env.finance`.
+`FINANCE_ALLOWED_ORIGINS` defaults to the two production website origins and
+Astro's usual localhost origins; keep this list narrow.
+
+The optional Astro build variable below changes the browser-visible API host.
+Production defaults to `https://server.batyrbek.com`:
+
+```text
+PUBLIC_FINANCE_API_BASE_URL=http://localhost:18080
+```
+
+### Local development
+
+Run the backend in Docker, where Maven compiles and tests it with Java 21:
+
+```bash
+docker compose -f compose.server.yml up -d --build finance-service
+curl http://127.0.0.1:18080/actuator/health
+curl http://127.0.0.1:18080/api/stocks/NVDA
+curl 'http://127.0.0.1:18080/api/stocks/NVDA/history?range=1y'
+```
+
+Run the frontend against that local service:
+
+```bash
+PUBLIC_FINANCE_API_BASE_URL=http://localhost:18080 npm --prefix redesign run dev
+```
+
+For host-based Java development, use JDK 21 and Maven 3.9+:
+
+```bash
+STOCK_API_KEY=your-key mvn -f finance-service/pom.xml spring-boot:run
+mvn -f finance-service/pom.xml verify
+```
+
+The REST contract is deliberately frontend-friendly:
+
+- `GET /api/stocks/{ticker}` — quote and normalized company metrics;
+- `GET /api/stocks/{ticker}/history?range=1y` — one year of weekly closes.
+
+Overview responses are fresh-cached for 15 minutes and history for 24 hours.
+A longer-lived fallback cache can serve the last successful response during a
+temporary provider outage while retaining its original `updatedAt` value.
+Provider calls are serialized with a short safety interval. Alpha Vantage's
+standard free service is limited to 25 requests per day, so avoid repeatedly
+rebuilding the container during manual API testing because rebuilds clear the in-memory caches.
+
+### Finance deployment
+
+Before the first production deployment, create `/home/batyr/personal-website/.env.finance`
+on the server and set `STOCK_API_KEY`. Then build all three services:
+
+```bash
+docker compose -f compose.server.yml up -d --build
+docker compose -f compose.server.yml ps
+curl https://server.batyrbek.com/api/stocks/NVDA
+```
+
+The Spring service is reachable from the host only on `127.0.0.1:18080` and
+from the other containers on `website-internal`; Cloudflare remains pointed at
+`personal-site`. GitHub Actions verifies both `personal-site` and
+`stock-research-api` after a push to `main`.
+
 ## Development direction
 
 The Astro portfolio already has reusable layouts, project case studies, and

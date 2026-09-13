@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env.server
+    environment:
+      FINANCE_API_URL: http://finance-service:8080
     expose:
       - "3000"
     networks:
@@ -15,6 +17,27 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  finance-service:
+    build:
+      context: ./finance-service
+    container_name: stock-research-api
+    restart: unless-stopped
+    env_file:
+      - path: .env.finance
+        required: false
+    expose:
+      - "8080"
+    ports:
+      - "127.0.0.1:18080:8080"
+    networks:
+      - website-internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8080/actuator/health | grep -q UP"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   cloudflared:
     image: cloudflare/cloudflared:latest

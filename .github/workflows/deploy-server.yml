@@ -35,11 +35,14 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          for attempt in $(seq 1 12); do
-            if [ "$(docker inspect --format '{{.State.Health.Status}}' personal-site)" = "healthy" ]; then
+          for attempt in $(seq 1 18); do
+            website_status="$(docker inspect --format '{{.State.Health.Status}}' personal-site)"
+            finance_status="$(docker inspect --format '{{.State.Health.Status}}' stock-research-api)"
+            if [ "$website_status" = "healthy" ] && [ "$finance_status" = "healthy" ]; then
               exit 0
             fi
             sleep 5
           done
           docker logs --tail 100 personal-site
+          docker logs --tail 100 stock-research-api
           exit 1

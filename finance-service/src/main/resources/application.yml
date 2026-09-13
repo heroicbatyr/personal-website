@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: stock-research-api
+server:
+  port: ${PORT:8080}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+stock:
+  provider:
+    base-url: ${STOCK_API_BASE_URL:https://www.alphavantage.co}
+    api-key: ${STOCK_API_KEY:}
+  cors:
+    allowed-origins: ${FINANCE_ALLOWED_ORIGINS:https://batyrbek.com,https://www.batyrbek.com,http://localhost:4321,http://127.0.0.1:4321}

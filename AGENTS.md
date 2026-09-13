@@ -32,6 +32,12 @@ service, or paid platform unless the owner has specifically chosen it.
 - `api/` and `database/` — contact / form handling and MongoDB persistence.
 - `services/contact-notification.js` — Resend email notification after a
   successful contact submission.
+- `finance-service/` — Java 21 / Spring Boot stock research API. It owns
+  provider integration, normalized DTOs, validation, and Caffeine caches.
+  The provider key is never exposed to the Astro application.
+- `/finance` — lightweight Astro/TypeScript stock dashboard. On the server,
+  Express forwards only `/api/stocks/*` to `finance-service` over the private
+  Docker network; Cloudflare remains pointed at `personal-site`.
 - `vercel.json` — installs and builds the Astro application for Vercel while
   retaining the root API functions.
 - `Dockerfile` + `compose.server.yml` — builds the Astro app, serves its output
@@ -63,6 +69,7 @@ permission-restricted files:
 - `.env.server`: `MONGODB_URI`, `RESEND_API_KEY`, `NOTIFICATION_FROM`,
   `NOTIFICATION_TO`, `TURNSTILE_SECRET_KEY`
 - `.env.cloudflared`: `TUNNEL_TOKEN`
+- `.env.finance`: `STOCK_API_KEY`, optional `FINANCE_ALLOWED_ORIGINS`
 
 Vercel needs matching production environment variables for any server-side
 form functionality it hosts.  Verify variable names and presence only; do not
