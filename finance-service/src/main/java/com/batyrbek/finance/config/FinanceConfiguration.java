@@ -4,8 +4,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
+import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.StockHistory;
-import com.batyrbek.finance.dto.StockOverview;
+import com.batyrbek.finance.dto.StockQuote;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,13 +28,23 @@ public class FinanceConfiguration {
     }
 
     @Bean
-    Cache<String, StockOverview> overviewCache() {
+    Cache<String, StockQuote> quoteCache() {
         return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofMinutes(15)).build();
     }
 
     @Bean
-    Cache<String, StockOverview> staleOverviewCache() {
+    Cache<String, StockQuote> staleQuoteCache() {
         return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofHours(24)).build();
+    }
+
+    @Bean
+    Cache<String, CompanyFundamentals> fundamentalsCache() {
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofHours(24)).build();
+    }
+
+    @Bean
+    Cache<String, CompanyFundamentals> staleFundamentalsCache() {
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(7)).build();
     }
 
     @Bean

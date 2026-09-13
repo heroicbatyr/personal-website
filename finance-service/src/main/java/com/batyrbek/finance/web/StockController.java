@@ -20,7 +20,7 @@ public class StockController {
     public StockOverview overview(@PathVariable String ticker) { return stockService.getOverview(ticker); }
 
     @GetMapping("/{ticker}/history")
-    public StockHistory history(@PathVariable String ticker, @RequestParam(defaultValue = "1y") String range) {
+    public StockHistory history(@PathVariable String ticker, @RequestParam(defaultValue = "5y") String range) {
         return stockService.getHistory(ticker, range);
     }
 }

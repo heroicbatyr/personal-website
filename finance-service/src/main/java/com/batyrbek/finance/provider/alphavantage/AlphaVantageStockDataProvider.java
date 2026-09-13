@@ -4,15 +4,16 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.PricePoint;
 import com.batyrbek.finance.dto.StockHistory;
-import com.batyrbek.finance.dto.StockOverview;
+import com.batyrbek.finance.dto.StockQuote;
+import com.batyrbek.finance.exception.ProviderRateLimitException;
 import com.batyrbek.finance.exception.StockNotFoundException;
 import com.batyrbek.finance.exception.StockProviderException;
 import com.batyrbek.finance.provider.StockDataProvider;
@@ -38,38 +39,69 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
     }
 
     @Override
-    public StockOverview fetchOverview(String ticker) {
+    public StockQuote fetchQuote(String ticker) {
         requireApiKey();
         JsonNode quote = request("GLOBAL_QUOTE", ticker);
-        JsonNode company = request("OVERVIEW", ticker);
         JsonNode globalQuote = quote.path("Global Quote");
-        if (globalQuote.isMissingNode() || globalQuote.isEmpty() || company.path("Symbol").asText().isBlank()) {
-            throw new StockNotFoundException(ticker);
-        }
-        return new StockOverview(ticker, textOrNull(company, "Name"), textOrNull(company, "Currency"),
-                doubleOrNull(globalQuote, "05. price"), doubleOrNull(globalQuote, "09. change"),
-                percentOrNull(globalQuote, "10. change percent"), longOrNull(company, "MarketCapitalization"),
+        if (globalQuote.isMissingNode() || globalQuote.isEmpty()) throw new StockNotFoundException(ticker);
+        return new StockQuote(doubleOrNull(globalQuote, "05. price"),
+                doubleOrNull(globalQuote, "09. change"), percentOrNull(globalQuote, "10. change percent"),
+                Instant.now());
+    }
+
+    @Override
+    public CompanyFundamentals fetchFundamentals(String ticker) {
+        requireApiKey();
+        JsonNode company = request("OVERVIEW", ticker);
+        if (company.path("Symbol").asText().isBlank()) throw new StockNotFoundException(ticker);
+        return new CompanyFundamentals(textOrNull(company, "Name"), textOrNull(company, "Currency"),
+                longOrNull(company, "MarketCapitalization"),
                 doubleOrNull(company, "PERatio"), doubleOrNull(company, "EPS"),
                 doubleOrNull(company, "DividendYield"), doubleOrNull(company, "52WeekHigh"),
                 doubleOrNull(company, "52WeekLow"), Instant.now());
     }
 
     @Override
-    public StockHistory fetchHistory(String ticker, String range) {
+    public StockHistory fetchHistory(String ticker) {
         requireApiKey();
-        JsonNode series = request("TIME_SERIES_WEEKLY", ticker).path("Weekly Time Series");
-        if (series.isMissingNode() || !series.isObject() || series.isEmpty()) throw new StockNotFoundException(ticker);
-        LocalDate cutoff = LocalDate.now(ZoneOffset.UTC).minusYears(1);
-        List<PricePoint> points = new ArrayList<>();
+        JsonNode weeklySeries = request("TIME_SERIES_WEEKLY", ticker).path("Weekly Time Series");
+        if (weeklySeries.isMissingNode() || !weeklySeries.isObject() || weeklySeries.isEmpty()) {
+            throw new StockNotFoundException(ticker);
+        }
+        LocalDate cutoff = LocalDate.now(ZoneOffset.UTC).minusYears(5);
+        TreeMap<LocalDate, Double> weekly = readSeries(weeklySeries, cutoff);
+        TreeMap<LocalDate, Double> daily = new TreeMap<>();
+        try {
+            JsonNode dailySeries = request("TIME_SERIES_DAILY", ticker).path("Time Series (Daily)");
+            if (dailySeries.isObject()) daily.putAll(readSeries(dailySeries, cutoff));
+        } catch (StockProviderException ignored) {
+            // Weekly history remains useful when the optional daily request is unavailable.
+        }
+
+        TreeMap<LocalDate, Double> combined = new TreeMap<>();
+        if (daily.isEmpty()) {
+            combined.putAll(weekly);
+        } else {
+            weekly.entrySet().stream().filter(entry -> entry.getKey().isBefore(daily.firstKey()))
+                    .forEach(entry -> combined.put(entry.getKey(), entry.getValue()));
+            combined.putAll(daily);
+        }
+        List<PricePoint> points = combined.entrySet().stream()
+                .map(entry -> new PricePoint(entry.getKey(), entry.getValue())).toList();
+        String resolution = daily.isEmpty() ? "weekly" : "daily-weekly";
+        return new StockHistory(ticker, null, "5y", resolution, points, Instant.now(), false);
+    }
+
+    private static TreeMap<LocalDate, Double> readSeries(JsonNode series, LocalDate cutoff) {
+        TreeMap<LocalDate, Double> points = new TreeMap<>();
         Iterator<Map.Entry<String, JsonNode>> fields = series.fields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> entry = fields.next();
             LocalDate date = LocalDate.parse(entry.getKey());
-            if (!date.isBefore(cutoff)) points.add(new PricePoint(date, doubleOrNull(entry.getValue(), "4. close")));
+            Double close = doubleOrNull(entry.getValue(), "4. close");
+            if (!date.isBefore(cutoff) && close != null) points.put(date, close);
         }
-        points.removeIf(point -> point.close() == null);
-        points.sort(Comparator.comparing(PricePoint::date));
-        return new StockHistory(ticker, range, List.copyOf(points), Instant.now());
+        return points;
     }
 
     private JsonNode request(String function, String ticker) {
@@ -89,9 +121,7 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
                     .bodyToMono(JsonNode.class).block(REQUEST_TIMEOUT);
             if (response == null) throw new StockProviderException("The market-data provider returned an empty response.");
             if (response.has("Error Message")) throw new StockNotFoundException(ticker);
-            if (response.has("Note") || response.has("Information")) {
-                throw new StockProviderException("The market-data provider is temporarily rate limited.");
-            }
+            if (response.has("Note") || response.has("Information")) throw new ProviderRateLimitException();
             return response;
         } catch (StockNotFoundException | StockProviderException exception) {
             throw exception;

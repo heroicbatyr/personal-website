@@ -13,7 +13,7 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
         <p class="eyebrow section-label">Stock research dashboard</p>
         <h1>Public markets,<br />made readable.</h1>
       </div>
-      <p>Look up a listed company and review its latest available price, essential fundamentals, and one year of market history.</p>
+      <p>Look up a listed company and review its latest available price, essential fundamentals, and up to five years of market history.</p>
     </header>
 
     <section class="research-console" aria-labelledby="research-heading">
@@ -59,14 +59,25 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
 
       <section class="chart-panel" aria-labelledby="chart-heading">
         <div class="chart-heading">
-          <div><p class="eyebrow">Price history</p><h2 id="chart-heading">One year.</h2></div>
-          <span>Weekly close</span>
+          <div>
+            <p class="eyebrow">Price history</p>
+            <h2 id="chart-heading" data-chart-heading>One year.</h2>
+            <p class="chart-performance" data-performance data-direction="neutral">—</p>
+          </div>
+          <span data-resolution>Daily + weekly close</span>
         </div>
-        <div class="chart-wrap">
-          <svg data-chart viewBox="0 0 1000 360" preserveAspectRatio="none" role="img" aria-label="One-year weekly closing price chart"></svg>
+        <div class="range-selector" role="group" aria-label="Price history range">
+          {['1W', '1M', '6M', 'YTD', '1Y', '5Y'].map(range =>
+            <button type="button" data-range={range.toLowerCase()} aria-pressed={range === '1Y'}>{range}</button>)}
+        </div>
+        <div class="chart-wrap" data-chart-wrap tabindex="0" aria-label="Use pointer or arrow keys to inspect prices">
+          <svg data-chart role="img" aria-label="Price history chart"></svg>
+          <div class="chart-tooltip" data-chart-tooltip hidden>
+            <time data-tooltip-date></time>
+            <strong data-tooltip-price></strong>
+          </div>
           <p data-chart-status aria-live="polite"></p>
         </div>
-        <div class="chart-axis"><span data-chart-start></span><span data-chart-end></span></div>
       </section>
 
       <footer class="data-note">
@@ -133,13 +144,29 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
   .metric-grid strong { font:500 clamp(1.25rem,2.3vw,2rem)/1 var(--mono); }
   .chart-heading { align-items:end; margin-bottom:2rem; }
   .chart-heading > span { color:var(--muted); font:.67rem var(--mono); text-transform:uppercase; }
+  .chart-performance { margin:.7rem 0 0; font:500 .8rem var(--mono); }
+  .chart-performance[data-direction='positive'] { color:#3f7040; }
+  .chart-performance[data-direction='negative'] { color:#9a433d; }
+  .chart-performance[data-direction='neutral'] { color:var(--muted); }
+  .range-selector { display:flex; width:max-content; max-width:100%; margin:0 0 1.5rem auto; border:1px solid var(--line); overflow-x:auto; }
+  .range-selector button { min-width:3.25rem; border:0; border-right:1px solid var(--line); padding:.55rem .8rem; background:transparent; color:var(--muted); font:500 .67rem var(--mono); cursor:pointer; }
+  .range-selector button:last-child { border-right:0; }
+  .range-selector button:hover,.range-selector button:focus-visible { color:var(--ink); outline:0; }
+  .range-selector button[aria-pressed='true'] { background:var(--ink); color:var(--paper); }
   .chart-wrap { position:relative; height:clamp(240px,35vw,430px); }
-  .chart-wrap svg { display:block; width:100%; height:100%; overflow:visible; }
-  .chart-wrap p { position:absolute; inset:0; display:grid; place-items:center; margin:0; color:var(--muted); font-size:.85rem; pointer-events:none; }
+  .chart-wrap:focus-visible { outline:1px solid var(--ochre); outline-offset:4px; }
+  .chart-wrap svg { display:block; width:100%; height:100%; overflow:hidden; touch-action:none; }
+  .chart-wrap > p { position:absolute; inset:0; display:grid; place-items:center; margin:0; color:var(--muted); font-size:.85rem; pointer-events:none; }
+  .chart-tooltip { position:absolute; z-index:2; min-width:8.5rem; padding:.65rem .75rem; border:1px solid var(--line); background:color-mix(in srgb,var(--paper) 94%,transparent); box-shadow:0 8px 24px color-mix(in srgb,var(--ink) 10%,transparent); pointer-events:none; }
+  .chart-tooltip time,.chart-tooltip strong { display:block; white-space:nowrap; }
+  .chart-tooltip time { color:var(--muted); font:.62rem var(--mono); text-transform:uppercase; }
+  .chart-tooltip strong { margin-top:.2rem; font:500 .9rem var(--mono); }
   :global(.chart-grid-line) { stroke:var(--line); stroke-width:1; vector-effect:non-scaling-stroke; }
   :global(.chart-area) { fill:color-mix(in srgb,var(--ochre) 12%,transparent); }
   :global(.chart-line) { fill:none; stroke:var(--ochre); stroke-width:2; vector-effect:non-scaling-stroke; }
-  .chart-axis { display:flex; justify-content:space-between; margin-top:.75rem; color:var(--muted); font:.65rem var(--mono); text-transform:uppercase; }
+  :global(.chart-axis-label) { fill:var(--muted); font:10px var(--mono); }
+  :global(.chart-crosshair) { stroke:color-mix(in srgb,var(--ink) 45%,transparent); stroke-width:1; stroke-dasharray:3 3; vector-effect:non-scaling-stroke; }
+  :global(.chart-hover-dot) { fill:var(--paper); stroke:var(--ochre); stroke-width:2; vector-effect:non-scaling-stroke; }
   .data-note { display:flex; justify-content:space-between; gap:2rem; padding:1rem clamp(1.25rem,3vw,2.5rem); border-bottom:1px solid var(--line); color:var(--muted); font:.65rem var(--mono); }
   .data-note p { margin:0; }
   .build-note { display:grid; grid-template-columns:1fr 2fr; gap:2rem; padding-top:7rem; margin-top:7rem; border-top:1px solid var(--line); }
@@ -167,7 +194,11 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
     .quote-value { margin-top:2rem; text-align:left; }
     .metric-grid { grid-template-columns:1fr 1fr; }
     .metric-grid article { min-height:105px; }
+    .chart-heading { display:block; }
     .chart-heading h2 { font-size:2.2rem; }
+    .chart-heading > span { display:block; margin-top:1rem; }
+    .range-selector { width:100%; margin-left:0; }
+    .range-selector button { flex:1 0 3rem; min-width:3rem; padding-inline:.55rem; }
     .data-note,.build-note { display:block; }
     .data-note p + p { margin-top:.6rem; }
     .build-note .section-label { margin-bottom:2rem; }

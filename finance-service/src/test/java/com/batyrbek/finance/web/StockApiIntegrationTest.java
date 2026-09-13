@@ -4,10 +4,13 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.PricePoint;
 import com.batyrbek.finance.dto.StockHistory;
-import com.batyrbek.finance.dto.StockOverview;
+import com.batyrbek.finance.dto.StockQuote;
+import com.batyrbek.finance.exception.ProviderRateLimitException;
 import com.batyrbek.finance.exception.StockNotFoundException;
+import com.batyrbek.finance.exception.StockProviderException;
 import com.batyrbek.finance.provider.StockDataProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,11 +37,15 @@ class StockApiIntegrationTest {
 
     @BeforeEach
     void providerResponses() {
-        when(provider.fetchOverview("NVDA")).thenReturn(stock("NVDA", "NVIDIA Corporation", 184.21));
-        when(provider.fetchOverview("AAPL")).thenReturn(stock("AAPL", "Apple Inc.", 230.10));
-        when(provider.fetchHistory("NVDA", "1y")).thenReturn(history("NVDA"));
-        when(provider.fetchHistory("AAPL", "1y")).thenReturn(history("AAPL"));
-        when(provider.fetchOverview("UNKNOWN")).thenThrow(new StockNotFoundException("UNKNOWN"));
+        when(provider.fetchQuote("NVDA")).thenReturn(quote(184.21));
+        when(provider.fetchQuote("AAPL")).thenReturn(quote(230.10));
+        when(provider.fetchFundamentals("NVDA")).thenReturn(fundamentals("NVIDIA Corporation"));
+        when(provider.fetchFundamentals("AAPL")).thenReturn(fundamentals("Apple Inc."));
+        when(provider.fetchHistory("NVDA")).thenReturn(history("NVDA"));
+        when(provider.fetchHistory("AAPL")).thenReturn(history("AAPL"));
+        when(provider.fetchQuote("UNKNOWN")).thenThrow(new StockNotFoundException("UNKNOWN"));
+        when(provider.fetchQuote("LIMITED")).thenThrow(new ProviderRateLimitException());
+        when(provider.fetchQuote("BROKEN")).thenThrow(new StockProviderException("internal provider detail"));
     }
 
     @Test
@@ -47,16 +54,19 @@ class StockApiIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Origin", "https://batyrbek.com"))
                 .andExpect(jsonPath("$.ticker").value("NVDA"))
+                .andExpect(jsonPath("$.stale").value(false))
                 .andExpect(jsonPath("$.companyName").value("NVIDIA Corporation"))
                 .andExpect(jsonPath("$.price").value(184.21));
     }
 
     @Test
     void servesAaplHistory() throws Exception {
-        mockMvc.perform(get("/api/stocks/aapl/history").queryParam("range", "1y"))
+        mockMvc.perform(get("/api/stocks/aapl/history").queryParam("range", "5y"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ticker").value("AAPL"))
-                .andExpect(jsonPath("$.range").value("1y"))
+                .andExpect(jsonPath("$.currency").value("USD"))
+                .andExpect(jsonPath("$.range").value("5y"))
+                .andExpect(jsonPath("$.resolution").value("daily-weekly"))
                 .andExpect(jsonPath("$.points.length()").value(2));
     }
 
@@ -64,22 +74,39 @@ class StockApiIntegrationTest {
     void rejectsInvalidTickerAndUnknownCompanyClearly() throws Exception {
         mockMvc.perform(get("/api/stocks/bad$ticker"))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_TICKER"))
                 .andExpect(jsonPath("$.message").value("Ticker must be 1-10 letters, numbers, periods, or hyphens."));
 
         mockMvc.perform(get("/api/stocks/UNKNOWN"))
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("TICKER_NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("No public company was found for ticker UNKNOWN."));
+
+        mockMvc.perform(get("/api/stocks/LIMITED"))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.code").value("PROVIDER_RATE_LIMITED"));
+
+        mockMvc.perform(get("/api/stocks/BROKEN"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.code").value("PROVIDER_UNAVAILABLE"))
+                .andExpect(jsonPath("$.message").value("Market data is temporarily unavailable. Please try again later."));
+
     }
 
-    private StockOverview stock(String ticker, String name, double price) {
-        return new StockOverview(ticker, name, "USD", price, 1.2, 0.7, 1_000_000_000L,
-                25.0, 5.0, 0.004, 250.0, 120.0, Instant.parse("2026-09-13T20:00:00Z"));
+
+    private StockQuote quote(double price) {
+        return new StockQuote(price, 1.2, 0.7, Instant.parse("2026-09-13T20:00:00Z"));
+    }
+
+    private CompanyFundamentals fundamentals(String name) {
+        return new CompanyFundamentals(name, "USD", 1_000_000_000L, 25.0, 5.0,
+                0.004, 250.0, 120.0, Instant.parse("2026-09-13T19:00:00Z"));
     }
 
     private StockHistory history(String ticker) {
-        return new StockHistory(ticker, "1y", List.of(
+        return new StockHistory(ticker, null, "5y", "daily-weekly", List.of(
                 new PricePoint(LocalDate.parse("2025-09-13"), 120.42),
                 new PricePoint(LocalDate.parse("2026-09-12"), 184.21)),
-                Instant.parse("2026-09-13T20:00:00Z"));
+                Instant.parse("2026-09-13T20:00:00Z"), false);
     }
 }

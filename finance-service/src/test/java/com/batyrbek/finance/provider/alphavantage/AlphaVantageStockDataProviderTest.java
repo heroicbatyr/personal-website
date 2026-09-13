@@ -3,8 +3,10 @@ package com.batyrbek.finance.provider.alphavantage;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 
+import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.StockHistory;
-import com.batyrbek.finance.dto.StockOverview;
+import com.batyrbek.finance.dto.StockQuote;
+import com.batyrbek.finance.exception.ProviderRateLimitException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,11 @@ import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 class AlphaVantageStockDataProviderTest {
     @Test
-    void mapsQuoteAndFundamentalsIntoNormalizedOverview() {
+    void mapsQuoteAndFundamentalsSeparately() {
         AlphaVantageStockDataProvider provider = providerFor((url) -> {
             if (url.contains("GLOBAL_QUOTE")) {
                 return "{\"Global Quote\":{\"01. symbol\":\"NVDA\",\"05. price\":\"184.21\",\"09. change\":\"3.33\",\"10. change percent\":\"1.84%\"}}";
@@ -26,31 +30,62 @@ class AlphaVantageStockDataProviderTest {
             return "{\"Symbol\":\"NVDA\",\"Name\":\"NVIDIA Corporation\",\"Currency\":\"USD\",\"MarketCapitalization\":\"4500000000000\",\"PERatio\":\"42.8\",\"EPS\":\"4.3\",\"DividendYield\":\"0.0002\",\"52WeekHigh\":\"212.19\",\"52WeekLow\":\"86.62\"}";
         });
 
-        StockOverview result = provider.fetchOverview("NVDA");
+        StockQuote quote = provider.fetchQuote("NVDA");
+        CompanyFundamentals fundamentals = provider.fetchFundamentals("NVDA");
 
-        assertThat(result.companyName()).isEqualTo("NVIDIA Corporation");
-        assertThat(result.price()).isEqualTo(184.21);
-        assertThat(result.changePercent()).isEqualTo(1.84);
-        assertThat(result.marketCap()).isEqualTo(4_500_000_000_000L);
-        assertThat(result.updatedAt()).isNotNull();
+        assertThat(quote.price()).isEqualTo(184.21);
+        assertThat(quote.changePercent()).isEqualTo(1.84);
+        assertThat(fundamentals.companyName()).isEqualTo("NVIDIA Corporation");
+        assertThat(fundamentals.marketCap()).isEqualTo(4_500_000_000_000L);
     }
 
     @Test
-    void returnsOneYearHistoryInAscendingOrder() {
+    void combinesFiveYearWeeklyAndRecentDailyHistory() {
         LocalDate recent = LocalDate.now(ZoneOffset.UTC).minusDays(7);
         LocalDate older = LocalDate.now(ZoneOffset.UTC).minusDays(14);
-        LocalDate expired = LocalDate.now(ZoneOffset.UTC).minusYears(2);
-        String body = "{\"Weekly Time Series\":{" +
-                "\"" + recent + "\":{\"4. close\":\"184.21\"}," +
-                "\"" + expired + "\":{\"4. close\":\"50.00\"}," +
-                "\"" + older + "\":{\"4. close\":\"175.00\"}}}";
-        AlphaVantageStockDataProvider provider = providerFor((url) -> body);
+        LocalDate weeklyOlder = LocalDate.now(ZoneOffset.UTC).minusYears(2);
+        LocalDate expired = LocalDate.now(ZoneOffset.UTC).minusYears(6);
+        AlphaVantageStockDataProvider provider = providerFor((url) -> {
+            if (url.contains("TIME_SERIES_WEEKLY")) {
+                return "{\"Weekly Time Series\":{" +
+                        "\"" + recent + "\":{\"4. close\":\"180.00\"}," +
+                        "\"" + weeklyOlder + "\":{\"4. close\":\"80.00\"}," +
+                        "\"" + expired + "\":{\"4. close\":\"40.00\"}}}";
+            }
+            return "{\"Time Series (Daily)\":{" +
+                    "\"" + recent + "\":{\"4. close\":\"184.21\"}," +
+                    "\"" + older + "\":{\"4. close\":\"175.00\"}}}";
+        });
 
-        StockHistory result = provider.fetchHistory("NVDA", "1y");
+        StockHistory result = provider.fetchHistory("NVDA");
 
-        assertThat(result.points()).hasSize(2);
-        assertThat(result.points().getFirst().date()).isEqualTo(older);
+        assertThat(result.range()).isEqualTo("5y");
+        assertThat(result.resolution()).isEqualTo("daily-weekly");
+        assertThat(result.points()).hasSize(3);
+        assertThat(result.points().getFirst().date()).isEqualTo(weeklyOlder);
         assertThat(result.points().getLast().date()).isEqualTo(recent);
+        assertThat(result.points().getLast().close()).isEqualTo(184.21);
+    }
+
+    @Test
+    void keepsWeeklyHistoryWhenOptionalDailyRequestIsRateLimited() {
+        LocalDate date = LocalDate.now(ZoneOffset.UTC).minusDays(7);
+        AlphaVantageStockDataProvider provider = providerFor((url) -> url.contains("TIME_SERIES_WEEKLY")
+                ? "{\"Weekly Time Series\":{\"" + date + "\":{\"4. close\":\"184.21\"}}}"
+                : "{\"Note\":\"rate limit\"}");
+
+        StockHistory result = provider.fetchHistory("NVDA");
+
+        assertThat(result.resolution()).isEqualTo("weekly");
+        assertThat(result.points()).hasSize(1);
+    }
+
+    @Test
+    void classifiesProviderRateLimits() {
+        AlphaVantageStockDataProvider provider = providerFor((url) -> "{\"Information\":\"rate limit\"}");
+
+        assertThatThrownBy(() -> provider.fetchQuote("NVDA"))
+                .isInstanceOf(ProviderRateLimitException.class);
     }
 
     private AlphaVantageStockDataProvider providerFor(ResponseBody responseBody) {

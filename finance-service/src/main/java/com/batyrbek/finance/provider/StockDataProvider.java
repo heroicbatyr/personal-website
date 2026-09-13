@@ -1,9 +1,11 @@
 package com.batyrbek.finance.provider;
 
+import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.StockHistory;
-import com.batyrbek.finance.dto.StockOverview;
+import com.batyrbek.finance.dto.StockQuote;
 
 public interface StockDataProvider {
-    StockOverview fetchOverview(String ticker);
-    StockHistory fetchHistory(String ticker, String range);
+    StockQuote fetchQuote(String ticker);
+    CompanyFundamentals fetchFundamentals(String ticker);
+    StockHistory fetchHistory(String ticker);
 }

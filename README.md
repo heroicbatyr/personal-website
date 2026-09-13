@@ -100,10 +100,14 @@ batyrbek.com/finance
 ```
 
 The provider key exists only in the Spring container. Alpha Vantage was chosen
-because its documented company overview, global quote, and weekly time-series
-endpoints cover the MVP. Finnhub's stock candle endpoint currently requires
-premium access. The `StockDataProvider` interface keeps provider-specific JSON
-out of the controller, service, cache, and frontend layers.
+because its documented company overview, global quote, daily, and weekly
+time-series endpoints cover the dashboard. Its free daily endpoint returns the
+latest 100 trading days; full daily history requires premium access. The API
+therefore combines recent daily closes with older weekly closes for a useful
+five-year series, and labels weekly-only fallback data accurately. Finnhub's
+stock candle endpoint currently requires premium access. The `StockDataProvider`
+interface keeps provider-specific JSON out of the controller, service, cache,
+and frontend layers.
 
 ### Required finance environment
 
@@ -132,7 +136,7 @@ Run the backend in Docker, where Maven compiles and tests it with Java 21:
 docker compose -f compose.server.yml up -d --build finance-service
 curl http://127.0.0.1:18080/actuator/health
 curl http://127.0.0.1:18080/api/stocks/NVDA
-curl 'http://127.0.0.1:18080/api/stocks/NVDA/history?range=1y'
+curl 'http://127.0.0.1:18080/api/stocks/NVDA/history?range=5y'
 ```
 
 Run the frontend against that local service:
@@ -150,15 +154,23 @@ mvn -f finance-service/pom.xml verify
 
 The REST contract is deliberately frontend-friendly:
 
-- `GET /api/stocks/{ticker}` — quote and normalized company metrics;
-- `GET /api/stocks/{ticker}/history?range=1y` — one year of weekly closes.
+- `GET /api/stocks/{ticker}` — quote and normalized company metrics, including
+  a `stale` indicator;
+- `GET /api/stocks/{ticker}/history?range=5y` — one cached five-year series with
+  `resolution`, `updatedAt`, and `stale` metadata.
 
-Overview responses are fresh-cached for 15 minutes and history for 24 hours.
-A longer-lived fallback cache can serve the last successful response during a
-temporary provider outage while retaining its original `updatedAt` value.
-Provider calls are serialized with a short safety interval. Alpha Vantage's
-standard free service is limited to 25 requests per day, so avoid repeatedly
-rebuilding the container during manual API testing because rebuilds clear the in-memory caches.
+Quotes are fresh-cached for 15 minutes. Company fundamentals and normalized
+five-year history are fresh-cached for 24 hours. Atomic Caffeine cache loads
+coalesce concurrent requests for the same ticker. Longer-lived fallback caches
+serve the last successful values during provider rate limits or outages while
+retaining their original `updatedAt` value and returning `stale: true`.
+
+The browser downloads the five-year history once per ticker. Its `1W`, `1M`,
+`6M`, `YTD`, `1Y`, and `5Y` buttons only filter that in-memory array and never
+call the provider or backend again. Provider calls are serialized with a short
+safety interval. Alpha Vantage's standard free service is limited to 25 requests
+per day, so avoid repeatedly rebuilding the container during manual API testing
+because rebuilds clear all in-memory caches.
 
 ### Finance deployment
 
