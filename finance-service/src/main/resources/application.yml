@@ -11,6 +11,11 @@ management:
 stock:
   provider:
     base-url: ${STOCK_API_BASE_URL:https://www.alphavantage.co}
-    api-key: ${STOCK_API_KEY:}
+    api-keys: ${STOCK_API_KEYS:},${STOCK_API_KEY:}
+  cache:
+    directory: ${FINANCE_CACHE_DIR:/app/data/cache}
+  backup:
+    url: ${FINANCE_BACKUP_URL:}
+    secret: ${FINANCE_BACKUP_SECRET:}
   cors:
     allowed-origins: ${FINANCE_ALLOWED_ORIGINS:https://batyrbek.com,https://www.batyrbek.com,http://localhost:4321,http://127.0.0.1:4321}

@@ -34,7 +34,7 @@ public class FinanceConfiguration {
 
     @Bean
     Cache<String, StockQuote> staleQuoteCache() {
-        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofHours(24)).build();
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(2)).build();
     }
 
     @Bean
@@ -44,7 +44,7 @@ public class FinanceConfiguration {
 
     @Bean
     Cache<String, CompanyFundamentals> staleFundamentalsCache() {
-        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(7)).build();
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(30)).build();
     }
 
     @Bean
@@ -54,7 +54,7 @@ public class FinanceConfiguration {
 
     @Bean
     Cache<String, StockHistory> staleHistoryCache() {
-        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(7)).build();
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(30)).build();
     }
 
     @Bean

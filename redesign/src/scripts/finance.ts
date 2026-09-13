@@ -44,6 +44,8 @@ const app = document.querySelector<HTMLElement>('[data-finance-app]');
 if (app) {
   const configuredBase = app.dataset.apiBase?.replace(/\/$/, '') || 'https://server.batyrbek.com';
   const apiBase = window.location.hostname === 'server.batyrbek.com' ? window.location.origin : configuredBase;
+  const snapshotBase = ['batyrbek.com', 'www.batyrbek.com'].includes(window.location.hostname)
+    ? window.location.origin : null;
   const form = app.querySelector<HTMLFormElement>('[data-stock-form]')!;
   const input = app.querySelector<HTMLInputElement>('[data-ticker-input]')!;
   const chartWrap = app.querySelector<HTMLElement>('[data-chart-wrap]')!;
@@ -98,6 +100,23 @@ if (app) {
     if (!response.ok) throw new ApiRequestError(body.code || 'PROVIDER_UNAVAILABLE',
       body.message || 'Market data is temporarily unavailable.');
     return body;
+  };
+
+  const fetchMarketData = async <T>(url: string, ticker: string, kind: 'overview' | 'history'): Promise<T> => {
+    try {
+      return await fetchJson<T>(url);
+    } catch (primaryError) {
+      const canUseSnapshot = !(primaryError instanceof ApiRequestError)
+        || ['PROVIDER_RATE_LIMITED', 'PROVIDER_UNAVAILABLE'].includes(primaryError.code);
+      if (!snapshotBase || !canUseSnapshot) throw primaryError;
+      try {
+        const snapshotUrl = snapshotBase + '/api/finance-snapshot?ticker='
+          + encodeURIComponent(ticker) + '&kind=' + kind;
+        return await fetchJson<T>(snapshotUrl);
+      } catch {
+        throw primaryError;
+      }
+    }
   };
 
   const friendlyError = (error: unknown) => {
@@ -300,8 +319,8 @@ if (app) {
     status.dataset.kind = 'loading';
     try {
       const [overviewResult, historyResult] = await Promise.allSettled([
-        fetchJson<StockOverview>(`${apiBase}/api/stocks/${encodeURIComponent(ticker)}`),
-        fetchJson<StockHistory>(`${apiBase}/api/stocks/${encodeURIComponent(ticker)}/history?range=5y`)
+        fetchMarketData<StockOverview>(apiBase + '/api/stocks/' + encodeURIComponent(ticker), ticker, 'overview'),
+        fetchMarketData<StockHistory>(apiBase + '/api/stocks/' + encodeURIComponent(ticker) + '/history?range=5y', ticker, 'history')
       ]);
       if (sequence !== requestSequence) return;
       if (overviewResult.status === 'rejected') throw overviewResult.reason;

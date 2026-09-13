@@ -10,6 +10,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
+import com.batyrbek.finance.cache.PersistentCacheStore;
+import com.batyrbek.finance.cache.VercelSnapshotMirror;
 import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.PricePoint;
 import com.batyrbek.finance.dto.StockHistory;
@@ -38,8 +40,10 @@ class StockServiceTest {
     private final Cache<String, CompanyFundamentals> staleFundamentals = Caffeine.newBuilder().build();
     private final Cache<String, StockHistory> histories = Caffeine.newBuilder().build();
     private final Cache<String, StockHistory> staleHistories = Caffeine.newBuilder().build();
+    private final PersistentCacheStore persistentCache = mock(PersistentCacheStore.class);
+    private final VercelSnapshotMirror snapshotMirror = mock(VercelSnapshotMirror.class);
     private final StockService service = new StockService(provider, new TickerNormalizer(), quotes, staleQuotes,
-            fundamentals, staleFundamentals, histories, staleHistories);
+            fundamentals, staleFundamentals, histories, staleHistories, persistentCache, snapshotMirror);
 
     @Test
     void cachesQuoteAndFundamentalsIndependently() {

@@ -2,6 +2,7 @@ package com.batyrbek.finance.provider.alphavantage;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.StockHistory;
@@ -86,6 +87,25 @@ class AlphaVantageStockDataProviderTest {
 
         assertThatThrownBy(() -> provider.fetchQuote("NVDA"))
                 .isInstanceOf(ProviderRateLimitException.class);
+    }
+
+    @Test
+    void fallsBackToTheNextConfiguredKeyAfterRateLimit() {
+        AtomicInteger calls = new AtomicInteger();
+        ExchangeFunction exchange = request -> {
+            calls.incrementAndGet();
+            String body = request.url().toString().contains("apikey=first-key")
+                    ? "{\"Information\":\"rate limit\"}"
+                    : "{\"Global Quote\":{\"05. price\":\"184.21\"}}";
+            return Mono.just(ClientResponse.create(HttpStatus.OK)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(body).build());
+        };
+        AlphaVantageStockDataProvider provider = new AlphaVantageStockDataProvider(
+                WebClient.builder().exchangeFunction(exchange).build(), "first-key, second-key");
+
+        assertThat(provider.fetchQuote("NVDA").price()).isEqualTo(184.21);
+        assertThat(calls).hasValue(2);
     }
 
     private AlphaVantageStockDataProvider providerFor(ResponseBody responseBody) {

@@ -30,6 +30,8 @@ services:
       - "8080"
     ports:
       - "127.0.0.1:18080:8080"
+    volumes:
+      - finance-cache:/app/data
     networks:
       - website-internal
     healthcheck:
@@ -55,3 +57,7 @@ services:
 networks:
   website-internal:
     name: website-internal
+
+volumes:
+  finance-cache:
+    name: personal-website-finance-cache

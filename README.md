@@ -117,8 +117,10 @@ Create the ignored runtime file from the committed placeholder template:
 cp .env.finance.example .env.finance
 ```
 
-Set `STOCK_API_KEY` to an Alpha Vantage API key. Do not commit `.env.finance`.
-`FINANCE_ALLOWED_ORIGINS` defaults to the two production website origins and
+Set `STOCK_API_KEY` to one Alpha Vantage API key, or add `STOCK_API_KEYS` as a
+comma-separated pool of keys you are authorized to use. Both variables are merged and
+deduplicated. The provider starts requests across the pool and tries the next key only when Alpha Vantage explicitly reports a
+rate limit. Do not commit `.env.finance`. `FINANCE_ALLOWED_ORIGINS` defaults to the two production website origins and
 Astro's usual localhost origins; keep this list narrow.
 
 The optional Astro build variable below changes the browser-visible API host.
@@ -161,21 +163,47 @@ The REST contract is deliberately frontend-friendly:
 
 Quotes are fresh-cached for 15 minutes. Company fundamentals and normalized
 five-year history are fresh-cached for 24 hours. Atomic Caffeine cache loads
-coalesce concurrent requests for the same ticker. Longer-lived fallback caches
-serve the last successful values during provider rate limits or outages while
-retaining their original `updatedAt` value and returning `stale: true`.
+coalesce concurrent requests for the same ticker. Successful provider responses are
+also written atomically to `/app/data/cache` on the named Docker volume
+`personal-website-finance-cache`, so rebuilding or restarting the container does not
+empty the cache. Disk-backed quotes remain usable for two days; fundamentals and
+history remain usable for 30 days during provider failures. Stale responses retain
+their original `updatedAt` and return `stale: true`.
 
 The browser downloads the five-year history once per ticker. Its `1W`, `1M`,
 `6M`, `YTD`, `1Y`, and `5Y` buttons only filter that in-memory array and never
 call the provider or backend again. Provider calls are serialized with a short
-safety interval. Alpha Vantage's standard free service is limited to 25 requests
-per day, so avoid repeatedly rebuilding the container during manual API testing
-because rebuilds clear all in-memory caches.
+safety interval. Alpha Vantage documents a standard limit of 25 requests per day. The exact reset
+time is not documented. Its support page also offers unlimited requests for verified
+open-source or educational projects, which is preferable to creating duplicate
+accounts. Range-button clicks never consume provider requests.
+
+### Optional Vercel outage snapshots
+
+The service can mirror its last successful normalized overview and history responses
+to a private Vercel Blob store. The finance page reads these snapshots only when the
+home-server API is unreachable, unavailable, or rate-limited. This is an outage
+fallback, not the primary cache.
+
+1. In the Vercel project, create and connect a **Private Blob** store.
+2. Create a random shared secret, for example with `openssl rand -hex 32`.
+3. Add `FINANCE_BACKUP_SECRET` to the Vercel Production environment.
+4. Put the same secret in `.env.finance` on the home server and set:
+
+```text
+FINANCE_BACKUP_URL=https://www.batyrbek.com/api/finance-snapshot
+FINANCE_BACKUP_SECRET=the-same-random-secret
+```
+
+Without these optional values, local disk persistence still works and snapshot
+mirroring stays disabled. Never expose the shared secret or Blob credentials in the
+browser.
 
 ### Finance deployment
 
 Before the first production deployment, create `/home/batyr/personal-website/.env.finance`
-on the server and set `STOCK_API_KEY`. Then build all three services:
+on the server and set `STOCK_API_KEY` or `STOCK_API_KEYS`. Configure the optional
+Vercel snapshot values above if desired. Then build all three services:
 
 ```bash
 docker compose -f compose.server.yml up -d --build

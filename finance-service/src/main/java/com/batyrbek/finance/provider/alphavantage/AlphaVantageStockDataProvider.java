@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.PricePoint;
@@ -29,13 +30,15 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(12);
     private static final Duration MINIMUM_REQUEST_INTERVAL = Duration.ofMillis(1200);
     private final WebClient webClient;
-    private final String apiKey;
+    private final List<String> apiKeys;
+    private final AtomicInteger nextApiKey = new AtomicInteger();
     private final Object requestLock = new Object();
     private long nextRequestNanos;
 
-    public AlphaVantageStockDataProvider(WebClient stockWebClient, @Value("${stock.provider.api-key}") String apiKey) {
+    public AlphaVantageStockDataProvider(WebClient stockWebClient, @Value("${stock.provider.api-keys}") String apiKeys) {
         this.webClient = stockWebClient;
-        this.apiKey = apiKey;
+        this.apiKeys = apiKeys == null ? List.of() : java.util.Arrays.stream(apiKeys.split(","))
+                .map(String::trim).filter(key -> !key.isBlank()).distinct().toList();
     }
 
     @Override
@@ -106,12 +109,21 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
 
     private JsonNode request(String function, String ticker) {
         synchronized (requestLock) {
-            paceRequest();
-            return executeRequest(function, ticker);
+            int startIndex = Math.floorMod(nextApiKey.getAndIncrement(), apiKeys.size());
+            ProviderRateLimitException lastRateLimit = null;
+            for (int offset = 0; offset < apiKeys.size(); offset++) {
+                paceRequest();
+                try {
+                    return executeRequest(function, ticker, apiKeys.get((startIndex + offset) % apiKeys.size()));
+                } catch (ProviderRateLimitException exception) {
+                    lastRateLimit = exception;
+                }
+            }
+            throw lastRateLimit == null ? new ProviderRateLimitException() : lastRateLimit;
         }
     }
 
-    private JsonNode executeRequest(String function, String ticker) {
+    private JsonNode executeRequest(String function, String ticker, String apiKey) {
         try {
             JsonNode response = webClient.get().uri(uriBuilder -> uriBuilder.path("/query")
                             .queryParam("function", function).queryParam("symbol", ticker)
@@ -146,7 +158,7 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
     }
 
     private void requireApiKey() {
-        if (apiKey == null || apiKey.isBlank()) throw new StockProviderException("The stock-data service is not configured yet.");
+        if (apiKeys.isEmpty()) throw new StockProviderException("The stock-data service is not configured yet.");
     }
 
     private static String textOrNull(JsonNode node, String field) {
