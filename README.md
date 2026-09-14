@@ -147,10 +147,20 @@ mvn -f finance-service/pom.xml verify
 
 The REST contract is deliberately frontend-friendly:
 
+- `GET /api/finance/supported-stocks` — the manually curated company catalog
+  used for search, sector browsing, comparison selectors, and backend validation;
 - `GET /api/stocks/{ticker}` — quote and normalized company metrics, including
   a `stale` indicator;
 - `GET /api/stocks/{ticker}/history?range=5y` — one cached five-year series with
   `resolution`, `updatedAt`, and `stale` metadata.
+
+The catalog lives in
+`finance-service/src/main/resources/fmp-supported-tickers.json`. The frontend
+uses that same file at build time, so company names and capabilities have one
+source of truth and catalog searches never consume provider requests. Current
+product routes are `/finance`, `/finance/{symbol}`, and
+`/finance/compare?symbols=NVDA,AMD`. Unknown symbols are rejected locally before
+the provider is contacted.
 
 Quotes, company fundamentals, and normalized five-year history are fresh-cached
 for 24 hours. Atomic Caffeine cache loads

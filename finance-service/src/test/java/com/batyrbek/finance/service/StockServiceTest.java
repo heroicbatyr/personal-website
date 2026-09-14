@@ -19,6 +19,7 @@ import com.batyrbek.finance.dto.StockOverview;
 import com.batyrbek.finance.exception.ProviderRateLimitException;
 import com.batyrbek.finance.dto.StockQuote;
 import com.batyrbek.finance.exception.StockProviderException;
+import com.batyrbek.finance.provider.ProviderRouter;
 import com.batyrbek.finance.provider.StockDataProvider;
 import com.batyrbek.finance.validation.TickerNormalizer;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -42,7 +43,9 @@ class StockServiceTest {
     private final Cache<String, StockHistory> staleHistories = Caffeine.newBuilder().build();
     private final PersistentCacheStore persistentCache = mock(PersistentCacheStore.class);
     private final VercelSnapshotMirror snapshotMirror = mock(VercelSnapshotMirror.class);
-    private final StockService service = new StockService(provider, new TickerNormalizer(), quotes, staleQuotes,
+    private final SupportedStockCatalog supportedStocks = new SupportedStockCatalog(
+            new com.fasterxml.jackson.databind.ObjectMapper().findAndRegisterModules());
+    private final StockService service = new StockService(new ProviderRouter(provider, supportedStocks), new TickerNormalizer(), quotes, staleQuotes,
             fundamentals, staleFundamentals, histories, staleHistories, persistentCache, snapshotMirror);
 
     @Test

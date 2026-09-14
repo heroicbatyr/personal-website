@@ -67,6 +67,7 @@ public class FinanceConfiguration {
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/stocks/**", configuration);
+        source.registerCorsConfiguration("/api/finance/**", configuration);
         return new CorsFilter(source);
     }
 }

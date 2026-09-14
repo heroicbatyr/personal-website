@@ -7,6 +7,7 @@ import com.batyrbek.finance.exception.InvalidTickerException;
 import com.batyrbek.finance.exception.ProviderRateLimitException;
 import com.batyrbek.finance.exception.StockNotFoundException;
 import com.batyrbek.finance.exception.StockProviderException;
+import com.batyrbek.finance.exception.UnsupportedTickerException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,11 @@ public class ApiExceptionHandler {
     @ExceptionHandler(StockNotFoundException.class)
     ResponseEntity<ApiError> notFound(StockNotFoundException exception, HttpServletRequest request) {
         return response(HttpStatus.NOT_FOUND, "TICKER_NOT_FOUND", exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(UnsupportedTickerException.class)
+    ResponseEntity<ApiError> unsupportedTicker(UnsupportedTickerException exception, HttpServletRequest request) {
+        return response(HttpStatus.NOT_FOUND, "UNSUPPORTED_TICKER", exception.getMessage(), request);
     }
 
     @ExceptionHandler(ProviderRateLimitException.class)

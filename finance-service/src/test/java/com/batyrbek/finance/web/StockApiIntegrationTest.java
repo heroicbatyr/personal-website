@@ -43,9 +43,9 @@ class StockApiIntegrationTest {
         when(provider.fetchFundamentals("AAPL")).thenReturn(fundamentals("Apple Inc."));
         when(provider.fetchHistory("NVDA")).thenReturn(history("NVDA"));
         when(provider.fetchHistory("AAPL")).thenReturn(history("AAPL"));
-        when(provider.fetchQuote("UNKNOWN")).thenThrow(new StockNotFoundException("UNKNOWN"));
-        when(provider.fetchQuote("LIMITED")).thenThrow(new ProviderRateLimitException());
-        when(provider.fetchQuote("BROKEN")).thenThrow(new StockProviderException("internal provider detail"));
+        when(provider.fetchQuote("META")).thenThrow(new StockNotFoundException("META"));
+        when(provider.fetchQuote("AMZN")).thenThrow(new ProviderRateLimitException());
+        when(provider.fetchQuote("TSLA")).thenThrow(new StockProviderException("internal provider detail"));
     }
 
     @Test
@@ -71,6 +71,16 @@ class StockApiIntegrationTest {
     }
 
     @Test
+    void servesSupportedStockCatalogWithoutProviderCalls() throws Exception {
+        mockMvc.perform(get("/api/finance/supported-stocks").header("Origin", "https://batyrbek.com"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://batyrbek.com"))
+                .andExpect(jsonPath("$.length()").value(53))
+                .andExpect(jsonPath("$[0].symbol").value("NVDA"))
+                .andExpect(jsonPath("$[0].fmp.history").value(true));
+    }
+
+    @Test
     void rejectsInvalidTickerAndUnknownCompanyClearly() throws Exception {
         mockMvc.perform(get("/api/stocks/bad$ticker"))
                 .andExpect(status().isBadRequest())
@@ -79,14 +89,17 @@ class StockApiIntegrationTest {
 
         mockMvc.perform(get("/api/stocks/UNKNOWN"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("TICKER_NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("No public company was found for ticker UNKNOWN."));
+                .andExpect(jsonPath("$.code").value("UNSUPPORTED_TICKER"));
 
-        mockMvc.perform(get("/api/stocks/LIMITED"))
+        mockMvc.perform(get("/api/stocks/META"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("TICKER_NOT_FOUND"));
+
+        mockMvc.perform(get("/api/stocks/AMZN"))
                 .andExpect(status().isTooManyRequests())
                 .andExpect(jsonPath("$.code").value("PROVIDER_RATE_LIMITED"));
 
-        mockMvc.perform(get("/api/stocks/BROKEN"))
+        mockMvc.perform(get("/api/stocks/TSLA"))
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(jsonPath("$.code").value("PROVIDER_UNAVAILABLE"))
                 .andExpect(jsonPath("$.message").value("Market data is temporarily unavailable. Please try again later."));

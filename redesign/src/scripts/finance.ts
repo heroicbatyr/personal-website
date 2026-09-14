@@ -1,3 +1,4 @@
+export {};
 type StockOverview = {
   ticker: string;
   companyName: string | null;
@@ -127,6 +128,7 @@ if (app) {
   const friendlyError = (error: unknown) => {
     if (!(error instanceof ApiRequestError)) return 'Market data is temporarily unavailable. Please try again.';
     if (error.code === 'TICKER_NOT_FOUND') return 'No public company was found for that ticker.';
+    if (error.code === 'UNSUPPORTED_TICKER') return 'That ticker is not in the currently supported research universe.';
     if (error.code === 'PROVIDER_RATE_LIMITED') return 'The market-data provider is rate limited. Please try again later.';
     if (error.code === 'INVALID_TICKER') return 'Enter a valid ticker using up to 10 letters, numbers, periods, or hyphens.';
     return 'Market data is temporarily unavailable. Please try again.';
@@ -308,6 +310,11 @@ if (app) {
     svg.setAttribute('aria-label', `${history.ticker} ${activeRange.toUpperCase()} closing price chart, ${number(performance)} percent`);
   };
 
+  const rememberTicker = (ticker: string) => {
+    const recent = JSON.parse(localStorage.getItem('finance-recent') || '[]') as string[];
+    localStorage.setItem('finance-recent', JSON.stringify([ticker, ...recent.filter(item => item !== ticker)].slice(0, 6)));
+  };
+
   const analyze = async (rawTicker: string) => {
     const sequence = ++requestSequence;
     const ticker = rawTicker.trim().toUpperCase();
@@ -331,6 +338,10 @@ if (app) {
       if (overviewResult.status === 'rejected') throw overviewResult.reason;
       currentOverview = overviewResult.value;
       renderOverview(currentOverview);
+      rememberTicker(ticker);
+      if (window.location.pathname.startsWith('/finance/')) {
+        window.history.replaceState({}, '', '/finance/' + ticker + window.location.search);
+      }
       if (historyResult.status === 'fulfilled') {
         currentHistory = historyResult.value;
         activeRange = '1y';
@@ -387,5 +398,5 @@ if (app) {
       if (currentHistory) renderChart(currentHistory);
     });
   }).observe(chartWrap);
-  void analyze('NVDA');
+  void analyze(app.dataset.initialTicker || 'NVDA');
 }

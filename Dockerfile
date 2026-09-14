@@ -6,6 +6,7 @@ COPY redesign/package*.json ./
 RUN npm ci
 
 COPY redesign ./
+COPY finance-service/src/main/resources/fmp-supported-tickers.json /build/finance-service/src/main/resources/fmp-supported-tickers.json
 RUN npm run build
 
 FROM node:22-alpine

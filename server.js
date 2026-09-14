@@ -21,7 +21,7 @@ app.post('/api/submit-hr', submitHrHandler);
 
 // Keep Cloudflare pointed at this container and forward only stock API traffic
 // to the private Spring Boot service on the Docker network.
-app.use('/api/stocks', async (req, res) => {
+app.use(['/api/stocks', '/api/finance'], async (req, res) => {
     const abortController = new AbortController();
     const timeout = setTimeout(() => abortController.abort(), 45000);
     try {

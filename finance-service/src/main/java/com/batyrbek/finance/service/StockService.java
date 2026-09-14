@@ -11,6 +11,7 @@ import com.batyrbek.finance.dto.StockHistory;
 import com.batyrbek.finance.dto.StockOverview;
 import com.batyrbek.finance.dto.StockQuote;
 import com.batyrbek.finance.exception.StockProviderException;
+import com.batyrbek.finance.provider.ProviderRouter;
 import com.batyrbek.finance.provider.StockDataProvider;
 import com.batyrbek.finance.validation.TickerNormalizer;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -25,7 +26,7 @@ public class StockService {
     private static final Duration FUNDAMENTALS_STALE = Duration.ofDays(30);
     private static final Duration HISTORY_FRESH = Duration.ofHours(24);
     private static final Duration HISTORY_STALE = Duration.ofDays(30);
-    private final StockDataProvider provider;
+    private final ProviderRouter providerRouter;
     private final TickerNormalizer tickerNormalizer;
     private final Cache<String, StockQuote> quoteCache;
     private final Cache<String, StockQuote> staleQuoteCache;
@@ -36,7 +37,7 @@ public class StockService {
     private final PersistentCacheStore persistentCache;
     private final VercelSnapshotMirror snapshotMirror;
 
-    public StockService(StockDataProvider provider, TickerNormalizer tickerNormalizer,
+    public StockService(ProviderRouter providerRouter, TickerNormalizer tickerNormalizer,
                         @Qualifier("quoteCache") Cache<String, StockQuote> quoteCache,
                         @Qualifier("staleQuoteCache") Cache<String, StockQuote> staleQuoteCache,
                         @Qualifier("fundamentalsCache") Cache<String, CompanyFundamentals> fundamentalsCache,
@@ -45,7 +46,7 @@ public class StockService {
                         @Qualifier("staleHistoryCache") Cache<String, StockHistory> staleHistoryCache,
                         PersistentCacheStore persistentCache,
                         VercelSnapshotMirror snapshotMirror) {
-        this.provider = provider;
+        this.providerRouter = providerRouter;
         this.tickerNormalizer = tickerNormalizer;
         this.quoteCache = quoteCache;
         this.staleQuoteCache = staleQuoteCache;
@@ -59,6 +60,7 @@ public class StockService {
 
     public StockOverview getOverview(String rawTicker) {
         String ticker = tickerNormalizer.normalize(rawTicker);
+        StockDataProvider provider = providerRouter.forOverview(ticker);
         CachedResult<StockQuote> quote = cached("quotes", ticker, StockQuote.class, QUOTE_FRESH, QUOTE_STALE,
                 quoteCache, staleQuoteCache,
                 () -> provider.fetchQuote(ticker));
@@ -75,6 +77,7 @@ public class StockService {
 
     public StockHistory getHistory(String rawTicker, String range) {
         String ticker = tickerNormalizer.normalize(rawTicker);
+        StockDataProvider provider = providerRouter.forHistory(ticker);
         if (!"5y".equalsIgnoreCase(range == null ? "" : range.trim())) {
             throw new IllegalArgumentException("Only the 5y history range is supported; shorter ranges are derived client-side.");
         }
