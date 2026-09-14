@@ -66,7 +66,7 @@ class StockApiIntegrationTest {
                 .andExpect(jsonPath("$.ticker").value("AAPL"))
                 .andExpect(jsonPath("$.currency").value("USD"))
                 .andExpect(jsonPath("$.range").value("5y"))
-                .andExpect(jsonPath("$.resolution").value("daily-weekly"))
+                .andExpect(jsonPath("$.resolution").value("weekly"))
                 .andExpect(jsonPath("$.points.length()").value(2));
     }
 
@@ -104,7 +104,7 @@ class StockApiIntegrationTest {
     }
 
     private StockHistory history(String ticker) {
-        return new StockHistory(ticker, null, "5y", "daily-weekly", List.of(
+        return new StockHistory(ticker, null, "5y", "weekly", List.of(
                 new PricePoint(LocalDate.parse("2025-09-13"), 120.42),
                 new PricePoint(LocalDate.parse("2026-09-12"), 184.21)),
                 Instant.parse("2026-09-13T20:00:00Z"), false);

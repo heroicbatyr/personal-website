@@ -12,10 +12,14 @@ stock:
   provider:
     base-url: ${STOCK_API_BASE_URL:https://www.alphavantage.co}
     api-keys: ${STOCK_API_KEYS:},${STOCK_API_KEY:}
+    rate-limit-cooldown: ${STOCK_PROVIDER_RATE_LIMIT_COOLDOWN:PT24H}
   cache:
     directory: ${FINANCE_CACHE_DIR:/app/data/cache}
   backup:
     url: ${FINANCE_BACKUP_URL:}
     secret: ${FINANCE_BACKUP_SECRET:}
+  refresh:
+    tickers: ${STOCK_REFRESH_TICKERS:NVDA,AAPL,MSFT,JPM}
+    cron: "${STOCK_REFRESH_CRON:0 30 22 * * MON-FRI}"
   cors:
     allowed-origins: ${FINANCE_ALLOWED_ORIGINS:https://batyrbek.com,https://www.batyrbek.com,http://localhost:4321,http://127.0.0.1:4321}

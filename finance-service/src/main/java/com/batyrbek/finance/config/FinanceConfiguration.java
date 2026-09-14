@@ -29,7 +29,7 @@ public class FinanceConfiguration {
 
     @Bean
     Cache<String, StockQuote> quoteCache() {
-        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofMinutes(15)).build();
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofHours(24)).build();
     }
 
     @Bean

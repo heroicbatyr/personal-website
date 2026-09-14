@@ -23,7 +23,7 @@ app.post('/api/submit-hr', submitHrHandler);
 // to the private Spring Boot service on the Docker network.
 app.use('/api/stocks', async (req, res) => {
     const abortController = new AbortController();
-    const timeout = setTimeout(() => abortController.abort(), 15000);
+    const timeout = setTimeout(() => abortController.abort(), 45000);
     try {
         const target = new URL(req.originalUrl, financeApiUrl);
         const headers = { accept: 'application/json' };

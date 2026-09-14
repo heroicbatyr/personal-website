@@ -100,11 +100,11 @@ batyrbek.com/finance
 ```
 
 The provider key exists only in the Spring container. Alpha Vantage was chosen
-because its documented company overview, global quote, daily, and weekly
-time-series endpoints cover the dashboard. Its free daily endpoint returns the
-latest 100 trading days; full daily history requires premium access. The API
-therefore combines recent daily closes with older weekly closes for a useful
-five-year series, and labels weekly-only fallback data accurately. Finnhub's
+because its documented company overview, global quote, and weekly
+time-series endpoints cover the dashboard. The dashboard deliberately uses a
+weekly five-year history so one fresh ticker needs three provider requests—not
+four—and labels the chart accurately. This is a daily-close portfolio project,
+not a real-time market-data terminal. Finnhub's
 stock candle endpoint currently requires premium access. The `StockDataProvider`
 interface keeps provider-specific JSON out of the controller, service, cache,
 and frontend layers.
@@ -161,8 +161,8 @@ The REST contract is deliberately frontend-friendly:
 - `GET /api/stocks/{ticker}/history?range=5y` — one cached five-year series with
   `resolution`, `updatedAt`, and `stale` metadata.
 
-Quotes are fresh-cached for 15 minutes. Company fundamentals and normalized
-five-year history are fresh-cached for 24 hours. Atomic Caffeine cache loads
+Quotes, company fundamentals, and normalized five-year history are fresh-cached
+for 24 hours. Atomic Caffeine cache loads
 coalesce concurrent requests for the same ticker. Successful provider responses are
 also written atomically to `/app/data/cache` on the named Docker volume
 `personal-website-finance-cache`, so rebuilding or restarting the container does not
@@ -172,8 +172,11 @@ their original `updatedAt` and return `stale: true`.
 
 The browser downloads the five-year history once per ticker. Its `1W`, `1M`,
 `6M`, `YTD`, `1Y`, and `5Y` buttons only filter that in-memory array and never
-call the provider or backend again. Provider calls are serialized with a short
-safety interval. Alpha Vantage documents a standard limit of 25 requests per day. The exact reset
+call the provider or backend again. Provider calls are serialized at a conservative five-per-minute pace. A provider
+rate-limit response puts only that hashed key into a persistent 24-hour cooldown,
+so repeated visitor requests do not repeatedly probe exhausted keys. On weekdays at
+22:30 UTC, the service warms the demo tickers (NVDA, AAPL, MSFT, JPM) if their
+24-hour cache has expired. Alpha Vantage documents a standard limit of 25 requests per day. The exact reset
 time is not documented. Its support page also offers unlimited requests for verified
 open-source or educational projects, which is preferable to creating duplicate
 accounts. Range-button clicks never consume provider requests.

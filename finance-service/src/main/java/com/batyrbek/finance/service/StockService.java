@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StockService {
-    private static final Duration QUOTE_FRESH = Duration.ofMinutes(15);
+    private static final Duration QUOTE_FRESH = Duration.ofHours(24);
     private static final Duration QUOTE_STALE = Duration.ofDays(2);
     private static final Duration FUNDAMENTALS_FRESH = Duration.ofHours(24);
     private static final Duration FUNDAMENTALS_STALE = Duration.ofDays(30);

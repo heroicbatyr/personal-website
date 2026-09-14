@@ -1,9 +1,11 @@
 package com.batyrbek.finance.provider.alphavantage;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.batyrbek.finance.cache.ProviderRateLimitCooldownStore;
 import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.StockHistory;
 import com.batyrbek.finance.dto.StockQuote;
@@ -20,6 +22,7 @@ import reactor.core.publisher.Mono;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 class AlphaVantageStockDataProviderTest {
     @Test
@@ -41,44 +44,41 @@ class AlphaVantageStockDataProviderTest {
     }
 
     @Test
-    void combinesFiveYearWeeklyAndRecentDailyHistory() {
+    void returnsWeeklyFiveYearHistoryWithOneUpstreamSeries() {
         LocalDate recent = LocalDate.now(ZoneOffset.UTC).minusDays(7);
-        LocalDate older = LocalDate.now(ZoneOffset.UTC).minusDays(14);
         LocalDate weeklyOlder = LocalDate.now(ZoneOffset.UTC).minusYears(2);
         LocalDate expired = LocalDate.now(ZoneOffset.UTC).minusYears(6);
-        AlphaVantageStockDataProvider provider = providerFor((url) -> {
-            if (url.contains("TIME_SERIES_WEEKLY")) {
-                return "{\"Weekly Time Series\":{" +
-                        "\"" + recent + "\":{\"4. close\":\"180.00\"}," +
-                        "\"" + weeklyOlder + "\":{\"4. close\":\"80.00\"}," +
-                        "\"" + expired + "\":{\"4. close\":\"40.00\"}}}";
-            }
-            return "{\"Time Series (Daily)\":{" +
-                    "\"" + recent + "\":{\"4. close\":\"184.21\"}," +
-                    "\"" + older + "\":{\"4. close\":\"175.00\"}}}";
-        });
+        AlphaVantageStockDataProvider provider = providerFor((url) -> "{\"Weekly Time Series\":{\"" + recent + "\":{\"4. close\":\"180.00\"}," +
+                "\"" + weeklyOlder + "\":{\"4. close\":\"80.00\"}," +
+                "\"" + expired + "\":{\"4. close\":\"40.00\"}}}");
 
         StockHistory result = provider.fetchHistory("NVDA");
 
         assertThat(result.range()).isEqualTo("5y");
-        assertThat(result.resolution()).isEqualTo("daily-weekly");
-        assertThat(result.points()).hasSize(3);
+        assertThat(result.resolution()).isEqualTo("weekly");
+        assertThat(result.points()).hasSize(2);
         assertThat(result.points().getFirst().date()).isEqualTo(weeklyOlder);
         assertThat(result.points().getLast().date()).isEqualTo(recent);
-        assertThat(result.points().getLast().close()).isEqualTo(184.21);
+        assertThat(result.points().getLast().close()).isEqualTo(180.00);
     }
 
     @Test
-    void keepsWeeklyHistoryWhenOptionalDailyRequestIsRateLimited() {
+    void doesNotRequestOptionalDailyHistory() {
         LocalDate date = LocalDate.now(ZoneOffset.UTC).minusDays(7);
-        AlphaVantageStockDataProvider provider = providerFor((url) -> url.contains("TIME_SERIES_WEEKLY")
-                ? "{\"Weekly Time Series\":{\"" + date + "\":{\"4. close\":\"184.21\"}}}"
-                : "{\"Note\":\"rate limit\"}");
+        AtomicInteger dailyCalls = new AtomicInteger();
+        AlphaVantageStockDataProvider provider = providerFor((url) -> {
+            if (url.contains("TIME_SERIES_DAILY")) {
+                dailyCalls.incrementAndGet();
+                return "{\"Note\":\"rate limit\"}";
+            }
+            return "{\"Weekly Time Series\":{\"" + date + "\":{\"4. close\":\"184.21\"}}}";
+        });
 
         StockHistory result = provider.fetchHistory("NVDA");
 
         assertThat(result.resolution()).isEqualTo("weekly");
         assertThat(result.points()).hasSize(1);
+        assertThat(dailyCalls).hasValue(0);
     }
 
     @Test
@@ -102,7 +102,8 @@ class AlphaVantageStockDataProviderTest {
                     .body(body).build());
         };
         AlphaVantageStockDataProvider provider = new AlphaVantageStockDataProvider(
-                WebClient.builder().exchangeFunction(exchange).build(), "first-key, second-key");
+                WebClient.builder().exchangeFunction(exchange).build(), "first-key, second-key",
+                Duration.ofMinutes(15), mock(ProviderRateLimitCooldownStore.class));
 
         assertThat(provider.fetchQuote("NVDA").price()).isEqualTo(184.21);
         assertThat(calls).hasValue(2);
@@ -113,7 +114,8 @@ class AlphaVantageStockDataProviderTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(responseBody.forUrl(request.url().toString()))
                 .build());
-        return new AlphaVantageStockDataProvider(WebClient.builder().exchangeFunction(exchange).build(), "test-key");
+        return new AlphaVantageStockDataProvider(WebClient.builder().exchangeFunction(exchange).build(), "test-key",
+                Duration.ofMinutes(15), mock(ProviderRateLimitCooldownStore.class));
     }
 
     private interface ResponseBody {

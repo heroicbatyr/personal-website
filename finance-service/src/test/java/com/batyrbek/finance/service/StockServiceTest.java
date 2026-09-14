@@ -120,7 +120,7 @@ class StockServiceTest {
     }
 
     private StockHistory history(String ticker) {
-        return new StockHistory(ticker, null, "5y", "daily-weekly", List.of(
+        return new StockHistory(ticker, null, "5y", "weekly", List.of(
                 new PricePoint(LocalDate.parse("2021-09-14"), 40.0),
                 new PricePoint(LocalDate.parse("2026-09-12"), 100.0)),
                 Instant.parse("2026-09-14T01:30:00Z"), false);

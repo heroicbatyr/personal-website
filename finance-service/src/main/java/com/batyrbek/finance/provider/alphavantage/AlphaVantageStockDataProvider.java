@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.batyrbek.finance.cache.ProviderRateLimitCooldownStore;
 import com.batyrbek.finance.dto.CompanyFundamentals;
 import com.batyrbek.finance.dto.PricePoint;
 import com.batyrbek.finance.dto.StockHistory;
@@ -28,17 +29,24 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 public class AlphaVantageStockDataProvider implements StockDataProvider {
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(12);
-    private static final Duration MINIMUM_REQUEST_INTERVAL = Duration.ofMillis(1200);
+    private static final Duration MINIMUM_REQUEST_INTERVAL = Duration.ofSeconds(12);
     private final WebClient webClient;
     private final List<String> apiKeys;
+    private final ProviderRateLimitCooldownStore cooldownStore;
+    private final Duration rateLimitCooldown;
     private final AtomicInteger nextApiKey = new AtomicInteger();
     private final Object requestLock = new Object();
     private long nextRequestNanos;
 
-    public AlphaVantageStockDataProvider(WebClient stockWebClient, @Value("${stock.provider.api-keys}") String apiKeys) {
+    public AlphaVantageStockDataProvider(WebClient stockWebClient,
+                                         @Value("${stock.provider.api-keys}") String apiKeys,
+                                         @Value("${stock.provider.rate-limit-cooldown:PT24H}") Duration rateLimitCooldown,
+                                         ProviderRateLimitCooldownStore cooldownStore) {
         this.webClient = stockWebClient;
         this.apiKeys = apiKeys == null ? List.of() : java.util.Arrays.stream(apiKeys.split(","))
                 .map(String::trim).filter(key -> !key.isBlank()).distinct().toList();
+        this.rateLimitCooldown = rateLimitCooldown;
+        this.cooldownStore = cooldownStore;
     }
 
     @Override
@@ -73,26 +81,9 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
         }
         LocalDate cutoff = LocalDate.now(ZoneOffset.UTC).minusYears(5);
         TreeMap<LocalDate, Double> weekly = readSeries(weeklySeries, cutoff);
-        TreeMap<LocalDate, Double> daily = new TreeMap<>();
-        try {
-            JsonNode dailySeries = request("TIME_SERIES_DAILY", ticker).path("Time Series (Daily)");
-            if (dailySeries.isObject()) daily.putAll(readSeries(dailySeries, cutoff));
-        } catch (StockProviderException ignored) {
-            // Weekly history remains useful when the optional daily request is unavailable.
-        }
-
-        TreeMap<LocalDate, Double> combined = new TreeMap<>();
-        if (daily.isEmpty()) {
-            combined.putAll(weekly);
-        } else {
-            weekly.entrySet().stream().filter(entry -> entry.getKey().isBefore(daily.firstKey()))
-                    .forEach(entry -> combined.put(entry.getKey(), entry.getValue()));
-            combined.putAll(daily);
-        }
-        List<PricePoint> points = combined.entrySet().stream()
+        List<PricePoint> points = weekly.entrySet().stream()
                 .map(entry -> new PricePoint(entry.getKey(), entry.getValue())).toList();
-        String resolution = daily.isEmpty() ? "weekly" : "daily-weekly";
-        return new StockHistory(ticker, null, "5y", resolution, points, Instant.now(), false);
+        return new StockHistory(ticker, null, "5y", "weekly", points, Instant.now(), false);
     }
 
     private static TreeMap<LocalDate, Double> readSeries(JsonNode series, LocalDate cutoff) {
@@ -112,10 +103,13 @@ public class AlphaVantageStockDataProvider implements StockDataProvider {
             int startIndex = Math.floorMod(nextApiKey.getAndIncrement(), apiKeys.size());
             ProviderRateLimitException lastRateLimit = null;
             for (int offset = 0; offset < apiKeys.size(); offset++) {
+                String apiKey = apiKeys.get((startIndex + offset) % apiKeys.size());
+                if (cooldownStore.isBlocked(apiKey)) continue;
                 paceRequest();
                 try {
-                    return executeRequest(function, ticker, apiKeys.get((startIndex + offset) % apiKeys.size()));
+                    return executeRequest(function, ticker, apiKey);
                 } catch (ProviderRateLimitException exception) {
+                    cooldownStore.block(apiKey, rateLimitCooldown);
                     lastRateLimit = exception;
                 }
             }
