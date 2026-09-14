@@ -95,7 +95,7 @@ class StockApiIntegrationTest {
 
 
     private StockQuote quote(double price) {
-        return new StockQuote(price, 1.2, 0.7, Instant.parse("2026-09-13T20:00:00Z"));
+        return new StockQuote(price, 1.2, 0.7, 12_000_000L, Instant.parse("2026-09-13T20:00:00Z"));
     }
 
     private CompanyFundamentals fundamentals(String name) {

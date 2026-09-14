@@ -8,7 +8,7 @@ type StockOverview = {
   marketCap: number | null;
   peRatio: number | null;
   eps: number | null;
-  dividendYield: number | null;
+  volume: number | null;
   week52High: number | null;
   week52Low: number | null;
   updatedAt: string;
@@ -88,6 +88,11 @@ if (app) {
     }
   };
 
+  const compactNumber = (value: number | null) => {
+    if (value == null) return '—';
+    return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(value);
+  };
+
   const setLoading = (loading: boolean) => {
     app.toggleAttribute('aria-busy', loading);
     submit.disabled = loading;
@@ -147,7 +152,7 @@ if (app) {
     text('[data-market-cap]', compactMoney(stock.marketCap, stock.currency));
     text('[data-pe]', number(stock.peRatio));
     text('[data-eps]', money(stock.eps, stock.currency));
-    text('[data-dividend]', stock.dividendYield == null ? '—' : `${number(stock.dividendYield * 100)}%`);
+    text('[data-volume]', compactNumber(stock.volume));
     text('[data-week-low]', money(stock.week52Low, stock.currency));
     text('[data-week-high]', money(stock.week52High, stock.currency));
     text('[data-updated]', new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(stock.updatedAt)));

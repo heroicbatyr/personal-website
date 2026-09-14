@@ -38,7 +38,7 @@ public class FmpStockDataProvider implements StockDataProvider {
     public StockQuote fetchQuote(String ticker) {
         JsonNode quote = first(request("quote", ticker), ticker);
         return new StockQuote(number(quote, "price"), number(quote, "change"),
-                number(quote, "changesPercentage", "changePercentage"), Instant.now());
+                number(quote, "changesPercentage", "changePercentage"), longNumber(quote, "volume"), Instant.now());
     }
 
     @Override

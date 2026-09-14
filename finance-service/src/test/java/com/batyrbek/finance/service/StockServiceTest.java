@@ -111,7 +111,7 @@ class StockServiceTest {
     }
 
     private StockQuote quote() {
-        return new StockQuote(100.0, 1.0, 1.0, Instant.parse("2026-09-14T01:30:00Z"));
+        return new StockQuote(100.0, 1.0, 1.0, 12_000_000L, Instant.parse("2026-09-14T01:30:00Z"));
     }
 
     private CompanyFundamentals fundamentals(String ticker) {

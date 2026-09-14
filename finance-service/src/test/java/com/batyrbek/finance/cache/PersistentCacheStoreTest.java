@@ -17,7 +17,7 @@ class PersistentCacheStoreTest {
     @Test
     void restoresAValueFromDiskAcrossStoreInstances() {
         ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
-        StockQuote quote = new StockQuote(184.21, 3.33, 1.84,
+        StockQuote quote = new StockQuote(184.21, 3.33, 1.84, 56_000_000L,
                 Instant.parse("2026-09-13T20:00:00Z"));
         new PersistentCacheStore(objectMapper, temporaryDirectory.toString()).write("quotes", "NVDA", quote);
 

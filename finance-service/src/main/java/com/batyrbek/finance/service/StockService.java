@@ -67,7 +67,7 @@ public class StockService {
         StockQuote q = quote.value();
         CompanyFundamentals f = fundamentals.value();
         StockOverview overview = new StockOverview(ticker, f.companyName(), f.currency(), q.price(), q.change(),
-                q.changePercent(), f.marketCap(), f.peRatio(), f.eps(), f.dividendYield(),
+                q.changePercent(), f.marketCap(), f.peRatio(), f.eps(), q.volume(),
                 f.week52High(), f.week52Low(), q.updatedAt(), quote.stale() || fundamentals.stale());
         snapshotMirror.backup("overview", ticker, overview.updatedAt(), overview);
         return overview;

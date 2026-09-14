@@ -27,10 +27,12 @@ class FmpStockDataProviderTest {
             }
             if (url.contains("key-metrics-ttm")) return "[{\"earningsYieldTTM\":0.023364}]";
             if (url.contains("income-statement")) return "[{\"epsDiluted\":4.3}]";
-            return "[{\"price\":184.21,\"change\":3.33,\"changePercentage\":1.84,\"yearHigh\":212.19,\"yearLow\":86.62}]";
+            return "[{\"price\":184.21,\"change\":3.33,\"changePercentage\":1.84,\"volume\":52000000,\"yearHigh\":212.19,\"yearLow\":86.62}]";
         });
 
-        assertThat(provider.fetchQuote("NVDA").price()).isEqualTo(184.21);
+        var quote = provider.fetchQuote("NVDA");
+        assertThat(quote.price()).isEqualTo(184.21);
+        assertThat(quote.volume()).isEqualTo(52_000_000L);
         var fundamentals = provider.fetchFundamentals("NVDA");
         assertThat(fundamentals.companyName()).isEqualTo("NVIDIA Corporation");
         assertThat(fundamentals.marketCap()).isEqualTo(4500000000000L);
