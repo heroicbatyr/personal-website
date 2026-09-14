@@ -50,6 +50,12 @@ public class SupportedStockCatalog {
         return stock;
     }
 
+    public SupportedStock requireFinancials(String symbol) {
+        SupportedStock stock = find(symbol).orElseThrow(() -> new UnsupportedTickerException(symbol));
+        if (!stock.fmp().financials()) throw new UnsupportedTickerException(symbol);
+        return stock;
+    }
+
     public SupportedStock requireHistory(String symbol) {
         SupportedStock stock = find(symbol).orElseThrow(() -> new UnsupportedTickerException(symbol));
         if (!stock.fmp().history()) throw new UnsupportedTickerException(symbol);

@@ -2,169 +2,176 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
+import stocks from '../../../finance-service/src/main/resources/fmp-supported-tickers.json';
 
 interface Props { stock: { symbol: string; name: string; sector: string; category: string } }
 const { stock } = Astro.props;
 const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.batyrbek.com';
 const compareSymbol = stock.symbol === 'NVDA' ? 'AMD' : 'NVDA';
 ---
-<BaseLayout title={`${stock.name} (${stock.symbol}) — Market Atlas`} description="A lightweight stock research dashboard powered by a Java and Spring Boot API.">
+<BaseLayout title={`${stock.name} (${stock.symbol}) — Market Atlas`} description={`Research ${stock.name} price history, fundamentals, and annual financial performance.`}>
   <Header active="Finance" />
-  <main class="finance-page page-shell" data-finance-app data-api-base={apiBase} data-initial-ticker={stock.symbol}>
+  <main class="finance-page page-shell" data-finance-app data-api-base={apiBase} data-initial-ticker={stock.symbol} data-stocks={JSON.stringify(stocks)}>
     <header class="finance-intro">
       <div>
         <a class="finance-back" href="/finance">← Market Atlas</a>
         <p class="eyebrow section-label">{stock.sector} · {stock.symbol}</p>
         <h1>{stock.name}</h1>
       </div>
-      <div class="finance-intro-aside"><p>{stock.category}. Review the latest available price, essential fundamentals, and up to five years of market history.</p><a class="button" href={`/finance/compare?symbols=${stock.symbol},${compareSymbol}`}>Compare company</a></div>
+      <div class="finance-intro-aside">
+        <p>{stock.category}. Review price history, essential fundamentals, and annual financial performance.</p>
+        <a class="button button-dark" href={`/finance/compare?symbols=${stock.symbol},${compareSymbol}`}>Compare company</a>
+      </div>
     </header>
 
-    <section class="research-console" aria-labelledby="research-heading">
-      <div class="console-heading">
-        <div><p class="eyebrow">Company lookup</p><h2 id="research-heading">Analyze a ticker.</h2></div>
-        <span class="service-label"><i></i> Java API</span>
-      </div>
-      <form class="ticker-form" data-stock-form>
-        <label for="ticker">Ticker symbol</label>
-        <div class="ticker-control">
-          <input id="ticker" data-ticker-input name="ticker" value={stock.symbol} maxlength="10" autocomplete="off" spellcheck="false" aria-describedby="ticker-hint" />
-          <button class="button button-dark" data-analyze type="submit">Analyze</button>
-        </div>
-        <p id="ticker-hint">Try a US-listed company symbol.</p>
+    <section class="company-toolbar" aria-label="Company navigation">
+      <form data-company-jump>
+        <label for="company-jump">Jump to another company</label>
+        <div><input id="company-jump" data-company-jump-input list="company-options" autocomplete="off" placeholder="Ticker or company name" /><button type="submit" aria-label="Open company">→</button></div>
+        <datalist id="company-options">{stocks.map(item => <option value={item.symbol}>{item.name}</option>)}</datalist>
       </form>
-      <div class="quick-looks" aria-label="Curated ticker shortcuts">
-        <span>Quick looks</span>
-        <div class="quick-ticker-group">
-          <p>Big tech</p>
-          <div>{['NVDA', 'AAPL', 'MSFT', 'GOOGL', 'META', 'AMZN', 'TSLA', 'AMD'].map(ticker => <button type="button" data-quick-ticker={ticker}>{ticker}</button>)}</div>
-        </div>
-        <div class="quick-ticker-group">
-          <p>Markets &amp; leaders</p>
-          <div>{['JPM', 'V', 'WMT', 'NFLX'].map(ticker => <button type="button" data-quick-ticker={ticker}>{ticker}</button>)}</div>
-        </div>
-      </div>
-      <p class="research-status" data-status data-kind="loading" role="status" aria-live="polite">Loading {stock.symbol} market data…</p>
+      <a href={`/finance/compare?symbols=${stock.symbol},${compareSymbol}`}><span>Compare</span><strong>{stock.symbol} vs another company</strong><i>↗</i></a>
+      <p data-status data-kind="loading" role="status" aria-live="polite">Loading {stock.symbol} research…</p>
     </section>
 
-    <section class="empty-state" data-empty-state hidden>
-      <p class="eyebrow">No result to display</p>
-      <p>Enter another ticker or use one of the quick-look buttons above.</p>
-    </section>
+    <nav class="company-tabs" aria-label="Company research sections">
+      <a href={`/finance/${stock.symbol}`} data-tab-link="overview" aria-current="page">Overview</a>
+      <a href={`/finance/${stock.symbol}?tab=financials`} data-tab-link="financials">Financials</a>
+      <span title="Planned for the next iteration">Earnings <small>Next</small></span>
+    </nav>
 
-    <div class="stock-results" data-results hidden>
-      <section class="quote-panel" aria-labelledby="company-name">
-        <div class="company-heading">
-          <div><p class="eyebrow" data-company-ticker>{stock.symbol}</p><h2 id="company-name" data-company-name>{stock.name}</h2></div>
-          <div class="quote-value"><strong data-price>—</strong><span data-change data-direction="neutral">—</span></div>
-        </div>
-        <div class="metric-grid">
-          <article><p>Market cap</p><strong data-market-cap>—</strong></article>
-          <article><p>P / E ratio</p><strong data-pe>—</strong></article>
-          <article><p>EPS</p><strong data-eps>—</strong></article>
-          <article><p>Trading volume</p><strong data-volume>—</strong></article>
-          <article><p>52-week low</p><strong data-week-low>—</strong></article>
-          <article><p>52-week high</p><strong data-week-high>—</strong></article>
-        </div>
+    <section data-tab-panel="overview">
+      <section class="empty-state" data-empty-state hidden>
+        <p class="eyebrow">No result to display</p>
+        <p>Market data is temporarily unavailable. The previously displayed company is preserved when possible.</p>
       </section>
 
-      <section class="chart-panel" aria-labelledby="chart-heading">
-        <div class="chart-heading">
-          <div>
-            <p class="eyebrow">Price history</p>
-            <h2 id="chart-heading" data-chart-heading>One year.</h2>
-            <p class="chart-performance" data-performance data-direction="neutral">—</p>
+      <div class="stock-results" data-results hidden>
+        <section class="quote-panel" aria-labelledby="company-name">
+          <div class="company-heading">
+            <div><p class="eyebrow" data-company-ticker>{stock.symbol}</p><h2 id="company-name" data-company-name>{stock.name}</h2><p class="company-classification" data-company-classification>{stock.sector}</p></div>
+            <div class="quote-value"><strong data-price>—</strong><span data-change data-direction="neutral">—</span></div>
           </div>
-          <span data-resolution>Daily + weekly close</span>
-        </div>
-        <div class="range-selector" role="group" aria-label="Price history range">
-          {['1W', '1M', '6M', 'YTD', '1Y', '5Y'].map(range =>
-            <button type="button" data-range={range.toLowerCase()} aria-pressed={range === '1Y'}>{range}</button>)}
-        </div>
-        <div class="chart-wrap" data-chart-wrap tabindex="0" aria-label="Use pointer or arrow keys to inspect prices">
-          <svg data-chart role="img" aria-label="Price history chart"></svg>
-          <div class="chart-tooltip" data-chart-tooltip hidden>
-            <time data-tooltip-date></time>
-            <strong data-tooltip-price></strong>
+          <div class="metric-grid">
+            <article data-metric="marketCap"><p>Market cap</p><strong data-market-cap>—</strong></article>
+            <article data-metric="peRatio"><p>P / E ratio</p><strong data-pe>—</strong></article>
+            <article data-metric="eps"><p>EPS</p><strong data-eps>—</strong></article>
+            <article data-metric="volume"><p>Trading volume</p><strong data-volume>—</strong></article>
+            <article data-metric="revenueGrowth"><p>Revenue growth</p><strong data-revenue-growth>—</strong></article>
+            <article data-metric="netMargin"><p>Net margin</p><strong data-net-margin>—</strong></article>
+            <article data-metric="freeCashFlow"><p>Free cash flow</p><strong data-free-cash-flow>—</strong></article>
+            <article data-metric="week52Low"><p>52-week low</p><strong data-week-low>—</strong></article>
+            <article data-metric="week52High"><p>52-week high</p><strong data-week-high>—</strong></article>
           </div>
-          <p data-chart-status aria-live="polite"></p>
-        </div>
-      </section>
+        </section>
 
-      <footer class="data-note">
-        <p>Latest available provider data. Last updated <time data-updated>—</time>.</p>
-        <p>Educational purposes only — not investment advice.</p>
-      </footer>
-    </div>
+        <section class="chart-panel" aria-labelledby="chart-heading">
+          <div class="chart-heading">
+            <div><p class="eyebrow">Price history</p><h2 id="chart-heading" data-chart-heading>One year.</h2><p class="chart-performance" data-performance data-direction="neutral">—</p></div>
+            <span data-resolution>Daily close</span>
+          </div>
+          <div class="range-selector" role="group" aria-label="Price history range">
+            {['1W', '1M', '6M', 'YTD', '1Y', '5Y'].map(range =>
+              <button type="button" data-range={range.toLowerCase()} aria-pressed={range === '1Y'}>{range}</button>)}
+          </div>
+          <div class="chart-wrap" data-chart-wrap tabindex="0" aria-label="Use pointer or arrow keys to inspect prices">
+            <svg data-chart role="img" aria-label="Price history chart"></svg>
+            <div class="chart-tooltip" data-chart-tooltip hidden><time data-tooltip-date></time><strong data-tooltip-price></strong></div>
+            <p data-chart-status aria-live="polite"></p>
+          </div>
+        </section>
 
-    <section class="build-note">
-      <p class="eyebrow section-label">Behind the page</p>
-      <div>
-        <h2>A focused full-stack build.</h2>
-        <p>The interface stays deliberately small. A Dockerized Java 21 and Spring Boot service handles provider integration, normalized DTOs, validation, caching, and safe failure states behind the scenes.</p>
+        <section class="business-panel" aria-labelledby="business-heading">
+          <div><p class="eyebrow">Business snapshot</p><h2 id="business-heading">What the company does.</h2></div>
+          <div class="business-copy"><p data-description>Company information is loading…</p><div class="profile-grid">
+            <article data-profile="ceo"><span>Chief executive</span><strong data-ceo>—</strong></article>
+            <article data-profile="employees"><span>Employees</span><strong data-employees>—</strong></article>
+            <article data-profile="headquarters"><span>Headquarters</span><strong data-headquarters>—</strong></article>
+            <article data-profile="website"><span>Website</span><a data-website target="_blank" rel="noreferrer">—</a></article>
+          </div></div>
+        </section>
+
+        <footer class="data-note"><p><span data-source>FMP</span> data · Last updated <time data-updated>—</time>.</p><p>Educational purposes only — not investment advice.</p></footer>
       </div>
     </section>
+
+    <section class="financials-panel" data-tab-panel="financials" hidden aria-labelledby="financials-heading">
+      <header><div><p class="eyebrow">Annual statements</p><h2 id="financials-heading">Financial performance.</h2></div><p>Five reported fiscal years, normalized from provider statements and refreshed at most once every seven days.</p></header>
+      <p class="financials-status" data-financials-status role="status" aria-live="polite">Financials load only when this tab is opened.</p>
+      <div data-financials-content hidden>
+        <div class="financial-chart-grid">
+          <article><p>Revenue</p><strong data-latest-revenue>—</strong><svg data-financial-chart="revenue" role="img" aria-label="Annual revenue"></svg></article>
+          <article><p>Net income</p><strong data-latest-net-income>—</strong><svg data-financial-chart="netIncome" role="img" aria-label="Annual net income"></svg></article>
+          <article><p>Free cash flow</p><strong data-latest-fcf>—</strong><svg data-financial-chart="freeCashFlow" role="img" aria-label="Annual free cash flow"></svg></article>
+        </div>
+        <div class="financial-table-wrap"><table>
+          <thead><tr><th>Year</th><th>Revenue</th><th>Operating income</th><th>Net income</th><th>EPS</th><th>Free cash flow</th></tr></thead>
+          <tbody data-financial-rows></tbody>
+        </table></div>
+        <div class="balance-grid">
+          <article><span>Cash &amp; equivalents</span><strong data-cash>—</strong></article>
+          <article><span>Total debt</span><strong data-debt>—</strong></article>
+          <article><span>Debt / equity</span><strong data-debt-equity>—</strong></article>
+        </div>
+        <footer class="data-note"><p><span data-financial-source>FMP</span> annual statements · As of <time data-financial-as-of>—</time>.</p><p>Educational purposes only — not investment advice.</p></footer>
+      </div>
+    </section>
+
+    <section class="build-note"><p class="eyebrow section-label">Behind the page</p><div><h2>Small architecture, useful depth.</h2><p>A Dockerized Java 21 and Spring Boot service normalizes provider data, coalesces concurrent requests, and persists separate quote, history, and statement caches.</p></div></section>
   </main>
   <Footer />
 </BaseLayout>
 
-<script>
-  import '../scripts/finance.ts';
-</script>
+<script>import '../scripts/finance.ts';</script>
 
 <style>
   .finance-page { padding-top:clamp(4rem,8vw,8rem); padding-bottom:7rem; }
-  .finance-intro { display:grid; grid-template-columns:1.5fr .7fr; gap:4rem; align-items:end; margin-bottom:clamp(4rem,8vw,8rem); }
+  .finance-intro { display:grid; grid-template-columns:1.5fr .7fr; gap:4rem; align-items:end; margin-bottom:clamp(3rem,6vw,6rem); }
   .finance-back { display:inline-block; margin-bottom:1.25rem; color:var(--muted); font:.68rem var(--mono); text-transform:uppercase; text-decoration:none; }
   .finance-back:hover,.finance-back:focus-visible { color:var(--ochre); outline:0; }
   .finance-intro h1 { margin:0; max-width:62rem; font-size:clamp(3.6rem,7vw,7rem); line-height:.9; letter-spacing:-.055em; font-weight:500; }
   .finance-intro-aside p { max-width:30rem; margin:0 0 1.25rem; color:var(--muted); }
-  .finance-intro-aside .button { width:max-content; }
-  .research-console { border:1px solid var(--line); background:color-mix(in srgb,var(--panel) 48%,transparent); padding:clamp(1.25rem,3vw,2.5rem); }
-  .console-heading,.company-heading,.chart-heading { display:flex; justify-content:space-between; gap:2rem; align-items:flex-start; }
-  .console-heading h2,.quote-panel h2,.chart-panel h2,.build-note h2 { margin:0; font-size:clamp(2rem,4vw,3.8rem); line-height:1; font-weight:500; letter-spacing:-.045em; }
-  .service-label { display:flex; align-items:center; gap:.55rem; font:.65rem var(--mono); text-transform:uppercase; color:var(--muted); }
-  .service-label i { display:block; width:.45rem; height:.45rem; border-radius:50%; background:#65885f; box-shadow:0 0 0 4px color-mix(in srgb,#65885f 18%,transparent); }
-  .ticker-form { max-width:52rem; margin-top:3rem; }
-  .ticker-form label,.quick-looks > span { display:block; margin-bottom:.5rem; font:.65rem var(--mono); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
-  .ticker-control { display:flex; border-bottom:1px solid var(--ink); }
-  .ticker-control input { min-width:0; flex:1; border:0; outline:0; background:transparent; color:var(--ink); padding:.7rem 0; font:500 clamp(1.7rem,4vw,3rem)/1 var(--mono); text-transform:uppercase; }
-  .ticker-control .button { border:0; cursor:pointer; min-width:8rem; justify-content:center; }
-  .ticker-control .button:disabled { opacity:.6; cursor:wait; }
-  .ticker-form > p { margin:.7rem 0 0; color:var(--muted); font-size:.76rem; }
-  .quick-looks { display:grid; grid-template-columns:auto 1fr 1fr; gap:1rem 1.5rem; align-items:start; margin-top:2rem; }
-  .quick-looks > span { margin-top:.45rem; }
-  .quick-ticker-group { display:flex; gap:.55rem; align-items:center; flex-wrap:wrap; }
-  .quick-ticker-group p { margin:0; color:var(--muted); font:.62rem var(--mono); text-transform:uppercase; white-space:nowrap; }
-  .quick-ticker-group > div { display:flex; gap:.45rem; flex-wrap:wrap; }
-  .quick-ticker-group button { border:1px solid var(--line); background:transparent; color:var(--ink); padding:.5rem .7rem; font:.68rem var(--mono); cursor:pointer; transition:border-color .2s,color .2s,background .2s; }
-  .quick-ticker-group button:hover,.quick-ticker-group button:focus-visible { border-color:var(--ochre); color:var(--ochre); outline:0; }
-  .research-status { min-height:1.3rem; margin:1.5rem 0 0; font:.72rem var(--mono); color:var(--muted); }
-  .research-status[data-kind='error'] { color:#9a433d; }
-  .research-status[data-kind='success'] { color:#55774f; }
+  .company-toolbar { display:grid; grid-template-columns:1.35fr .65fr; border:1px solid var(--line); background:color-mix(in srgb,var(--panel) 48%,transparent); }
+  .company-toolbar form { padding:1.15rem 1.4rem; border-right:1px solid var(--line); }
+  .company-toolbar label { display:block; margin-bottom:.4rem; color:var(--muted); font:.61rem var(--mono); text-transform:uppercase; }
+  .company-toolbar form > div { display:flex; border-bottom:1px solid var(--ink); }
+  .company-toolbar input { min-width:0; flex:1; border:0; outline:0; padding:.45rem 0; background:transparent; color:var(--ink); font:500 1rem var(--sans); }
+  .company-toolbar button { border:0; background:transparent; color:var(--ink); font-size:1.35rem; cursor:pointer; }
+  .company-toolbar > a { position:relative; display:flex; flex-direction:column; justify-content:center; padding:1.15rem 3rem 1.15rem 1.4rem; color:var(--ink); text-decoration:none; }
+  .company-toolbar > a:hover,.company-toolbar > a:focus-visible { background:var(--panel); outline:0; }
+  .company-toolbar > a span { color:var(--muted); font:.61rem var(--mono); text-transform:uppercase; }
+  .company-toolbar > a strong { margin-top:.35rem; font-size:.9rem; font-weight:500; }
+  .company-toolbar > a i { position:absolute; right:1.3rem; font-style:normal; color:var(--ochre); }
+  .company-toolbar > p { grid-column:1/-1; min-height:2.2rem; margin:0; padding:.6rem 1.4rem; border-top:1px solid var(--line); color:var(--muted); font:.67rem var(--mono); }
+  .company-toolbar > p[data-kind='error'] { color:#9a433d; }
+  .company-toolbar > p[data-kind='success'] { color:#55774f; }
+  .company-tabs { display:flex; gap:0; margin-top:2rem; border-bottom:1px solid var(--line); }
+  .company-tabs a,.company-tabs > span { padding:.8rem 1.15rem; color:var(--muted); font:.68rem var(--mono); text-decoration:none; text-transform:uppercase; }
+  .company-tabs a:hover,.company-tabs a:focus-visible { color:var(--ink); outline:0; }
+  .company-tabs a[aria-current='page'] { border-bottom:2px solid var(--ochre); color:var(--ink); }
+  .company-tabs small { margin-left:.3rem; padding:.15rem .3rem; background:var(--panel); font-size:.52rem; }
   .empty-state { border:1px solid var(--line); border-top:0; padding:3rem; }
   .empty-state p:last-child { margin:0; color:var(--muted); }
   .stock-results { border-inline:1px solid var(--line); }
-  .quote-panel,.chart-panel { padding:clamp(1.25rem,3vw,2.5rem); border-bottom:1px solid var(--line); }
-  .company-heading { align-items:end; padding-bottom:2.5rem; }
-  .company-heading h2 { max-width:48rem; }
+  .quote-panel,.chart-panel,.business-panel { padding:clamp(1.25rem,3vw,2.5rem); border-bottom:1px solid var(--line); }
+  .company-heading,.chart-heading { display:flex; justify-content:space-between; gap:2rem; align-items:flex-end; }
+  .company-heading h2,.chart-panel h2,.business-panel h2,.financials-panel h2,.build-note h2 { margin:0; font-size:clamp(2rem,4vw,3.8rem); line-height:1; font-weight:500; letter-spacing:-.045em; }
+  .company-classification { margin:.6rem 0 0; color:var(--muted); font:.7rem var(--mono); }
   .quote-value { text-align:right; flex:0 0 auto; }
   .quote-value strong { display:block; font:500 clamp(2.4rem,5vw,5rem)/.95 var(--mono); letter-spacing:-.07em; }
   .quote-value span { display:inline-block; margin-top:.7rem; padding:.3rem .5rem; font:500 .76rem var(--mono); }
-  .quote-value span[data-direction='positive'] { color:#3f7040; background:color-mix(in srgb,#6ea06b 18%,transparent); }
-  .quote-value span[data-direction='negative'] { color:#9a433d; background:color-mix(in srgb,#b95f56 16%,transparent); }
+  [data-direction='positive'] { color:#3f7040; }
+  [data-direction='negative'] { color:#9a433d; }
+  .quote-value span[data-direction='positive'] { background:color-mix(in srgb,#6ea06b 18%,transparent); }
+  .quote-value span[data-direction='negative'] { background:color-mix(in srgb,#b95f56 16%,transparent); }
   .quote-value span[data-direction='neutral'] { color:var(--muted); background:var(--panel); }
-  .metric-grid { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); border-left:1px solid var(--line); }
-  .metric-grid article { min-height:125px; padding:1rem; border-right:1px solid var(--line); border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; }
-  .metric-grid article:nth-child(n+5) { grid-column:span 2; }
-  .metric-grid p { margin:0; color:var(--muted); font:.66rem var(--mono); text-transform:uppercase; }
-  .metric-grid strong { font:500 clamp(1.25rem,2.3vw,2rem)/1 var(--mono); }
-  .chart-heading { align-items:end; margin-bottom:2rem; }
+  .metric-grid { display:grid; grid-template-columns:repeat(3,1fr); margin-top:2.5rem; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+  .metric-grid article { min-height:115px; padding:1rem; border-right:1px solid var(--line); border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; }
+  .metric-grid p,.financial-chart-grid p { margin:0; color:var(--muted); font:.64rem var(--mono); text-transform:uppercase; }
+  .metric-grid strong { font:500 clamp(1.15rem,2vw,1.8rem)/1 var(--mono); }
+  .chart-heading { margin-bottom:2rem; }
   .chart-heading > span { color:var(--muted); font:.67rem var(--mono); text-transform:uppercase; }
   .chart-performance { margin:.7rem 0 0; font:500 .8rem var(--mono); }
-  .chart-performance[data-direction='positive'] { color:#3f7040; }
-  .chart-performance[data-direction='negative'] { color:#9a433d; }
-  .chart-performance[data-direction='neutral'] { color:var(--muted); }
   .range-selector { display:flex; width:max-content; max-width:100%; margin:0 0 1.5rem auto; border:1px solid var(--line); overflow-x:auto; }
   .range-selector button { min-width:3.25rem; border:0; border-right:1px solid var(--line); padding:.55rem .8rem; background:transparent; color:var(--muted); font:500 .67rem var(--mono); cursor:pointer; }
   .range-selector button:last-child { border-right:0; }
@@ -178,43 +185,62 @@ const compareSymbol = stock.symbol === 'NVDA' ? 'AMD' : 'NVDA';
   .chart-tooltip time,.chart-tooltip strong { display:block; white-space:nowrap; }
   .chart-tooltip time { color:var(--muted); font:.62rem var(--mono); text-transform:uppercase; }
   .chart-tooltip strong { margin-top:.2rem; font:500 .9rem var(--mono); }
-  :global(.chart-grid-line) { stroke:var(--line); stroke-width:1; vector-effect:non-scaling-stroke; }
+  :global(.chart-grid-line),:global(.financial-grid) { stroke:var(--line); stroke-width:1; vector-effect:non-scaling-stroke; }
   :global(.chart-area) { fill:color-mix(in srgb,var(--ochre) 12%,transparent); }
-  :global(.chart-line) { fill:none; stroke:var(--ochre); stroke-width:2; vector-effect:non-scaling-stroke; }
-  :global(.chart-axis-label) { fill:var(--muted); font:10px var(--mono); }
+  :global(.chart-line),:global(.financial-line) { fill:none; stroke:var(--ochre); stroke-width:2; vector-effect:non-scaling-stroke; }
+  :global(.chart-axis-label),:global(.financial-axis) { fill:var(--muted); font:10px var(--mono); }
   :global(.chart-crosshair) { stroke:color-mix(in srgb,var(--ink) 45%,transparent); stroke-width:1; stroke-dasharray:3 3; vector-effect:non-scaling-stroke; }
   :global(.chart-hover-dot) { fill:var(--paper); stroke:var(--ochre); stroke-width:2; vector-effect:non-scaling-stroke; }
+  .business-panel { display:grid; grid-template-columns:.75fr 1.25fr; gap:4rem; }
+  .business-copy > p { margin:0; color:var(--muted); line-height:1.75; }
+  .profile-grid { display:grid; grid-template-columns:1fr 1fr; margin-top:2rem; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+  .profile-grid article { min-height:95px; padding:.9rem; border-right:1px solid var(--line); border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; }
+  .profile-grid span { color:var(--muted); font:.6rem var(--mono); text-transform:uppercase; }
+  .profile-grid strong,.profile-grid a { color:var(--ink); font:500 .82rem var(--mono); text-decoration:none; overflow-wrap:anywhere; }
+  .profile-grid a:hover { color:var(--ochre); }
   .data-note { display:flex; justify-content:space-between; gap:2rem; padding:1rem clamp(1.25rem,3vw,2.5rem); border-bottom:1px solid var(--line); color:var(--muted); font:.65rem var(--mono); }
   .data-note p { margin:0; }
+  .financials-panel { border:1px solid var(--line); border-top:0; }
+  .financials-panel > header { display:grid; grid-template-columns:1.2fr .8fr; gap:3rem; align-items:end; padding:clamp(1.25rem,3vw,2.5rem); }
+  .financials-panel > header > p { margin:0; color:var(--muted); }
+  .financials-status { margin:0; padding:1rem clamp(1.25rem,3vw,2.5rem); border-top:1px solid var(--line); color:var(--muted); font:.68rem var(--mono); }
+  .financials-status[data-kind='error'] { color:#9a433d; }
+  .financial-chart-grid { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line); }
+  .financial-chart-grid article { padding:1.2rem; border-right:1px solid var(--line); }
+  .financial-chart-grid article:last-child { border-right:0; }
+  .financial-chart-grid strong { display:block; margin-top:.65rem; font:500 1.45rem var(--mono); }
+  .financial-chart-grid svg { display:block; width:100%; height:150px; margin-top:1rem; }
+  .financial-table-wrap { overflow-x:auto; border-top:1px solid var(--line); }
+  .financial-table-wrap table { width:100%; min-width:780px; border-collapse:collapse; }
+  .financial-table-wrap th,.financial-table-wrap td { padding:.9rem 1rem; border-right:1px solid var(--line); border-bottom:1px solid var(--line); text-align:right; font:.72rem var(--mono); }
+  .financial-table-wrap th:first-child,.financial-table-wrap td:first-child { text-align:left; }
+  .financial-table-wrap th { color:var(--muted); font-size:.6rem; text-transform:uppercase; }
+  .balance-grid { display:grid; grid-template-columns:repeat(3,1fr); }
+  .balance-grid article { min-height:105px; padding:1rem; border-right:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between; }
+  .balance-grid article:last-child { border-right:0; }
+  .balance-grid span { color:var(--muted); font:.62rem var(--mono); text-transform:uppercase; }
+  .balance-grid strong { font:500 1.4rem var(--mono); }
   .build-note { display:grid; grid-template-columns:1fr 2fr; gap:2rem; padding-top:7rem; margin-top:7rem; border-top:1px solid var(--line); }
   .build-note > div { max-width:48rem; }
   .build-note > div p { max-width:38rem; color:var(--muted); font-size:1.05rem; }
   [hidden] { display:none !important; }
   [aria-busy='true'] .stock-results { opacity:.55; }
-
   @media (max-width:800px) {
-    .finance-intro { grid-template-columns:1fr; gap:2rem; }
-    .metric-grid { grid-template-columns:repeat(2,1fr); }
-    .metric-grid article:nth-child(n+5) { grid-column:span 1; }
+    .finance-intro,.business-panel,.financials-panel > header { grid-template-columns:1fr; gap:2rem; }
+    .metric-grid,.financial-chart-grid { grid-template-columns:repeat(2,1fr); }
+    .financial-chart-grid article { border-bottom:1px solid var(--line); }
+    .financial-chart-grid article:last-child { grid-column:1/-1; }
   }
-
   @media (max-width:600px) {
     .finance-page { padding-top:3.5rem; padding-bottom:5rem; }
     .finance-intro { margin-bottom:4rem; }
     .finance-intro h1 { font-size:clamp(3.1rem,15vw,4.5rem); }
-    .console-heading,.company-heading { display:block; }
-    .service-label { margin-top:1.5rem; }
-    .ticker-control { align-items:stretch; }
-    .ticker-control .button { min-width:auto; padding-inline:.8rem; }
-    .quick-looks { grid-template-columns:1fr; gap:.8rem; }
-    .quick-looks > span { margin:0; }
-    .company-heading { padding-bottom:2rem; }
+    .company-toolbar { grid-template-columns:1fr; }
+    .company-toolbar form { border-right:0; border-bottom:1px solid var(--line); }
+    .company-heading,.chart-heading { display:block; }
     .quote-value { margin-top:2rem; text-align:left; }
-    .metric-grid { grid-template-columns:1fr 1fr; }
-    .metric-grid article { min-height:105px; }
-    .chart-heading { display:block; }
-    .chart-heading h2 { font-size:2.2rem; }
-    .chart-heading > span { display:block; margin-top:1rem; }
+    .metric-grid,.financial-chart-grid,.balance-grid,.profile-grid { grid-template-columns:1fr 1fr; }
+    .financial-chart-grid article:last-child { grid-column:1/-1; }
     .range-selector { width:100%; margin-left:0; }
     .range-selector button { flex:1 0 3rem; min-width:3rem; padding-inline:.55rem; }
     .data-note,.build-note { display:block; }

@@ -20,6 +20,11 @@ public class ProviderRouter {
         return fmpProvider;
     }
 
+    public StockDataProvider forFinancials(String symbol) {
+        supportedStocks.requireFinancials(symbol);
+        return fmpProvider;
+    }
+
     public StockDataProvider forHistory(String symbol) {
         supportedStocks.requireHistory(symbol);
         return fmpProvider;

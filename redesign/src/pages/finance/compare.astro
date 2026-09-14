@@ -3,18 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import stocks from '../../../../finance-service/src/main/resources/fmp-supported-tickers.json';
-
 const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.batyrbek.com';
 ---
-<BaseLayout title="Compare Companies — Market Atlas" description="Compare the market performance and key metrics of two public companies.">
+<BaseLayout title="Compare Companies — Market Atlas" description="Compare relative performance, real share prices, and key company metrics.">
   <Header active="Finance" />
   <main class="compare-page page-shell" data-compare-app data-api-base={apiBase}>
-    <header class="compare-intro">
-      <a href="/finance">← Market Atlas</a>
-      <p class="eyebrow section-label">Company comparison</p>
-      <h1>Two companies.<br />One scale.</h1>
-      <p>Compare relative performance instead of misleading raw share prices. Both histories begin at an index value of 100.</p>
-    </header>
+    <header class="compare-intro"><a href="/finance">← Market Atlas</a><p class="eyebrow section-label">Company comparison</p><h1>Two companies.<br />One scale.</h1><p>Compare normalized performance, then inspect the actual closing prices behind each line.</p></header>
 
     <section class="compare-controls" aria-labelledby="compare-heading">
       <div><p class="eyebrow">Select companies</p><h2 id="compare-heading">Build a comparison.</h2></div>
@@ -28,37 +22,50 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
     </section>
 
     <section class="compare-chart-panel" data-compare-results hidden>
-      <div class="compare-heading">
-        <div><p class="eyebrow">Normalized performance</p><h2 data-compare-title>NVDA vs AMD</h2></div>
-        <div class="compare-legend"><span><i></i><b data-first-label>NVDA</b> <em data-first-return>—</em></span><span><i></i><b data-second-label>AMD</b> <em data-second-return>—</em></span></div>
+      <div class="compare-heading"><div><p class="eyebrow">Normalized performance</p><h2 data-compare-title>NVDA vs AMD</h2></div><div class="compare-legend"><span><i></i><b data-first-label>NVDA</b> <em data-first-return>—</em></span><span><i></i><b data-second-label>AMD</b> <em data-second-return>—</em></span></div></div>
+      <p class="chart-explainer">Both lines begin at 100. Hover or use arrow keys to see each company’s real closing price on that date.</p>
+      <div class="compare-ranges" role="group" aria-label="Comparison range">{['1M', '6M', '1Y', '5Y'].map(range => <button type="button" data-compare-range={range.toLowerCase()} aria-pressed={range === '1Y'}>{range}</button>)}</div>
+      <div class="compare-chart" data-compare-chart-wrap tabindex="0" aria-label="Use pointer or arrow keys to inspect both share prices">
+        <svg data-compare-chart role="img" aria-label="Normalized company performance comparison"></svg>
+        <div class="compare-tooltip" data-compare-tooltip hidden><time data-tooltip-date></time><span><i></i><b data-tooltip-first-label>NVDA</b><strong data-tooltip-first-price>—</strong></span><span><i></i><b data-tooltip-second-label>AMD</b><strong data-tooltip-second-price>—</strong></span></div>
+        <p data-chart-message></p>
       </div>
-      <div class="compare-ranges" role="group" aria-label="Comparison range">
-        {['1M', '6M', '1Y', '5Y'].map(range => <button type="button" data-compare-range={range.toLowerCase()} aria-pressed={range === '1Y'}>{range}</button>)}
-      </div>
-      <div class="compare-chart"><svg data-compare-chart role="img" aria-label="Normalized company performance comparison"></svg><p data-chart-message></p></div>
     </section>
 
     <section class="comparison-table" data-comparison-table hidden aria-labelledby="metrics-heading">
-      <p class="eyebrow section-label">Side by side</p>
-      <h2 id="metrics-heading">Key metrics.</h2>
+      <p class="eyebrow section-label">Side by side</p><h2 id="metrics-heading">Research metrics.</h2>
       <div class="table-wrap"><table>
         <thead><tr><th>Metric</th><th data-table-first>NVDA</th><th data-table-second>AMD</th></tr></thead>
         <tbody>
+          <tr class="category-row"><th colspan="3">Valuation</th></tr>
           <tr><td>Market cap</td><td data-first-market-cap>—</td><td data-second-market-cap>—</td></tr>
           <tr><td>P / E ratio</td><td data-first-pe>—</td><td data-second-pe>—</td></tr>
           <tr><td>EPS</td><td data-first-eps>—</td><td data-second-eps>—</td></tr>
+          <tr class="category-row"><th colspan="3">Performance</th></tr>
+          <tr><td>1 month return</td><td data-first-return-1m>—</td><td data-second-return-1m>—</td></tr>
+          <tr><td>6 month return</td><td data-first-return-6m>—</td><td data-second-return-6m>—</td></tr>
+          <tr><td>1 year return</td><td data-first-return-1y>—</td><td data-second-return-1y>—</td></tr>
+          <tr><td>5 year return</td><td data-first-return-5y>—</td><td data-second-return-5y>—</td></tr>
+          <tr class="category-row"><th colspan="3">Trading range</th></tr>
           <tr><td>52-week low</td><td data-first-low>—</td><td data-second-low>—</td></tr>
           <tr><td>52-week high</td><td data-first-high>—</td><td data-second-high>—</td></tr>
+          <tr class="category-row"><th colspan="3">Income and cash flow</th></tr>
+          <tr><td>Annual revenue</td><td data-first-revenue>—</td><td data-second-revenue>—</td></tr>
+          <tr><td>Net income</td><td data-first-net-income>—</td><td data-second-net-income>—</td></tr>
+          <tr><td>Free cash flow</td><td data-first-fcf>—</td><td data-second-fcf>—</td></tr>
+          <tr class="category-row"><th colspan="3">Financial health</th></tr>
+          <tr><td>Cash &amp; equivalents</td><td data-first-cash>—</td><td data-second-cash>—</td></tr>
+          <tr><td>Total debt</td><td data-first-debt>—</td><td data-second-debt>—</td></tr>
+          <tr><td>Net margin</td><td data-first-margin>—</td><td data-second-margin>—</td></tr>
         </tbody>
       </table></div>
+      <p class="financial-compare-status" data-financial-compare-status>Annual statement metrics load separately and are cached for seven days.</p>
     </section>
-
     <footer class="compare-note"><span>Relative performance is rebased to 100 for the selected period.</span><span>Educational purposes only — not investment advice.</span></footer>
   </main>
   <Footer />
 </BaseLayout>
 <script>import '../../scripts/finance-compare.ts';</script>
-
 <style>
   .compare-page { padding-top:clamp(4rem,8vw,8rem); padding-bottom:7rem; }
   .compare-intro { display:grid; grid-template-columns:1.35fr .65fr; gap:1rem 4rem; align-items:end; margin-bottom:clamp(4rem,8vw,7rem); }
@@ -73,33 +80,44 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
   .compare-controls label { color:var(--muted); font:.64rem var(--mono); text-transform:uppercase; }
   .compare-controls select { display:block; width:100%; margin-top:.5rem; border:0; border-bottom:1px solid var(--ink); border-radius:0; padding:.75rem 0; background:transparent; color:var(--ink); font:500 1rem var(--mono); }
   .compare-controls form > span { padding-bottom:.85rem; color:var(--muted); font:.68rem var(--mono); text-transform:uppercase; }
-  .compare-controls [data-compare-status] { min-height:1.2rem; margin:1.2rem 0 0; color:var(--muted); font:.68rem var(--mono); }
-  .compare-controls [data-compare-status][data-kind='error'] { color:#9a433d; }
+  .compare-controls [data-compare-status],.financial-compare-status { min-height:1.2rem; margin:1.2rem 0 0; color:var(--muted); font:.68rem var(--mono); }
+  [data-kind='error'] { color:#9a433d !important; }
   .compare-chart-panel { border-top:0; }
   .compare-heading { display:flex; justify-content:space-between; gap:2rem; align-items:end; }
   .compare-legend { display:flex; gap:1.25rem; flex-wrap:wrap; font:.7rem var(--mono); }
   .compare-legend span { display:flex; align-items:center; gap:.4rem; }
-  .compare-legend i { width:1.5rem; height:2px; background:var(--ochre); }
-  .compare-legend span:nth-child(2) i { background:#55774f; }
+  .compare-legend i,.compare-tooltip span i { width:1.5rem; height:2px; background:var(--ochre); }
+  .compare-legend span:nth-child(2) i,.compare-tooltip span:nth-child(3) i { background:#55774f; }
   .compare-legend em { color:var(--muted); font-style:normal; }
+  .chart-explainer { margin:1rem 0 0; color:var(--muted); font-size:.75rem; }
   .compare-ranges { display:flex; width:max-content; margin:2rem 0 1rem auto; border:1px solid var(--line); }
   .compare-ranges button { border:0; border-right:1px solid var(--line); padding:.55rem .9rem; background:transparent; color:var(--muted); font:.68rem var(--mono); cursor:pointer; }
   .compare-ranges button:last-child { border-right:0; }
   .compare-ranges button[aria-pressed='true'] { background:var(--ink); color:var(--paper); }
-  .compare-chart { position:relative; height:clamp(260px,38vw,450px); }
-  .compare-chart svg { width:100%; height:100%; display:block; }
+  .compare-chart { position:relative; height:clamp(280px,40vw,470px); }
+  .compare-chart:focus-visible { outline:1px solid var(--ochre); outline-offset:3px; }
+  .compare-chart svg { width:100%; height:100%; display:block; touch-action:none; }
   .compare-chart > p { position:absolute; inset:0; display:grid; place-items:center; color:var(--muted); pointer-events:none; }
+  .compare-tooltip { position:absolute; z-index:3; min-width:13rem; padding:.7rem .8rem; border:1px solid var(--line); background:color-mix(in srgb,var(--paper) 96%,transparent); box-shadow:0 8px 24px color-mix(in srgb,var(--ink) 10%,transparent); pointer-events:none; }
+  .compare-tooltip time { display:block; margin-bottom:.45rem; color:var(--muted); font:.62rem var(--mono); text-transform:uppercase; }
+  .compare-tooltip span { display:grid; grid-template-columns:1.5rem 3.5rem 1fr; gap:.45rem; align-items:center; font:.68rem var(--mono); }
+  .compare-tooltip span + span { margin-top:.35rem; }
+  .compare-tooltip strong { text-align:right; font-weight:500; }
   :global(.compare-grid) { stroke:var(--line); stroke-width:1; vector-effect:non-scaling-stroke; }
   :global(.compare-axis) { fill:var(--muted); font:10px var(--mono); }
   :global(.compare-line-first),:global(.compare-line-second) { fill:none; stroke-width:2; vector-effect:non-scaling-stroke; }
   :global(.compare-line-first) { stroke:var(--ochre); }
   :global(.compare-line-second) { stroke:#55774f; }
+  :global(.compare-crosshair) { stroke:color-mix(in srgb,var(--ink) 45%,transparent); stroke-width:1; stroke-dasharray:3 3; vector-effect:non-scaling-stroke; }
+  :global(.compare-dot-first),:global(.compare-dot-second) { fill:var(--paper); stroke-width:2; vector-effect:non-scaling-stroke; }
+  :global(.compare-dot-first) { stroke:var(--ochre); } :global(.compare-dot-second) { stroke:#55774f; }
   .comparison-table { padding-top:6rem; margin-top:6rem; border-top:1px solid var(--line); }
   .table-wrap { overflow-x:auto; margin-top:2.5rem; }
-  table { width:100%; border-collapse:collapse; min-width:520px; }
+  table { width:100%; border-collapse:collapse; min-width:620px; }
   th,td { padding:1rem; border:1px solid var(--line); text-align:right; font:500 .8rem var(--mono); }
   th:first-child,td:first-child { text-align:left; color:var(--muted); text-transform:uppercase; }
-  th { background:var(--panel); }
+  thead th { background:var(--panel); }
+  .category-row th { padding:.55rem 1rem; background:color-mix(in srgb,var(--panel) 55%,transparent); color:var(--muted); font-size:.58rem; letter-spacing:.07em; text-align:left; text-transform:uppercase; }
   .compare-note { display:flex; justify-content:space-between; gap:2rem; margin-top:6rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font:.65rem var(--mono); }
   [hidden] { display:none !important; }
   @media (max-width:800px) { .compare-intro { grid-template-columns:1fr; } .compare-controls form { grid-template-columns:1fr 1fr; } .compare-controls form > span { display:none; } }

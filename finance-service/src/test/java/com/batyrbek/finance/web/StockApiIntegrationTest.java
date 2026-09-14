@@ -4,7 +4,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.batyrbek.finance.dto.AnnualFinancial;
 import com.batyrbek.finance.dto.CompanyFundamentals;
+import com.batyrbek.finance.dto.CompanyFinancials;
 import com.batyrbek.finance.dto.PricePoint;
 import com.batyrbek.finance.dto.StockHistory;
 import com.batyrbek.finance.dto.StockQuote;
@@ -42,6 +44,7 @@ class StockApiIntegrationTest {
         when(provider.fetchFundamentals("NVDA")).thenReturn(fundamentals("NVIDIA Corporation"));
         when(provider.fetchFundamentals("AAPL")).thenReturn(fundamentals("Apple Inc."));
         when(provider.fetchHistory("NVDA")).thenReturn(history("NVDA"));
+        when(provider.fetchFinancials("NVDA")).thenReturn(financials("NVDA"));
         when(provider.fetchHistory("AAPL")).thenReturn(history("AAPL"));
         when(provider.fetchQuote("META")).thenThrow(new StockNotFoundException("META"));
         when(provider.fetchQuote("AMZN")).thenThrow(new ProviderRateLimitException());
@@ -68,6 +71,16 @@ class StockApiIntegrationTest {
                 .andExpect(jsonPath("$.range").value("5y"))
                 .andExpect(jsonPath("$.resolution").value("weekly"))
                 .andExpect(jsonPath("$.points.length()").value(2));
+    }
+
+    @Test
+    void servesNormalizedAnnualFinancials() throws Exception {
+        mockMvc.perform(get("/api/stocks/NVDA/financials"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.symbol").value("NVDA"))
+                .andExpect(jsonPath("$.source").value("FMP"))
+                .andExpect(jsonPath("$.annual.length()").value(1))
+                .andExpect(jsonPath("$.annual[0].freeCashFlow").value(180.0));
     }
 
     @Test
@@ -108,16 +121,25 @@ class StockApiIntegrationTest {
 
 
     private StockQuote quote(double price) {
-        return new StockQuote(price, 1.2, 0.7, 12_000_000L, Instant.parse("2026-09-13T20:00:00Z"));
+        return new StockQuote(price, 1.2, 0.7, 12_000_000L, 25.0, 5.0, 250.0, 120.0, Instant.parse("2026-09-13T20:00:00Z"));
     }
 
     private CompanyFundamentals fundamentals(String name) {
         return new CompanyFundamentals(name, "USD", 1_000_000_000L, 25.0, 5.0,
-                0.004, 250.0, 120.0, Instant.parse("2026-09-13T19:00:00Z"));
+                0.004, 250.0, 120.0, Instant.parse("2026-09-13T19:00:00Z"),
+                "NASDAQ", "Technology", "Semiconductors", "Description", "CEO", 1000L,
+                "Santa Clara, US", "https://example.com", 0.15, 0.30, 500_000_000.0);
+    }
+
+    private CompanyFinancials financials(String ticker) {
+        return new CompanyFinancials(ticker, "USD", List.of(
+                new AnnualFinancial(LocalDate.parse("2025-12-31"), "2025", 1000.0, 300.0,
+                        200.0, 2.0, 180.0, 0.1, 0.2)), 500.0, 200.0, 0.4, "FMP",
+                Instant.parse("2026-09-13T20:00:00Z"), LocalDate.parse("2025-12-31"), false);
     }
 
     private StockHistory history(String ticker) {
-        return new StockHistory(ticker, null, "5y", "weekly", List.of(
+        return new StockHistory(ticker, "USD", "5y", "weekly", List.of(
                 new PricePoint(LocalDate.parse("2025-09-13"), 120.42),
                 new PricePoint(LocalDate.parse("2026-09-12"), 184.21)),
                 Instant.parse("2026-09-13T20:00:00Z"), false);

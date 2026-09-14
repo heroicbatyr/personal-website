@@ -130,6 +130,7 @@ docker compose -f compose.server.yml up -d --build finance-service
 curl http://127.0.0.1:18080/actuator/health
 curl http://127.0.0.1:18080/api/stocks/NVDA
 curl 'http://127.0.0.1:18080/api/stocks/NVDA/history?range=5y'
+curl http://127.0.0.1:18080/api/stocks/NVDA/financials
 ```
 
 Run the frontend against that local service:
@@ -151,6 +152,8 @@ The REST contract is deliberately frontend-friendly:
   used for search, sector browsing, comparison selectors, and backend validation;
 - `GET /api/stocks/{ticker}` — quote and normalized company metrics, including
   a `stale` indicator;
+- `GET /api/stocks/{ticker}/financials` — normalized annual income, cash-flow,
+  and balance-sheet highlights loaded only when Financials is opened;
 - `GET /api/stocks/{ticker}/history?range=5y` — one cached five-year series with
   `resolution`, `updatedAt`, and `stale` metadata.
 
@@ -158,7 +161,7 @@ The catalog lives in
 `finance-service/src/main/resources/fmp-supported-tickers.json`. The frontend
 uses that same file at build time, so company names and capabilities have one
 source of truth and catalog searches never consume provider requests. Current
-product routes are `/finance`, `/finance/{symbol}`, and
+product routes are `/finance`, `/finance/{symbol}`, `/finance/{symbol}?tab=financials`, and
 `/finance/compare?symbols=NVDA,AMD`. Unknown symbols are rejected locally before
 the provider is contacted.
 
@@ -168,12 +171,15 @@ coalesce concurrent requests for the same ticker. Successful provider responses 
 also written atomically to `/app/data/cache` on the named Docker volume
 `personal-website-finance-cache`, so rebuilding or restarting the container does not
 empty the cache. Disk-backed quotes remain usable for two days; fundamentals and
-history remain usable for 30 days during provider failures. Stale responses retain
+history remain usable for 30 days during provider failures. Annual statements are
+fresh for seven days and remain usable for 60 days during provider failures. Stale responses retain
 their original `updatedAt` and return `stale: true`.
 
 The browser downloads the five-year history once per ticker. Its `1W`, `1M`,
 `6M`, `YTD`, `1Y`, and `5Y` buttons only filter that in-memory array and never
-call the provider or backend again. On weekdays at 22:30 UTC, the service warms the demo tickers (NVDA, AAPL, MSFT, JPM) if their 24-hour cache has expired. FMP rate-limit responses are returned as a friendly provider-limit error and never expose the provider response or key. Range-button clicks never consume provider requests.
+call the provider or backend again. On weekdays at 22:30 UTC, the service warms the demo tickers (NVDA, AAPL, MSFT, JPM) if their 24-hour cache has expired. FMP rate-limit responses are returned as a friendly provider-limit error and never expose the provider response or key. Range-button clicks never consume provider requests. A cold Overview uses four provider requests, five-year History uses one,
+and annual Financials uses three only when first opened; subsequent requests use their
+independent persistent caches.
 
 ### Optional Vercel outage snapshots
 

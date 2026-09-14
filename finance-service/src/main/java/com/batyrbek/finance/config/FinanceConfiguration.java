@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.batyrbek.finance.dto.CompanyFundamentals;
+import com.batyrbek.finance.dto.CompanyFinancials;
 import com.batyrbek.finance.dto.StockHistory;
 import com.batyrbek.finance.dto.StockQuote;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -45,6 +46,16 @@ public class FinanceConfiguration {
     @Bean
     Cache<String, CompanyFundamentals> staleFundamentalsCache() {
         return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(30)).build();
+    }
+
+    @Bean
+    Cache<String, CompanyFinancials> financialsCache() {
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(7)).build();
+    }
+
+    @Bean
+    Cache<String, CompanyFinancials> staleFinancialsCache() {
+        return Caffeine.newBuilder().maximumSize(250).expireAfterWrite(Duration.ofDays(60)).build();
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package com.batyrbek.finance.web;
 
+import com.batyrbek.finance.dto.CompanyFinancials;
 import com.batyrbek.finance.dto.StockHistory;
 import com.batyrbek.finance.dto.StockOverview;
 import com.batyrbek.finance.service.StockService;
@@ -18,6 +19,11 @@ public class StockController {
 
     @GetMapping("/{ticker}")
     public StockOverview overview(@PathVariable String ticker) { return stockService.getOverview(ticker); }
+
+    @GetMapping("/{ticker}/financials")
+    public CompanyFinancials financials(@PathVariable String ticker) {
+        return stockService.getFinancials(ticker);
+    }
 
     @GetMapping("/{ticker}/history")
     public StockHistory history(@PathVariable String ticker, @RequestParam(defaultValue = "5y") String range) {

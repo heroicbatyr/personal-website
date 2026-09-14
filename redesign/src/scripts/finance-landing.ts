@@ -18,35 +18,56 @@ if (app) {
 
   const matches = (query: string) => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return stocks.filter(stock => stock.popular).slice(0, 8);
+    if (!normalized) return [];
     return stocks.filter(stock => stock.symbol.toLowerCase().startsWith(normalized)
-      || stock.name.toLowerCase().includes(normalized)).slice(0, 8);
+      || stock.name.toLowerCase().includes(normalized)).slice(0, 7);
   };
 
   const renderMatches = (query: string) => {
+    const normalized = query.trim();
+    if (!normalized) {
+      results.replaceChildren();
+      results.hidden = true;
+      status.textContent = `${stocks.length} confirmed companies available.`;
+      status.dataset.kind = 'neutral';
+      return;
+    }
     const visible = matches(query);
     results.replaceChildren(...visible.map(stock => {
       const link = document.createElement('a');
+      link.className = 'catalog-result';
       link.href = `/finance/${stock.symbol}`;
       link.setAttribute('role', 'option');
-      link.innerHTML = `<b>${stock.symbol}</b><span>${stock.name}</span><small>${stock.sector}</small>`;
+      const symbol = document.createElement('b'); symbol.textContent = stock.symbol;
+      const details = document.createElement('span');
+      const name = document.createElement('strong'); name.textContent = stock.name;
+      const sector = document.createElement('small'); sector.textContent = stock.sector;
+      details.append(name, sector);
+      const arrow = document.createElement('i'); arrow.textContent = '↗'; arrow.setAttribute('aria-hidden', 'true');
+      link.append(symbol, details, arrow);
       return link;
     }));
     results.hidden = visible.length === 0;
     status.textContent = visible.length === 0
-      ? 'No confirmed FMP company matches that search.'
-      : `${stocks.length} confirmed companies available.`;
+      ? 'No confirmed company matches that search.'
+      : `${visible.length} match${visible.length === 1 ? '' : 'es'} found.`;
     status.dataset.kind = visible.length === 0 ? 'error' : 'neutral';
   };
 
   input.addEventListener('input', () => renderMatches(input.value));
-  input.addEventListener('focus', () => renderMatches(input.value));
+  input.addEventListener('focus', () => { if (input.value.trim()) renderMatches(input.value); });
+  input.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowDown' || results.hidden) return;
+    event.preventDefault();
+    results.querySelector<HTMLAnchorElement>('a')?.focus();
+  });
   document.addEventListener('click', event => {
     if (!form.contains(event.target as Node)) results.hidden = true;
   });
   form.addEventListener('submit', event => {
     event.preventDefault();
     const query = input.value.trim().toLowerCase();
+    if (!query) return renderMatches('');
     const exact = stocks.find(stock => stock.symbol.toLowerCase() === query
       || stock.name.toLowerCase() === query);
     const target = exact || matches(query)[0];
@@ -63,11 +84,17 @@ if (app) {
       const sectorStocks = stocks.filter(stock => stock.sector === sector);
       sectorResults.replaceChildren(...sectorStocks.map(stock => {
         const link = document.createElement('a');
+        link.className = 'sector-card';
         link.href = `/finance/${stock.symbol}`;
-        link.textContent = `${stock.symbol} · ${stock.name}`;
+        const symbol = document.createElement('b'); symbol.textContent = stock.symbol;
+        const name = document.createElement('strong'); name.textContent = stock.name;
+        const category = document.createElement('small'); category.textContent = stock.category;
+        const arrow = document.createElement('i'); arrow.textContent = '↗'; arrow.setAttribute('aria-hidden', 'true');
+        link.append(symbol, name, category, arrow);
         return link;
       }));
       sectorResults.hidden = false;
+      sectorResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   });
 
@@ -79,8 +106,9 @@ if (app) {
     const recentList = app.querySelector<HTMLElement>('[data-recent-list]')!;
     recentList.replaceChildren(...recentStocks.map(stock => {
       const link = document.createElement('a');
+      link.className = 'recent-card';
       link.href = `/finance/${stock.symbol}`;
-      link.textContent = `${stock.symbol} · ${stock.name}`;
+      link.innerHTML = `<b>${stock.symbol}</b><span>${stock.name}</span><i aria-hidden="true">↗</i>`;
       return link;
     }));
     recentSection.hidden = false;
