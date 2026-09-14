@@ -10,9 +10,8 @@ management:
         include: health
 stock:
   provider:
-    base-url: ${STOCK_API_BASE_URL:https://www.alphavantage.co}
-    api-keys: ${STOCK_API_KEYS:},${STOCK_API_KEY:}
-    rate-limit-cooldown: ${STOCK_PROVIDER_RATE_LIMIT_COOLDOWN:PT24H}
+    base-url: ${FMP_API_BASE_URL:https://financialmodelingprep.com}
+    api-key: ${FMP_API_KEY:}
   cache:
     directory: ${FINANCE_CACHE_DIR:/app/data/cache}
   backup:

@@ -96,16 +96,10 @@ batyrbek.com/finance
   -> https://server.batyrbek.com/api/stocks/...
   -> Express path gateway
   -> finance-service:8080
-  -> Alpha Vantage
+  -> Financial Modeling Prep (FMP)
 ```
 
-The provider key exists only in the Spring container. Alpha Vantage was chosen
-because its documented company overview, global quote, and weekly
-time-series endpoints cover the dashboard. The dashboard deliberately uses a
-weekly five-year history so one fresh ticker needs three provider requests—not
-four—and labels the chart accurately. This is a daily-close portfolio project,
-not a real-time market-data terminal. Finnhub's
-stock candle endpoint currently requires premium access. The `StockDataProvider`
+The provider key exists only in the Spring container. FMP supplies the quote, company profile, and daily historical-price endpoints. One fresh ticker uses the normalized quote, profile, and daily five-year history responses. This remains a daily-close portfolio project, not a real-time market-data terminal. The `StockDataProvider`
 interface keeps provider-specific JSON out of the controller, service, cache,
 and frontend layers.
 
@@ -117,10 +111,7 @@ Create the ignored runtime file from the committed placeholder template:
 cp .env.finance.example .env.finance
 ```
 
-Set `STOCK_API_KEY` to one Alpha Vantage API key, or add `STOCK_API_KEYS` as a
-comma-separated pool of keys you are authorized to use. Both variables are merged and
-deduplicated. The provider starts requests across the pool and tries the next key only when Alpha Vantage explicitly reports a
-rate limit. Do not commit `.env.finance`. `FINANCE_ALLOWED_ORIGINS` defaults to the two production website origins and
+Set `FMP_API_KEY` to your FMP API key. Do not commit `.env.finance`. `FINANCE_ALLOWED_ORIGINS` defaults to the two production website origins and
 Astro's usual localhost origins; keep this list narrow.
 
 The optional Astro build variable below changes the browser-visible API host.
@@ -150,7 +141,7 @@ PUBLIC_FINANCE_API_BASE_URL=http://localhost:18080 npm --prefix redesign run dev
 For host-based Java development, use JDK 21 and Maven 3.9+:
 
 ```bash
-STOCK_API_KEY=your-key mvn -f finance-service/pom.xml spring-boot:run
+FMP_API_KEY=your-key mvn -f finance-service/pom.xml spring-boot:run
 mvn -f finance-service/pom.xml verify
 ```
 
@@ -172,14 +163,7 @@ their original `updatedAt` and return `stale: true`.
 
 The browser downloads the five-year history once per ticker. Its `1W`, `1M`,
 `6M`, `YTD`, `1Y`, and `5Y` buttons only filter that in-memory array and never
-call the provider or backend again. Provider calls are serialized at a conservative five-per-minute pace. A provider
-rate-limit response puts only that hashed key into a persistent 24-hour cooldown,
-so repeated visitor requests do not repeatedly probe exhausted keys. On weekdays at
-22:30 UTC, the service warms the demo tickers (NVDA, AAPL, MSFT, JPM) if their
-24-hour cache has expired. Alpha Vantage documents a standard limit of 25 requests per day. The exact reset
-time is not documented. Its support page also offers unlimited requests for verified
-open-source or educational projects, which is preferable to creating duplicate
-accounts. Range-button clicks never consume provider requests.
+call the provider or backend again. On weekdays at 22:30 UTC, the service warms the demo tickers (NVDA, AAPL, MSFT, JPM) if their 24-hour cache has expired. FMP rate-limit responses are returned as a friendly provider-limit error and never expose the provider response or key. Range-button clicks never consume provider requests.
 
 ### Optional Vercel outage snapshots
 
@@ -205,7 +189,7 @@ browser.
 ### Finance deployment
 
 Before the first production deployment, create `/home/batyr/personal-website/.env.finance`
-on the server and set `STOCK_API_KEY` or `STOCK_API_KEYS`. Configure the optional
+on the server and set `FMP_API_KEY`. Configure the optional
 Vercel snapshot values above if desired. Then build all three services:
 
 ```bash
