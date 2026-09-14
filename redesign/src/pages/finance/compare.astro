@@ -59,7 +59,7 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
           <tr><td>Net margin</td><td data-first-margin>—</td><td data-second-margin>—</td></tr>
         </tbody>
       </table></div>
-      <p class="financial-compare-status" data-financial-compare-status>Annual statement metrics load separately and are cached for seven days.</p>
+      <div class="financial-compare-actions"><button type="button" data-load-financials>Load annual statements</button><p class="financial-compare-status" data-financial-compare-status>Annual statement metrics are optional and cached for seven days.</p></div>
     </section>
     <footer class="compare-note"><span>Relative performance is rebased to 100 for the selected period.</span><span>Educational purposes only — not investment advice.</span></footer>
   </main>
@@ -81,6 +81,11 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
   .compare-controls select { display:block; width:100%; margin-top:.5rem; border:0; border-bottom:1px solid var(--ink); border-radius:0; padding:.75rem 0; background:transparent; color:var(--ink); font:500 1rem var(--mono); }
   .compare-controls form > span { padding-bottom:.85rem; color:var(--muted); font:.68rem var(--mono); text-transform:uppercase; }
   .compare-controls [data-compare-status],.financial-compare-status { min-height:1.2rem; margin:1.2rem 0 0; color:var(--muted); font:.68rem var(--mono); }
+  .financial-compare-actions { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1.2rem; }
+  .financial-compare-actions .financial-compare-status { margin:0; }
+  .financial-compare-actions button { flex:0 0 auto; border:1px solid var(--line); padding:.55rem .8rem; background:transparent; color:var(--ink); font:.65rem var(--mono); cursor:pointer; text-transform:uppercase; }
+  .financial-compare-actions button:hover,.financial-compare-actions button:focus-visible { border-color:var(--ink); background:var(--ink); color:var(--paper); outline:0; }
+  .financial-compare-actions button:disabled { opacity:.55; cursor:wait; }
   [data-kind='error'] { color:#9a433d !important; }
   .compare-chart-panel { border-top:0; }
   .compare-heading { display:flex; justify-content:space-between; gap:2rem; align-items:end; }
@@ -121,5 +126,5 @@ const apiBase = import.meta.env.PUBLIC_FINANCE_API_BASE_URL || 'https://server.b
   .compare-note { display:flex; justify-content:space-between; gap:2rem; margin-top:6rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font:.65rem var(--mono); }
   [hidden] { display:none !important; }
   @media (max-width:800px) { .compare-intro { grid-template-columns:1fr; } .compare-controls form { grid-template-columns:1fr 1fr; } .compare-controls form > span { display:none; } }
-  @media (max-width:600px) { .compare-page { padding-top:3.5rem; } .compare-controls form { grid-template-columns:1fr; } .compare-heading { display:block; } .compare-legend { margin-top:1.5rem; } .compare-ranges { width:100%; } .compare-ranges button { flex:1; } .compare-note { display:block; } .compare-note span { display:block; } .compare-note span + span { margin-top:.6rem; } }
+  @media (max-width:600px) { .compare-page { padding-top:3.5rem; } .compare-controls form { grid-template-columns:1fr; } .compare-heading { display:block; } .compare-legend { margin-top:1.5rem; } .compare-ranges { width:100%; } .compare-ranges button { flex:1; } .financial-compare-actions { align-items:flex-start; flex-direction:column; } .compare-note { display:block; } .compare-note span { display:block; } .compare-note span + span { margin-top:.6rem; } }
 </style>

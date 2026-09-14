@@ -21,6 +21,7 @@ if (app) {
   let activeRange: CompareRange = '1y';
   let overviews: [StockOverview, StockOverview] | null = null;
   let histories: [StockHistory, StockHistory] | null = null;
+  let currentSymbols: [string, string] | null = null;
   let selectedIndex = 0;
   let loadSequence = 0;
 
@@ -117,14 +118,22 @@ if (app) {
     try {
       const core = await Promise.all([fetchJson<StockOverview>(`/api/stocks/${first}`), fetchJson<StockOverview>(`/api/stocks/${second}`), fetchJson<StockHistory>(`/api/stocks/${first}/history?range=5y`), fetchJson<StockHistory>(`/api/stocks/${second}/history?range=5y`)]);
       if (sequence !== loadSequence) return;
-      overviews = [core[0], core[1]]; histories = [core[2], core[3]]; selectedIndex = 0;
+      overviews = [core[0], core[1]]; histories = [core[2], core[3]]; currentSymbols = [first, second]; selectedIndex = 0;
       setText('[data-compare-title]', `${first} vs ${second}`); setText('[data-first-label]', first); setText('[data-second-label]', second); window.history.replaceState({}, '', `/finance/compare?symbols=${first},${second}`);
       renderChart(); renderCoreTable(); results.hidden = false; table.hidden = false; status.textContent = `${first} and ${second} comparison loaded.`; status.dataset.kind = 'success';
-      void loadFinancials(first, second, sequence);
+      const financialStatus = app.querySelector<HTMLElement>("[data-financial-compare-status]")!;
+      financialStatus.textContent = "Annual statement metrics are optional and cached for seven days.";
+      delete financialStatus.dataset.kind;
     } catch { if (sequence === loadSequence) { status.textContent = 'Comparison data is temporarily unavailable. Your previous result is still shown.'; status.dataset.kind = 'error'; } }
   };
 
   app.querySelector<HTMLFormElement>('[data-compare-form]')!.addEventListener('submit', event => { event.preventDefault(); void load(); });
+  app.querySelector<HTMLButtonElement>("[data-load-financials]")!.addEventListener("click", () => {
+    if (!currentSymbols) return;
+    const button = app.querySelector<HTMLButtonElement>("[data-load-financials]")!;
+    button.disabled = true;
+    void loadFinancials(currentSymbols[0], currentSymbols[1], loadSequence).finally(() => { button.disabled = false; });
+  });
   app.querySelectorAll<HTMLButtonElement>('[data-compare-range]').forEach(button => button.addEventListener('click', () => { activeRange = button.dataset.compareRange as CompareRange; selectedIndex = 0; renderChart(); }));
   new ResizeObserver(() => { if (histories) renderChart(); }).observe(chartWrap);
   void load();

@@ -70,10 +70,10 @@ public class StockService {
     public StockOverview getOverview(String rawTicker) {
         String ticker = tickerNormalizer.normalize(rawTicker);
         StockDataProvider provider = providerRouter.forOverview(ticker);
-        CachedResult<StockQuote> quote = cached("quotes-enriched", ticker, StockQuote.class, QUOTE_FRESH, QUOTE_STALE,
+        CachedResult<StockQuote> quote = cached("quotes", ticker, StockQuote.class, QUOTE_FRESH, QUOTE_STALE,
                 quoteCache, staleQuoteCache,
                 () -> provider.fetchQuote(ticker));
-        CachedResult<CompanyFundamentals> fundamentals = cached("fundamentals-enriched", ticker, CompanyFundamentals.class,
+        CachedResult<CompanyFundamentals> fundamentals = cached("fundamentals", ticker, CompanyFundamentals.class,
                 FUNDAMENTALS_FRESH, FUNDAMENTALS_STALE, fundamentalsCache, staleFundamentalsCache, () -> provider.fetchFundamentals(ticker));
         StockQuote q = quote.value();
         CompanyFundamentals f = fundamentals.value();
